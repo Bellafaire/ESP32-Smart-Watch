@@ -1,0 +1,64 @@
+PCBNEW-LibModule-V1  
+# encoding utf-8
+Units mm
+$INDEX
+SW_TL3305AF260QG
+$EndINDEX
+$MODULE SW_TL3305AF260QG
+Po 0 0 0 15 00000000 00000000 ~~
+Li SW_TL3305AF260QG
+Cd 
+Sc 00000000
+At SMD
+Op 0 0 0
+.SolderMask 0
+.SolderPaste 0
+T0 -0.34645 -5.48386 0.8 0.8 0 0.05 N V 21 "SW_TL3305AF260QG"
+T1 0.33001 5.57039 0.8 0.8 0 0.05 N V 21 "VAL**"
+DC -2.7 -3.6 -2.6 -3.6 0.2 27
+DC -2.7 -3.6 -2.6 -3.6 0.2 21
+DS -2.5 -4.65 -2.5 4.65 0.05 26
+DS -2.5 -4.65 2.5 -4.65 0.05 26
+DS 2.5 4.65 2.5 -4.65 0.05 26
+DS 2.5 4.65 -2.5 4.65 0.05 26
+DS -2.25 -2.25 -2.25 2.25 0.127 27
+DS -2.25 -2.25 2.25 -2.25 0.127 27
+DS 2.25 2.25 2.25 -2.25 0.127 27
+DS 2.25 2.25 -2.25 2.25 0.127 27
+DS -2.25 -2.25 -2.25 2.25 0.127 21
+DS -2.25 -2.25 2.25 -2.25 0.127 21
+DS 2.25 2.25 2.25 -2.25 0.127 21
+DS 2.25 2.25 -2.25 2.25 0.127 21
+$PAD
+Sh "1" R 1.4 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -1.5 -3.6
+$EndPAD
+$PAD
+Sh "2" R 1.4 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -1.5 3.6
+$EndPAD
+$PAD
+Sh "3" R 1.4 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 1.5 -3.6
+$EndPAD
+$PAD
+Sh "4" R 1.4 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 1.5 3.6
+$EndPAD
+$EndMODULE SW_TL3305AF260QG
