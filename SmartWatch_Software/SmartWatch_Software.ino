@@ -29,6 +29,8 @@ void setup() {
   pinMode(CHARGING_PIN, OUTPUT);
   pinMode(BATTERY_SENSE, INPUT);
 
+  digitalWrite(CHARGING_PIN, LOW);
+  
   initLCD();
 
   tft.setTextColor(INTERFACE_COLOR);
