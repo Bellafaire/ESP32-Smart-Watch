@@ -1,0 +1,35 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# TL3305AF260QG
+#
+DEF TL3305AF260QG U 0 40 Y N 1 L N
+F0 "U" -200 200 50 H V L BNN
+F1 "TL3305AF260QG" -200 -200 50 H V L BNN
+F2 "SW_TL3305AF260QG" 0 0 50 H I L BNN
+F3 "E-Switch" 0 0 50 H I L BNN
+F4 "LQFP-48 E-Switch" 0 0 50 H I L BNN
+F5 "Switch Tactile Spst-No 50ma 12v" 0 0 50 H I L BNN
+F6 "EG5353CT-ND" 0 0 50 H I L BNN
+F7 "TL3305AF260QG" 0 0 50 H I L BNN
+F8 "https://www.digikey.com/product-detail/en/e-switch/TL3305AF260QG/EG5353CT-ND/5816198?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol" 0 0 50 H I L BNN
+DRAW
+P 2 0 0 6 -200 0 -100 0 N
+C -100 0 10 0 0 20 N
+P 2 0 0 6 200 0 100 0 N
+C 100 0 10 0 0 20 N
+P 2 0 0 6 -100 60 0 60 N
+P 2 0 0 6 0 60 100 60 N
+P 2 0 0 6 0 100 0 60 N
+P 2 0 0 6 -200 100 -200 -100 N
+P 2 0 0 6 200 100 200 -100 N
+X 1 1 -400 100 200 R 40 40 0 0 P 
+X 2 2 -400 -100 200 R 40 40 0 0 P 
+X 3 3 400 100 200 L 40 40 0 0 P 
+X 4 4 400 -100 200 L 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library

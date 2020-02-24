@@ -1,0 +1,27 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# EVQ-P7J01P
+#
+DEF EVQ-P7J01P SW 0 40 Y N 1 L N
+F0 "SW" -100 100 50 H V L BNN
+F1 "EVQ-P7J01P" -100 -151 50 H V L BNN
+F2 "SW_EVQ-P7J01P" 0 0 50 H I L BNN
+F3 "Panasonic" 0 0 50 H I L BNN
+F4 "Manufacturer Recommendation" 0 0 50 H I L BNN
+DRAW
+C -100 0 10 0 0 10 N
+C 100 0 10 0 0 10 N
+P 2 0 0 10 -100 0 80 60 N
+P 2 0 0 10 -100 0 -200 0 N
+P 2 0 0 10 100 0 200 0 N
+X 1 1_1 -300 0 100 R 40 40 0 0 P 
+X 1 1_2 -300 0 100 R 40 40 0 0 P 
+X 2 2_1 300 0 100 L 40 40 0 0 P 
+X 2 2_2 300 0 100 L 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library

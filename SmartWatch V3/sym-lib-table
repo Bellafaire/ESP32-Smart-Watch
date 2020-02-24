@@ -1,0 +1,7 @@
+(sym_lib_table
+  (lib (name esp32pico_d4)(type Legacy)(uri C:/Users/James/Desktop/ESP32PICO-D4-3DFILES-master/esp32pico_d4.lib)(options "")(descr ""))
+  (lib (name PRO-OB-440)(type Legacy)(uri C:/Users/James/Desktop/PRO-OB-440.lib)(options "")(descr ""))
+  (lib (name SmartWatchLibs)(type Legacy)(uri "J:/Dropbox/Dropbox/Lab Projects/Smart Watch/SmartWatch/SmartWatchLibs.lib")(options "")(descr ""))
+  (lib (name SmartWatch-rescue)(type Legacy)(uri ${KIPRJMOD}/SmartWatch-rescue.lib)(options "")(descr ""))
+  (lib (name SmartWatchImports)(type Legacy)(uri ${KIPRJMOD}/Imports/Imports.lib)(options "")(descr ""))
+)
