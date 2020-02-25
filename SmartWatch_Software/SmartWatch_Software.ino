@@ -12,7 +12,7 @@
 #include "Notifications.h"
 #include "battery.h"
 
-#define SCREEN_TOUCH_ON_TIME 1000
+#define SCREEN_TOUCH_ON_TIME 5000
 unsigned long lastTouch = 0;
 
 
@@ -30,7 +30,8 @@ void setup() {
   pinMode(BATTERY_SENSE, INPUT);
 
   digitalWrite(CHARGING_PIN, LOW);
-  
+  digitalWrite(LCD_LED_CTRL, HIGH);
+
   initLCD();
 
   tft.setTextColor(INTERFACE_COLOR);
@@ -45,24 +46,26 @@ void setup() {
 
 void loop() {
   highPriority();
-  esp_light_sleep_start();
+  //esp_light_sleep_start();
+  delay(10);
 }
 
 /* things like touch interfacing and other user input go here */
 void highPriority() {
-
   if (lastTouch + SCREEN_TOUCH_ON_TIME > millis()) {
-    digitalWrite(LCD_LED_CTRL, LOW);
-  }
-  else {
     digitalWrite(LCD_LED_CTRL, HIGH);
+  //  tft.fillRect(20, 50, 5, 5, ERROR_COLOR);
+  } else {
+    digitalWrite(LCD_LED_CTRL, LOW);
+   // tft.fillRect(20, 50, 5, 5, BACKGROUND_COLOR);
   }
-
   if (ts.touched()) {
+
+    lastTouch = millis();
+
     struct point p = getTouchedPosition();
     tft.drawCircle(p.x, p.y, 2, 0x1D07);
 
-    lastTouch = millis();
 
     switch (page) {
       case HOME: HomeTouchHandler(p.x, p.y); break;
