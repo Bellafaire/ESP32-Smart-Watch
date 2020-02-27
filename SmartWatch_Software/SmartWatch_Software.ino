@@ -15,7 +15,6 @@
 #define SCREEN_TOUCH_ON_TIME 5000
 unsigned long lastTouch = 0;
 
-
 const int SleepTime = 10000; //we wake the micro-controller up after this many microseconds
 const int lowPrioritySleepTime = 1000000; //we execute low priority functions this often
 int sleepTracker = 0;

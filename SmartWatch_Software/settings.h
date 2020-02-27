@@ -106,18 +106,31 @@ void  reAdjustTime() {
 void batterySettings() {
   digitalWrite(CHARGING_PIN, HIGH);
   Window w = Window(0, 14, 160, 100, false);
+
+  long lastTouchTime = millis();
+
   while (w.isFocused()) {
+    boolean active = lastTouchTime + 5000 > millis(); //if the screen is off there's no sense in changing anything
+    if (active) {
+      digitalWrite(LCD_LED_CTRL, HIGH);
+    } else {
+      digitalWrite(LCD_LED_CTRL, LOW);
+    }
+
     Window w = Window(0, 14, 160, 100, false);
     w.touch();
     w.println("Charging Battery");
     w.println("Current Voltage " + String(getBatteryVoltage()));
     for (int a = 0; a < 1000; a++) {
+      if (ts.touched()) {
+        lastTouchTime = millis();
+      }
       w.touch();
       delay(1);
     }
-      if(!w.isFocused()){
-        break;
-      }
+    if (!w.isFocused()) {
+      break;
+    }
   }
   digitalWrite(CHARGING_PIN, LOW);
   SweepClear();
