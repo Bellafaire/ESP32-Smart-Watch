@@ -4,6 +4,7 @@
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <XPT2046_Touchscreen.h>
 #include "time.h"
+#include "esp_sleep.h"
 
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR 0xFFFF

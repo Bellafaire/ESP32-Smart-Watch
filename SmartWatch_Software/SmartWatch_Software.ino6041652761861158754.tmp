@@ -15,6 +15,7 @@
 #define SCREEN_TOUCH_ON_TIME 5000
 unsigned long lastTouch = 0;
 
+RTC_DATA_ATTR int bootCount = 0;
 
 const int SleepTime = 10000; //we wake the micro-controller up after this many microseconds
 const int lowPrioritySleepTime = 1000000; //we execute low priority functions this often
@@ -30,10 +31,22 @@ void setup() {
   pinMode(BATTERY_SENSE, OUTPUT);
 
   digitalWrite(CHARGING_PIN, LOW);
-  //  digitalWrite(LCD_LED_CTRL, HIGH);
 
   pinMode(LCD_LED_CTRL, OUTPUT);
   digitalWrite(LCD_LED_CTRL, HIGH);
+
+
+  //  gpio_config_t io_conf;
+  //  io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;        //disable interrupt
+  //  io_conf.mode = GPIO_MODE_OUTPUT;                  //set as output mode
+  //  io_conf.pin_bit_mask = (1 << LCD_LED_CTRL);
+  //  io_conf.pull_down_en = (gpio_pulldown_t) 0;
+  //  io_conf.pull_up_en = (gpio_pullup_t)  1;
+
+  // gpio_config(&io_conf);
+
+  gpio_hold_en((gpio_num_t) LCD_LED_CTRL);
+  gpio_deep_sleep_hold_en();
 
   initLCD();
 
@@ -49,7 +62,8 @@ void setup() {
 
 void loop() {
   highPriority();
-  delay(10);
+  esp_deep_sleep_start();
+  //  delay(10);
 }
 
 /* things like touch interfacing and other user input go here */
@@ -60,8 +74,10 @@ void highPriority() {
 
   if (active) {
     digitalWrite(LCD_LED_CTRL, HIGH);
+
   } else {
     digitalWrite(LCD_LED_CTRL, LOW);
+
   }
 
   if (ts.touched()) {
