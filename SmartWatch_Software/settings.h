@@ -236,7 +236,7 @@ void testWifi() {
 
 void about() {
   Window w = Window(0, 14, 160, 100, true);
-  w.println("SmartWatch OS build 0.0.1");
+  w.println("SmartWatch OS build 0.0.2");
   w.println("Created by Matthew James Bellafaire");
   w.println("hackaday.io/bellafaire");
 
