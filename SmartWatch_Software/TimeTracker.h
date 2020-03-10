@@ -155,7 +155,7 @@ void drawTime(int x, int y, int textSize)
 
 
 #ifdef DEBUG
-  //  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  Serial.println(timeinfo, "%A, %B %d %Y %H:%M:%S");
 #endif
 
 
@@ -165,42 +165,37 @@ void drawTime(int x, int y, int textSize)
   String Second = String(timeinfo->tm_sec, DEC);
 
   byte hour, minute, second = 0;
-  hour = timeinfo->tm_hour;
+  hour = timeinfo->tm_hour - 4;
   minute = (timeinfo->tm_min);
   second = timeinfo->tm_sec;
 
-  hour += (gmtOffset_sec + daylightOffset_sec)/3600;
-
-  if(hour < 0){
-    hour = 12 + hour;
-  }
-
   char timestr[12] = "00:00:00 XM";
-  if (hour > 12) {
-    timestr[0] = '0' + ((timeinfo->tm_hour - 12)  / 10);
-    timestr[1] = '0' + ((timeinfo->tm_hour - 12) % 10);
-    timestr[9] = 'P';
-  } else if (hour == 12) {
+  if (timeinfo->tm_hour > 12) {
+    timestr[0] = '0' + ((hour -12 ) / 10);
+    timestr[1] = '0' + ((hour -12 ) % 10);
+        timestr[9] = 'P';
+  }
+  else if (timeinfo->tm_hour == 12) {
     timestr[0] = '1';
     timestr[1] = '2';
     timestr[9] = 'P';
   }
-  else if (hour == 0) {
+  else if (timeinfo->tm_hour == 0) {
     timestr[0] = '1';
     timestr[1] = '2';
     timestr[9] = 'A';
   }
   else {
-    timestr[0] = '0' + (hour / 10);
-    timestr[1] = '0' + (hour % 10);
+    timestr[0] = '0' + (timeinfo->tm_hour / 10);
+    timestr[1] = '0' + (timeinfo->tm_hour % 10);
     timestr[9] = 'A';
   }
 
-  timestr[3] = '0' + (minute / 10);
-  timestr[4] = '0' + (minute % 10);
+  timestr[3] = '0' + (timeinfo->tm_min / 10);
+  timestr[4] = '0' + (timeinfo->tm_min % 10);
 
-  timestr[6] = '0' + (second / 10);
-  timestr[7] = '0' + (second % 10);
+  timestr[6] = '0' + (timeinfo->tm_sec / 10);
+  timestr[7] = '0' + (timeinfo->tm_sec % 10);
 
   /*  when writing the time we assume that we're writing over something, so for each character
        we fill in a black box behind it exactly the required size. we do this to try and prevent character "flashing"

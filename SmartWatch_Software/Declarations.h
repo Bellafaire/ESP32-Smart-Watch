@@ -25,7 +25,7 @@ RTC_DATA_ATTR struct tm * timeinfo;
 int BACKGROUND_COLOR =  ST77XX_BLACK;
 int ERROR_COLOR =  ST77XX_BLUE;
 
-#define  DEBUG
+//#define  DEBUG
 
 #define LCD_LED_CTRL 25
 #define ACCEL_X 33
@@ -56,7 +56,7 @@ String password   = "cashewbunny";
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = -5 * 3600;
-const int   daylightOffset_sec = 3600;
+const int   daylightOffset_sec = 0;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 

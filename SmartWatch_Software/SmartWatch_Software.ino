@@ -81,7 +81,7 @@ void activate() {
     }
     interfaceLoop();
 
-    Serial.println("Active = " + String(ActiveUntil));
+//    Serial.println("Active = " + String(ActiveUntil));
 
     if (lastHomeDraw + 1000 < millis()) {
       lastHomeDraw = millis();
