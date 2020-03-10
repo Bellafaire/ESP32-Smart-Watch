@@ -20,10 +20,10 @@ PROGMEM iconButton homeButton =   { 128, 96, 32, 32, INTERFACE_COLOR, BACKGROUND
   }
 };
 
-int page = 0; //this tells the program which page to render
-
 //page definitions 
 #define HOME 0
 #define NOTIFICATIONS 1
 #define SETTINGS 2
 #define APPS 3
+
+int page = HOME; //this tells the program which page to render

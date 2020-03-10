@@ -4,7 +4,8 @@
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <XPT2046_Touchscreen.h>
 #include "time.h"
-#include "esp_sleep.h"
+//#include "esp_sleep.h"
+
 
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR 0xFFFF
@@ -18,7 +19,7 @@
 int BACKGROUND_COLOR =  ST77XX_BLACK;
 int ERROR_COLOR =  ST77XX_BLUE;
 
-#define DEBUG
+//#define DEBUG
 
 #define LCD_LED_CTRL 25
 
@@ -50,7 +51,7 @@ const int   daylightOffset_sec = 3600;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
-//structures 
+//structures
 typedef struct onscreenButton button;
 typedef struct iconButton iconButton;
 

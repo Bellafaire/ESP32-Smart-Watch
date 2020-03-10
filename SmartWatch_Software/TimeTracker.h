@@ -41,7 +41,7 @@ String getInternetTime() {
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo)) {
 #ifdef DEBUG
-    Serial.println("Failed to obtain time");
+    Serial.println("Failed to obtain time from internet");
 #endif
     //can't obtain the time for whatever reason, set time to arbitrary value so that we can boot
     struct tm tm;
@@ -111,7 +111,7 @@ void drawDate(int x, int y, int textSize) {
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo)) {
 #ifdef DEBUG
-    Serial.println("Failed to obtain time");
+    Serial.println("Failed to obtain time from memory");
 #endif
     return;
   }
@@ -148,7 +148,6 @@ void drawDate(int x, int y, int textSize) {
     tft.setCursor(x + a * 6 * textSize, y );
     tft.print(Date[a]);
   }
-
 }
 
 
@@ -157,7 +156,7 @@ void drawDateCentered(int y, int textSize) {
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo)) {
 #ifdef DEBUG
-    Serial.println("Failed to obtain time");
+    Serial.println("Failed to obtain time from memory");
 #endif
     return;
   }
@@ -204,7 +203,7 @@ void drawTime(int x, int y, int textSize)
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo)) {
 #ifdef DEBUG
-    Serial.println("Failed to obtain time");
+    Serial.println("Failed to obtain time from memory");
 #endif
     return;
   }

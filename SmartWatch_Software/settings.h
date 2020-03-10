@@ -95,7 +95,7 @@ void SettingsTouchHandler(int x, int y) {
 void  reAdjustTime() {
   Window w = Window(14, 14, 132, 100, false);
   w.println("Getting Updated Time from Server");
-  w.println( getInternetTime());
+  w.println(getInternetTime());
   delay(500);
   w.println("Done");
   delay(500);

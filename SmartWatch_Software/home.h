@@ -65,9 +65,9 @@ PROGMEM iconButton homeAppsButton =   { 128, 96, 32, 32, INTERFACE_COLOR, BACKGR
 void switchToHome() {
   SweepClear();
   tft.drawFastHLine(0, 5, tft.width(), INTERFACE_COLOR);
-  drawTime(13, 10, 2);
+//  drawTime(13, 10, 2);
   tft.drawFastHLine(0, 29, tft.width(), INTERFACE_COLOR);
-  drawDateCentered(26, 1);
+//  drawDateCentered(26, 1);
   tft.setTextSize(1);
   tft.setCursor(0, 40);
   tft.print("No Notifications...");
