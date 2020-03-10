@@ -28,6 +28,9 @@ int ERROR_COLOR =  ST77XX_BLUE;
 #define  DEBUG
 
 #define LCD_LED_CTRL 25
+#define ACCEL_X 33
+#define ACCEL_Y 35
+#define ACCEL_Z 38
 
 #define TOUCH_CS  14
 #define TOUCH_INT 10
@@ -118,3 +121,4 @@ void changeNetwork();
 void about();
 void testWifi();
 void batterySettings();
+void accelTest() ;

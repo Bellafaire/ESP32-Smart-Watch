@@ -5,7 +5,7 @@
 #define SETTING_BUTTON_HEIGHT 25
 
 int settingScrollPosition = 0;
-#define SETTING_OPTIONS 4
+#define SETTING_OPTIONS 5
 
 PROGMEM iconButton upArrowButton =   { 128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR,  {(0b00000001 << 8) | 0b10000000,  (0b00000011 << 8) | 0b11000000,  (0b00000111 << 8) | 0b11100000,  (0b00001111 << 8) | 0b11110000,  (0b00011111 << 8) | 0b11111000,  (0b00111111 << 8) | 0b11111100,  (0b01111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000}};
 PROGMEM iconButton downArrowButton =   { 128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR,   {(0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111110,  (0b00111111 << 8) | 0b11111100,  (0b00011111 << 8) | 0b11111000,  (0b00001111 << 8) | 0b11110000,  (0b00000111 << 8) | 0b11100000,  (0b00000011 << 8) | 0b11000000,  (0b00000001 << 8) | 0b10000000}};
@@ -14,13 +14,15 @@ PROGMEM iconButton downArrowButton =   { 128, 48, 32, 48, INTERFACE_COLOR, BACKG
 #define REUPDATE_TIME 0
 #define CHOOSE_WIFI_NETWORK 1
 #define BATTERY 2
-#define ABOUT 3
+#define ACCELTEST 3
+#define ABOUT 4
 
 
 button settingButtons[SETTING_OPTIONS] = {
   { 0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
   { 0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Choose WiFi Network"},
   { 0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Charge Battery"},
+  { 0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
   { 0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
 };
 
@@ -88,10 +90,51 @@ void SettingsTouchHandler(int x, int y) {
         case CHOOSE_WIFI_NETWORK: changeNetwork(); break;
         case ABOUT: about(); break;
         case BATTERY: batterySettings(); break;
+        case ACCELTEST: accelTest(); break;
       }
     }
   }
 }
+
+void accelTest() {
+
+  pinMode(ACCEL_X, INPUT);
+  pinMode(ACCEL_Y, INPUT);
+  pinMode(ACCEL_Z, INPUT);
+
+  Window w = Window(0, 14, 160, 100, false);
+
+  long lastTouchTime = millis();
+
+  while (w.isFocused()) {
+    boolean active = lastTouchTime + 5000 > millis(); //if the screen is off there's no sense in changing anything
+    if (active) {
+      digitalWrite(LCD_LED_CTRL, HIGH);
+    } else {
+      digitalWrite(LCD_LED_CTRL, LOW);
+    }
+
+    Window w = Window(0, 14, 160, 100, false);
+    w.touch();
+    w.println("X = " + String(analogRead(ACCEL_X)));
+    w.println("Y = " + String(analogRead(ACCEL_Y)));
+    w.println("Z = " + String(analogRead(ACCEL_Z)));
+    for (int a = 0; a < 1000; a++) {
+      if (ts.touched()) {
+        lastTouchTime = millis();
+      }
+      w.touch();
+      delay(1);
+    }
+    if (!w.isFocused()) {
+      break;
+    }
+  }
+  digitalWrite(CHARGING_PIN, LOW);
+  SweepClear();
+  drawSettings();
+}
+
 void  reAdjustTime() {
   Window w = Window(14, 14, 132, 100, false);
   w.println("Getting Updated Time from Server");
