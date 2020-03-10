@@ -6,6 +6,12 @@
 #include "time.h"
 //#include "esp_sleep.h"
 
+RTC_DATA_ATTR int bootCount = 0;
+RTC_DATA_ATTR time_t now;
+RTC_DATA_ATTR uint64_t Mics = 0;
+RTC_DATA_ATTR struct tm * timeinfo;
+
+#define  SleepTime  50000       //we wake the micro-controller up after this many microseconds
 
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR 0xFFFF
@@ -19,7 +25,7 @@
 int BACKGROUND_COLOR =  ST77XX_BLACK;
 int ERROR_COLOR =  ST77XX_BLUE;
 
-//#define DEBUG
+#define  DEBUG
 
 #define LCD_LED_CTRL 25
 

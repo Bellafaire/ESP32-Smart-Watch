@@ -20,11 +20,8 @@ void activate() ;
 #define SCREEN_TOUCH_ON_TIME 5000
 unsigned long lastTouch = 0;
 
-const int SleepTime = 50000; //we wake the micro-controller up after this many microseconds
-
-RTC_DATA_ATTR int bootCount = 0;
-
 void setup() {
+  unsigned long chrono = micros();
 #ifdef DEBUG
   Serial.begin(115200);
   Serial.println("bootCount = " + String(bootCount));
@@ -34,38 +31,33 @@ void setup() {
   pinMode(TOUCH_INT, INPUT);
   pinMode(LCD_LED_CTRL, OUTPUT);
 
-  struct tm tm;
-  tm.tm_year = 2020 - 1900;
-  tm.tm_mon = 10;
-  tm.tm_mday = 15;
-  tm.tm_hour = 14;
-  tm.tm_min = 10;
-  tm.tm_sec = 10;
-  time_t t = mktime(&tm);
-  printf("Setting time: %s", asctime(&tm));
-  struct timeval now = { .tv_sec = t };
-  settimeofday(&now, NULL);
+  if (bootCount == 0) {
+    getInternetTime();
+  }
 
   if (digitalRead(TOUCH_INT) == 0) {
-    activate(bootCount == 0);
+    activate();
   }
+
+  bootCount++;
 
   digitalWrite(LCD_LED_CTRL, LOW);
   gpio_hold_en((gpio_num_t)LCD_LED_CTRL);
   gpio_deep_sleep_hold_en();
 
   esp_sleep_enable_timer_wakeup(SleepTime);
-  bootCount++;
+
+  printLocalTime(); // This sets the internal clock
+//  beginTimedSleep (chrono);
+
   esp_deep_sleep_start();
-
 }
-
 
 void loop() {
 
 }
 
-void activate(boolean getTime) {
+void activate() {
   digitalWrite(LCD_LED_CTRL, LOW);
   pinMode(CHARGING_PIN, OUTPUT);
   pinMode(BATTERY_SENSE, OUTPUT);
@@ -74,10 +66,6 @@ void activate(boolean getTime) {
 
   initLCD();
   SweepClear();
-
-  if (getTime) {
-    getInternetTime();
-  }
 
   page = HOME;
   drawHome();
