@@ -685,8 +685,8 @@ F 3 "" H 2450 3650 50  0001 C CNN
 	1    2450 3650
 	1    0    0    -1  
 $EndComp
-Text Notes 600  7050 0    50   ~ 0
+Text Notes 650  7450 0    50   ~ 0
 Next Revision Changes: \n- change MCP73811T charging current to 200mA using prog pin\n- remove PMOS for LCD backlight control\n- configure power-in circuitry so the device can run directly from usb power when charging\n- battery voltage sensing solution to something external to micro controller\n- Replace MAX9065 with new battery monitor (or disconnect as a undervoltage shutoff)
-Text Notes 600  6500 0    50   ~ 0
+Text Notes 650  6900 0    50   ~ 0
 Note: FT231XS needs to be reconfigured using the FT_PROG utility to allow for proper charging\nCBUS0 -> SLEEP#\nCBUS1 -> VBUS_SENSE\n
 $EndSCHEMATC
