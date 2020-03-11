@@ -25,7 +25,7 @@ RTC_DATA_ATTR struct tm * timeinfo;
 int BACKGROUND_COLOR =  ST77XX_BLACK;
 int ERROR_COLOR =  ST77XX_BLUE;
 
-#define  DEBUG
+//#define  DEBUG
 
 #define LCD_LED_CTRL 25
 #define ACCEL_X 33

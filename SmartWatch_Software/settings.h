@@ -176,6 +176,7 @@ void batterySettings() {
     }
   }
   digitalWrite(CHARGING_PIN, LOW);
+  pinMode(CHARGING_PIN, INPUT); //don't want the ESP32 to be fighting the FT231
   SweepClear();
   drawSettings();
 }
