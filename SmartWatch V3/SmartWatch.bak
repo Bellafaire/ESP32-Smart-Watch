@@ -5,13 +5,13 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 2
-Title ""
-Date ""
-Rev ""
+Title "ESP32 Smartwatch"
+Date "10/29/2019"
+Rev "3"
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
+Comment2 "https://hackaday.io/project/168227-custom-smartwatch"
+Comment3 "Offical project page can be found at "
 Comment4 ""
 $EndDescr
 Text GLabel 1300 3150 0    50   Input ~ 0
@@ -177,12 +177,6 @@ Y_SIG
 Text GLabel 5600 4300 2    50   Input ~ 0
 Z_SIG
 NoConn ~ 2950 3150
-Text Notes 7350 7500 0    50   ~ 0
-Smart Watch Top Layer Schematic
-Text Notes 10600 7650 0    50   ~ 0
-\n1
-Text Notes 8150 7650 0    50   ~ 0
-10/29/2019
 Wire Wire Line
 	5600 2500 6150 2500
 Text Label 5850 2500 0    50   ~ 0
@@ -691,4 +685,6 @@ F 3 "" H 2450 3650 50  0001 C CNN
 	1    2450 3650
 	1    0    0    -1  
 $EndComp
+Text Notes 700  7650 0    50   ~ 0
+Next Revision Changes: \n- change MCP73811T charging current to 200mA using prog pin\n- remove PMOS for LCD backlight control\n- configure power-in circuitry so the device can run directly from usb power when charging\n- battery voltage sensing solution to something external to micro controller\n
 $EndSCHEMATC

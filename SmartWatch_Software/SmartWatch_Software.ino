@@ -48,7 +48,6 @@ void setup() {
   esp_sleep_enable_timer_wakeup(SleepTime);
 
   printLocalTime(); // This sets the internal clock
-//  beginTimedSleep (chrono);
 
   esp_deep_sleep_start();
 }
