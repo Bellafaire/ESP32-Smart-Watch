@@ -4,10 +4,21 @@ void printLocalTime() ;
 void updateTime (uint64_t elapsedTime);
 void beginTimedSleep (unsigned long tm0);
 
+//found here https://www.esp32.com/viewtopic.php?t=5398 (with some changes for timezone)
+void mjd_set_timezone_est() {
+  ESP_LOGD(TAG, "%s()", __FUNCTION__);
+
+  // @doc https://remotemonitoringsystems.ca/time-zone-abbreviations.php
+  // @doc timezone UTC = UTC
+  setenv("TZ", "EST5EDT", 1);
+  tzset();
+}
+
 String getInternetTime() {
   //connect to WiFi
   int wifiCounter = 0;
 
+  mjd_set_timezone_est();
 
   //i need these values to be strings so some extra code is required
   WiFi.mode(WIFI_STA);
@@ -78,6 +89,8 @@ void beginTimedSleep (unsigned long tm0) {
 
 
 void drawDate(int x, int y, int textSize) {
+  //configure current timezone (this information gets lost in deep sleep)
+  mjd_set_timezone_est();
   time(&now);
   timeinfo = localtime (&now);
 
@@ -112,6 +125,8 @@ void drawDate(int x, int y, int textSize) {
 }
 
 void drawDateCentered(int y, int textSize) {
+  //configure current timezone (this information gets lost in deep sleep)
+  mjd_set_timezone_est();
   time(&now);
   timeinfo = localtime (&now);
 
@@ -150,6 +165,8 @@ void drawDateCentered(int y, int textSize) {
 
 void drawTime(int x, int y, int textSize)
 {
+  //configure current timezone (this information gets lost in deep sleep)
+  mjd_set_timezone_est();
   time(&now);
   timeinfo = localtime (&now);
 
@@ -158,22 +175,20 @@ void drawTime(int x, int y, int textSize)
   Serial.println(timeinfo, "%A, %B %d %Y %H:%M:%S");
 #endif
 
-
-
   String Hour = String(timeinfo->tm_hour, DEC);
   String Minute = String(timeinfo->tm_min, DEC);
   String Second = String(timeinfo->tm_sec, DEC);
 
   byte hour, minute, second = 0;
-  hour = timeinfo->tm_hour - 4;
+  hour = timeinfo->tm_hour;
   minute = (timeinfo->tm_min);
   second = timeinfo->tm_sec;
 
   char timestr[12] = "00:00:00 XM";
   if (timeinfo->tm_hour > 12) {
-    timestr[0] = '0' + ((hour -12 ) / 10);
-    timestr[1] = '0' + ((hour -12 ) % 10);
-        timestr[9] = 'P';
+    timestr[0] = '0' + ((hour - 12) / 10);
+    timestr[1] = '0' + ((hour - 12) % 10);
+    timestr[9] = 'P';
   }
   else if (timeinfo->tm_hour == 12) {
     timestr[0] = '1';
