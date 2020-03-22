@@ -1,0 +1,37 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# 10118192-0001LF
+#
+DEF 10118192-0001LF J 0 40 Y Y 1 L N
+F0 "J" -200 421 50 H V L BNN
+F1 "10118192-0001LF" -200 -501 50 H V L BNN
+F2 "AMPHENOL_10118192-0001LF" 0 0 50 H I L BNN
+F3 "Amphenol ICC" 0 0 50 H I L BNN
+F4 "None" 0 0 50 H I L BNN
+F5 "Single Port 5 Contact Horizontal Right Angle Shielded Micro B USB 2.0 Connector" 0 0 50 H I L BNN
+F6 "609-4613-1-ND" 0 0 50 H I L BNN
+F7 "10118192-0001LF" 0 0 50 H I L BNN
+F8 "https://www.digikey.com/product-detail/en/amphenol-icc-fci/10118192-0001LF/609-4613-1-ND/2785378?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol" 0 0 50 H I L BNN
+DRAW
+P 2 0 0 6 -200 400 200 400 N
+P 2 0 0 6 200 400 200 -400 N
+P 2 0 0 6 200 -400 -200 -400 N
+P 2 0 0 6 -200 -400 -200 400 N
+X VUSB 1 -300 300 100 R 40 40 0 0 P 
+X D- 2 -300 200 100 R 40 40 0 0 P 
+X D+ 3 -300 100 100 R 40 40 0 0 P 
+X ID 4 -300 0 100 R 40 40 0 0 P 
+X GND 5 -300 -100 100 R 40 40 0 0 P 
+X SHIELD SH1 -300 -300 100 R 40 40 0 0 P 
+X SHIELD SH2 -300 -300 100 R 40 40 0 0 P 
+X SHIELD SH3 -300 -300 100 R 40 40 0 0 P 
+X SHIELD SH4 -300 -300 100 R 40 40 0 0 P 
+X SHIELD SH5 -300 -300 100 R 40 40 0 0 P 
+X SHIELD SH6 -300 -300 100 R 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library
