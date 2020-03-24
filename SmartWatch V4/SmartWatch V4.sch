@@ -129,14 +129,7 @@ $EndComp
 Wire Wire Line
 	3000 5150 3000 5300
 Wire Wire Line
-	3200 5300 3200 4800
-Wire Wire Line
-	3200 4800 2100 4800
-Wire Wire Line
-	2100 4800 2100 5600
-Wire Wire Line
 	2100 5600 2400 5600
-Connection ~ 2100 5600
 Wire Wire Line
 	2100 5600 2100 6200
 Wire Wire Line
@@ -402,15 +395,11 @@ RXD0
 Text Label 7400 1850 2    50   ~ 0
 TXD0
 Wire Bus Line
-	550  4700 6000 4700
-Wire Bus Line
 	6000 4700 6000 7600
 Wire Bus Line
 	6000 7600 550  7600
 Wire Bus Line
 	550  7600 550  4700
-Text Notes 600  4800 0    50   ~ 0
-USB-UART Communication\n
 Wire Wire Line
 	3800 6500 4250 6500
 Text Label 4250 6500 2    50   ~ 0
@@ -470,8 +459,6 @@ $EndComp
 Wire Wire Line
 	7000 2150 7400 2150
 Wire Wire Line
-	7000 2450 7400 2450
-Wire Wire Line
 	6100 6150 6550 6150
 Wire Wire Line
 	6100 6350 6550 6350
@@ -489,8 +476,6 @@ Text Label 7250 6350 0    50   ~ 0
 IO15
 Text Label 7400 2150 2    50   ~ 0
 IO12
-Text Label 7400 2450 2    50   ~ 0
-IO15
 Wire Wire Line
 	1300 6000 1400 5900
 Wire Wire Line
@@ -937,18 +922,6 @@ F 3 "" H 4250 1750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C?
-U 1 1 5E856FED
-P 1000 3700
-F 0 "C?" H 700 3750 50  0000 L CNN
-F 1 "10uF" H 700 3650 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 1038 3550 50  0001 C CNN
-F 3 "~" H 1000 3700 50  0001 C CNN
-F 4 "478-10766-1-ND" H 1000 3700 50  0001 C CNN "digikey"
-	1    1000 3700
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5E85A156
 P 2450 1650
@@ -994,88 +967,6 @@ F 3 "" H 4250 800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CustomParts:MAX17048 U?
-U 1 1 5E8D870E
-P 1950 3850
-F 0 "U?" H 1150 4400 50  0000 C CNN
-F 1 "MAX17048" H 1300 4300 50  0000 C CNN
-F 2 "CustomFootprints:SON50P200X200X80-9N" H 1750 4350 50  0001 C CNN
-F 3 "https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf" H 1750 4350 50  0001 C CNN
-F 4 "MAX17048G+T10CT-ND" H 1950 3850 50  0001 C CNN "digikey"
-	1    1950 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5E8F1098
-P 1950 4350
-F 0 "#PWR?" H 1950 4100 50  0001 C CNN
-F 1 "GND" H 1955 4177 50  0000 C CNN
-F 2 "" H 1950 4350 50  0001 C CNN
-F 3 "" H 1950 4350 50  0001 C CNN
-	1    1950 4350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1850 4300 1850 4350
-Wire Wire Line
-	1850 4350 1950 4350
-Wire Wire Line
-	2050 4350 2050 4300
-Connection ~ 1950 4350
-Wire Wire Line
-	1950 4350 2050 4350
-Wire Wire Line
-	1950 4300 1950 4350
-Text Label 800  3550 0    50   ~ 0
-BAT+
-Text Label 1150 3950 0    50   ~ 0
-I2C_SDA
-Text Label 1150 3850 0    50   ~ 0
-I2C_SCL
-Wire Wire Line
-	1150 3850 1500 3850
-Wire Wire Line
-	1150 3950 1500 3950
-Wire Wire Line
-	800  3550 1000 3550
-Wire Wire Line
-	1500 3650 1350 3650
-Wire Wire Line
-	1350 3650 1350 3550
-Connection ~ 1350 3550
-Wire Wire Line
-	1350 3550 1500 3550
-Connection ~ 1000 3550
-Wire Wire Line
-	1000 3550 1350 3550
-$Comp
-L power:GND #PWR?
-U 1 1 5E91C7C2
-P 1000 3850
-F 0 "#PWR?" H 1000 3600 50  0001 C CNN
-F 1 "GND" H 1005 3677 50  0000 C CNN
-F 2 "" H 1000 3850 50  0001 C CNN
-F 3 "" H 1000 3850 50  0001 C CNN
-	1    1000 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5E922E03
-P 2450 3950
-F 0 "#PWR?" H 2450 3700 50  0001 C CNN
-F 1 "GND" H 2455 3777 50  0000 C CNN
-F 2 "" H 2450 3950 50  0001 C CNN
-F 3 "" H 2450 3950 50  0001 C CNN
-	1    2450 3950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2400 3900 2450 3900
-Wire Wire Line
-	2450 3900 2450 3950
-$Comp
 L Device:C C?
 U 1 1 5E927609
 P 2450 1500
@@ -1087,101 +978,6 @@ F 4 "478-10766-1-ND" H 2450 1500 50  0001 C CNN "digikey"
 	1    2450 1500
 	-1   0    0    -1  
 $EndComp
-$Comp
-L Battery_Management:MCP73832-2-OT U?
-U 1 1 5E929134
-P 3750 3750
-F 0 "U?" H 2900 4150 50  0000 C CNN
-F 1 "MCP73832-2-OT" H 3150 4050 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-5" H 3800 3500 50  0001 L CIN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf" H 3600 3700 50  0001 C CNN
-F 4 "MCP73832T-2ACI/OTCT-ND" H 3750 3750 50  0001 C CNN "digikey"
-	1    3750 3750
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5E92A171
-P 3750 4050
-F 0 "#PWR?" H 3750 3800 50  0001 C CNN
-F 1 "GND" H 3755 3877 50  0000 C CNN
-F 2 "" H 3750 4050 50  0001 C CNN
-F 3 "" H 3750 4050 50  0001 C CNN
-	1    3750 4050
-	1    0    0    -1  
-$EndComp
-Text Label 3550 3350 0    50   ~ 0
-VBUS
-Wire Wire Line
-	3550 3350 3750 3350
-Wire Wire Line
-	3750 3350 3750 3450
-$Comp
-L Device:C C?
-U 1 1 5E93E85E
-P 4700 3800
-F 0 "C?" H 4815 3846 50  0000 L CNN
-F 1 "10uF" H 4815 3755 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 4738 3650 50  0001 C CNN
-F 3 "~" H 4700 3800 50  0001 C CNN
-F 4 "478-10766-1-ND" H 4700 3800 50  0001 C CNN "digikey"
-	1    4700 3800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4150 3650 4700 3650
-Text Label 4700 3650 2    50   ~ 0
-BAT+
-$Comp
-L power:GND #PWR?
-U 1 1 5E944E6F
-P 4700 3950
-F 0 "#PWR?" H 4700 3700 50  0001 C CNN
-F 1 "GND" H 4705 3777 50  0000 C CNN
-F 2 "" H 4700 3950 50  0001 C CNN
-F 3 "" H 4700 3950 50  0001 C CNN
-	1    4700 3950
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 5E945369
-P 3150 4050
-F 0 "R?" H 3220 4096 50  0000 L CNN
-F 1 "10k" H 3220 4005 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3080 4050 50  0001 C CNN
-F 3 "~" H 3150 4050 50  0001 C CNN
-F 4 "311-10.0KCRCT-ND" H 3150 4050 50  0001 C CNN "digikey"
-	1    3150 4050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3150 3900 3150 3850
-Wire Wire Line
-	3150 3850 3350 3850
-$Comp
-L power:GND #PWR?
-U 1 1 5E94B183
-P 3150 4250
-F 0 "#PWR?" H 3150 4000 50  0001 C CNN
-F 1 "GND" H 3155 4077 50  0000 C CNN
-F 2 "" H 3150 4250 50  0001 C CNN
-F 3 "" H 3150 4250 50  0001 C CNN
-	1    3150 4250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3150 4250 3150 4200
-Text Notes 3500 4400 0    50   ~ 0
-Charging Current of 100mA\n
-Wire Wire Line
-	4150 3850 4500 3850
-Text Label 4500 3850 2    50   ~ 0
-CHG_STAT
-Text Label 2750 3800 2    50   ~ 0
-BAT_ALRT
-Wire Wire Line
-	2400 3800 2750 3800
 Text Label 2000 1000 0    50   ~ 0
 BAT_ALRT
 $Comp
@@ -1225,8 +1021,6 @@ Wire Wire Line
 	2150 850  2400 850 
 Wire Bus Line
 	550  550  5150 550 
-Wire Bus Line
-	5150 4650 550  4650
 Text Notes 600  650  0    50   ~ 0
 Battery And Power Management
 Wire Bus Line
@@ -1316,8 +1110,8 @@ Wire Wire Line
 Wire Wire Line
 	10250 1050 10400 1050
 Connection ~ 10250 1050
-Text Notes 50   -100 0    50   ~ 0
-TODO: \n- select touchscreen controller\n- double check power management circuitry\n- implement accelerometer\n- go over checklist from last revision\n- add EN and BOOT switches\n- check I2C addresses and resolve any conflicts (If they appear)\n 
+Text Notes -50  50   0    50   ~ 0
+TODO: \n- double check power management circuitry\n- go over checklist from last revision\n- double check NC on IN1 and IN2 of touch controller\n- attach touch interrupt pin to ESP32 RTC pin\n- check I2C addresses and resolve any conflicts (If they appear)\n 
 Wire Wire Line
 	2800 1000 2800 850 
 Wire Wire Line
@@ -1790,10 +1584,10 @@ Wire Bus Line
 	5150 550  5150 4650
 Wire Bus Line
 	550  550  550  4650
-Text Label 7550 1750 2    50   ~ 0
+Text Label 7550 2450 2    50   ~ 0
 LCD_LED
 Wire Wire Line
-	7000 1750 7550 1750
+	7000 2450 7550 2450
 $Comp
 L Device:Q_PMOS_GSD Q?
 U 1 1 5ECF404E
@@ -1940,8 +1734,6 @@ Wire Bus Line
 	7950 550  7950 4650
 Wire Bus Line
 	7950 4650 5200 4650
-Wire Bus Line
-	5200 4650 5200 550 
 Text Notes 5250 650  0    50   ~ 0
 ESP32
 Wire Wire Line
@@ -2096,4 +1888,209 @@ Wire Bus Line
 	8000 4650 8000 550 
 Text Notes 8050 650  0    50   ~ 0
 Touchscreen 
+Connection ~ 2100 5600
+Wire Bus Line
+	5200 4650 5200 550 
+Wire Bus Line
+	5150 4650 550  4650
+Wire Wire Line
+	2400 3800 2750 3800
+Text Label 2750 3800 2    50   ~ 0
+BAT_ALRT
+Text Label 4500 3850 2    50   ~ 0
+CHG_STAT
+Wire Wire Line
+	4150 3850 4500 3850
+Text Notes 3500 4400 0    50   ~ 0
+Charging Current of 100mA\n
+Wire Wire Line
+	3150 4250 3150 4200
+$Comp
+L power:GND #PWR?
+U 1 1 5E94B183
+P 3150 4250
+F 0 "#PWR?" H 3150 4000 50  0001 C CNN
+F 1 "GND" H 3155 4077 50  0000 C CNN
+F 2 "" H 3150 4250 50  0001 C CNN
+F 3 "" H 3150 4250 50  0001 C CNN
+	1    3150 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 3850 3350 3850
+Wire Wire Line
+	3150 3900 3150 3850
+$Comp
+L Device:R R?
+U 1 1 5E945369
+P 3150 4050
+F 0 "R?" H 3220 4096 50  0000 L CNN
+F 1 "10k" H 3220 4005 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3080 4050 50  0001 C CNN
+F 3 "~" H 3150 4050 50  0001 C CNN
+F 4 "311-10.0KCRCT-ND" H 3150 4050 50  0001 C CNN "digikey"
+	1    3150 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E944E6F
+P 4700 3950
+F 0 "#PWR?" H 4700 3700 50  0001 C CNN
+F 1 "GND" H 4705 3777 50  0000 C CNN
+F 2 "" H 4700 3950 50  0001 C CNN
+F 3 "" H 4700 3950 50  0001 C CNN
+	1    4700 3950
+	1    0    0    -1  
+$EndComp
+Text Label 4700 3650 2    50   ~ 0
+BAT+
+Wire Wire Line
+	4150 3650 4700 3650
+$Comp
+L Device:C C?
+U 1 1 5E93E85E
+P 4700 3800
+F 0 "C?" H 4815 3846 50  0000 L CNN
+F 1 "10uF" H 4815 3755 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 4738 3650 50  0001 C CNN
+F 3 "~" H 4700 3800 50  0001 C CNN
+F 4 "478-10766-1-ND" H 4700 3800 50  0001 C CNN "digikey"
+	1    4700 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3750 3350 3750 3450
+Wire Wire Line
+	3550 3350 3750 3350
+Text Label 3550 3350 0    50   ~ 0
+VBUS
+$Comp
+L power:GND #PWR?
+U 1 1 5E92A171
+P 3750 4050
+F 0 "#PWR?" H 3750 3800 50  0001 C CNN
+F 1 "GND" H 3755 3877 50  0000 C CNN
+F 2 "" H 3750 4050 50  0001 C CNN
+F 3 "" H 3750 4050 50  0001 C CNN
+	1    3750 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Battery_Management:MCP73832-2-OT U?
+U 1 1 5E929134
+P 3750 3750
+F 0 "U?" H 2900 4150 50  0000 C CNN
+F 1 "MCP73832-2-OT" H 3150 4050 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 3800 3500 50  0001 L CIN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf" H 3600 3700 50  0001 C CNN
+F 4 "MCP73832T-2ACI/OTCT-ND" H 3750 3750 50  0001 C CNN "digikey"
+	1    3750 3750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2450 3900 2450 3950
+Wire Wire Line
+	2400 3900 2450 3900
+$Comp
+L power:GND #PWR?
+U 1 1 5E922E03
+P 2450 3950
+F 0 "#PWR?" H 2450 3700 50  0001 C CNN
+F 1 "GND" H 2455 3777 50  0000 C CNN
+F 2 "" H 2450 3950 50  0001 C CNN
+F 3 "" H 2450 3950 50  0001 C CNN
+	1    2450 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E91C7C2
+P 1000 3850
+F 0 "#PWR?" H 1000 3600 50  0001 C CNN
+F 1 "GND" H 1005 3677 50  0000 C CNN
+F 2 "" H 1000 3850 50  0001 C CNN
+F 3 "" H 1000 3850 50  0001 C CNN
+	1    1000 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1000 3550 1350 3550
+Connection ~ 1000 3550
+Wire Wire Line
+	1350 3550 1500 3550
+Connection ~ 1350 3550
+Wire Wire Line
+	1350 3650 1350 3550
+Wire Wire Line
+	1500 3650 1350 3650
+Wire Wire Line
+	800  3550 1000 3550
+Wire Wire Line
+	1150 3950 1500 3950
+Wire Wire Line
+	1150 3850 1500 3850
+Text Label 1150 3850 0    50   ~ 0
+I2C_SCL
+Text Label 1150 3950 0    50   ~ 0
+I2C_SDA
+Text Label 800  3550 0    50   ~ 0
+BAT+
+Wire Wire Line
+	1950 4300 1950 4350
+Wire Wire Line
+	1950 4350 2050 4350
+Connection ~ 1950 4350
+Wire Wire Line
+	2050 4350 2050 4300
+Wire Wire Line
+	1850 4350 1950 4350
+Wire Wire Line
+	1850 4300 1850 4350
+$Comp
+L power:GND #PWR?
+U 1 1 5E8F1098
+P 1950 4350
+F 0 "#PWR?" H 1950 4100 50  0001 C CNN
+F 1 "GND" H 1955 4177 50  0000 C CNN
+F 2 "" H 1950 4350 50  0001 C CNN
+F 3 "" H 1950 4350 50  0001 C CNN
+	1    1950 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:MAX17048 U?
+U 1 1 5E8D870E
+P 1950 3850
+F 0 "U?" H 1150 4400 50  0000 C CNN
+F 1 "MAX17048" H 1300 4300 50  0000 C CNN
+F 2 "CustomFootprints:SON50P200X200X80-9N" H 1750 4350 50  0001 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf" H 1750 4350 50  0001 C CNN
+F 4 "MAX17048G+T10CT-ND" H 1950 3850 50  0001 C CNN "digikey"
+	1    1950 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5E856FED
+P 1000 3700
+F 0 "C?" H 700 3750 50  0000 L CNN
+F 1 "10uF" H 700 3650 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 1038 3550 50  0001 C CNN
+F 3 "~" H 1000 3700 50  0001 C CNN
+F 4 "478-10766-1-ND" H 1000 3700 50  0001 C CNN "digikey"
+	1    1000 3700
+	1    0    0    -1  
+$EndComp
+Text Notes 600  4800 0    50   ~ 0
+USB-UART Communication\n
+Wire Bus Line
+	550  4700 6000 4700
+Wire Wire Line
+	2100 4800 2100 5600
+Wire Wire Line
+	3200 4800 2100 4800
+Wire Wire Line
+	3200 5300 3200 4800
+NoConn ~ 7000 1750
 $EndSCHEMATC
