@@ -104,18 +104,6 @@ IO0
 Text Label 7100 5800 1    50   ~ 0
 EN
 $Comp
-L Interface_USB:FT231XS U2
-U 1 1 5E6D1202
-P 3100 6200
-F 0 "U2" H 2450 7250 50  0000 C CNN
-F 1 "FT231XS" H 2550 7150 50  0000 C CNN
-F 2 "Package_SO:SSOP-20_3.9x8.7mm_P0.635mm" H 4100 5400 50  0001 C CNN
-F 3 "https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf" H 3100 6200 50  0001 C CNN
-F 4 "768-1129-1-ND" H 3100 6200 50  0001 C CNN "digikey"
-	1    3100 6200
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:+3.3V #PWR0105
 U 1 1 5E6D7DDF
 P 3000 5150
@@ -396,10 +384,6 @@ Text Label 7300 1850 2    50   ~ 0
 TXD0
 Wire Bus Line
 	550  7600 550  4700
-Wire Wire Line
-	3800 6500 4250 6500
-Text Label 4250 6500 2    50   ~ 0
-TXRX
 Text Notes 550  7550 0    50   ~ 0
 CBUS0 needs to be configured to TX&RXLED# using the FT_PROG utility\n
 Wire Wire Line
@@ -2248,4 +2232,78 @@ Wire Wire Line
 	8650 5050 8650 5150
 Text Label 6900 2450 0    50   ~ 0
 IO15
+$Comp
+L Interface_USB:FT231XS U2
+U 1 1 5E6D1202
+P 3100 6200
+F 0 "U2" H 2450 7250 50  0000 C CNN
+F 1 "FT231XS" H 2550 7150 50  0000 C CNN
+F 2 "Package_SO:SSOP-20_3.9x8.7mm_P0.635mm" H 4100 5400 50  0001 C CNN
+F 3 "https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf" H 3100 6200 50  0001 C CNN
+F 4 "768-1129-1-ND" H 3100 6200 50  0001 C CNN "digikey"
+	1    3100 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J?
+U 1 1 5F244C41
+P 3950 6700
+F 0 "J?" H 4178 6751 50  0000 L CNN
+F 1 "TestPad" H 4178 6660 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 4050 6800 50  0001 C CNN
+F 3 "" H 4050 6800 50  0001 C CNN
+	1    3950 6700
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J?
+U 1 1 5F244C47
+P 3950 6500
+F 0 "J?" H 4178 6551 50  0000 L CNN
+F 1 "TestPad" H 4178 6460 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 4050 6600 50  0001 C CNN
+F 3 "" H 4050 6600 50  0001 C CNN
+	1    3950 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J?
+U 1 1 5F2B6D2C
+P 3950 7100
+F 0 "J?" H 4178 7151 50  0000 L CNN
+F 1 "TestPad" H 4178 7060 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 4050 7200 50  0001 C CNN
+F 3 "" H 4050 7200 50  0001 C CNN
+	1    3950 7100
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J?
+U 1 1 5F2B6D32
+P 3950 6900
+F 0 "J?" H 4178 6951 50  0000 L CNN
+F 1 "TestPad" H 4178 6860 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 4050 7000 50  0001 C CNN
+F 3 "" H 4050 7000 50  0001 C CNN
+	1    3950 6900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3800 6500 3950 6500
+Wire Wire Line
+	3800 6600 3950 6600
+Wire Wire Line
+	3950 6600 3950 6700
+Wire Wire Line
+	3800 6700 3900 6700
+Wire Wire Line
+	3900 6700 3900 6900
+Wire Wire Line
+	3900 6900 3950 6900
+Wire Wire Line
+	3800 6800 3850 6800
+Wire Wire Line
+	3850 6800 3850 7100
+Wire Wire Line
+	3850 7100 3950 7100
 $EndSCHEMATC
