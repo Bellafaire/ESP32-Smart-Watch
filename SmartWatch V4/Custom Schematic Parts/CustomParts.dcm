@@ -8,6 +8,11 @@ $CMP MAX17048
 F https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf
 $ENDCMP
 #
+$CMP NLSV4T244
+D Level Shifter
+F https://www.onsemi.com/pub/Collateral/NLSV4T244-D.PDF
+$ENDCMP
+#
 $CMP TSC2003IPWR
 F http://www.ti.com/lit/ds/symlink/tsc2003.pdf
 $ENDCMP
