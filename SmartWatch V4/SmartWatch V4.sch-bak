@@ -192,22 +192,10 @@ U 1 1 5E6E1024
 P 1750 5900
 F 0 "R2" V 1957 5900 50  0000 C CNN
 F 1 "27" V 1866 5900 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 1680 5900 50  0001 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1680 5900 50  0001 C CNN
 F 3 "~" H 1750 5900 50  0001 C CNN
-F 4 "738-RMCF0805JT27R0CT-ND" V 1750 5900 50  0001 C CNN "digikey"
+F 4 "RMCF0603JT27R0CT-ND" V 1750 5900 50  0001 C CNN "digikey"
 	1    1750 5900
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:R R3
-U 1 1 5E6C4B82
-P 1750 6000
-F 0 "R3" V 1650 6000 50  0000 C CNN
-F 1 "27" V 1550 6000 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 1680 6000 50  0001 C CNN
-F 3 "~" H 1750 6000 50  0001 C CNN
-F 4 "738-RMCF0805JT27R0CT-ND" V 1750 6000 50  0001 C CNN "digikey"
-	1    1750 6000
 	0    -1   -1   0   
 $EndComp
 Text Label 1400 5700 2    50   ~ 0
@@ -482,10 +470,10 @@ F 3 "" H 750 6450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6900 2950 7300 2950
+	6900 3150 7300 3150
 Wire Wire Line
 	6900 3050 7300 3050
-Text Label 7300 2950 2    50   ~ 0
+Text Label 7300 3150 2    50   ~ 0
 I2C_SDA
 Text Label 7300 3050 2    50   ~ 0
 I2C_SCL
@@ -1064,7 +1052,7 @@ Wire Wire Line
 Wire Wire Line
 	10250 1050 10400 1050
 Connection ~ 10250 1050
-Text Notes -50  50   0    50   ~ 0
+Text Notes -50  -50  0    50   ~ 0
 TODO: \n- double check power management circuitry\n- go over checklist from last revision 
 Wire Wire Line
 	2800 1000 2800 850 
@@ -1261,53 +1249,45 @@ LCD_DB7
 Wire Wire Line
 	6900 2250 7450 2250
 Wire Wire Line
-	6900 2750 7450 2750
-Wire Wire Line
-	6900 3150 7450 3150
+	6900 3450 7450 3450
 Wire Wire Line
 	6900 3250 7450 3250
 Wire Wire Line
-	6900 3350 7450 3350
+	6900 3650 7450 3650
 Wire Wire Line
 	6900 3550 7450 3550
 Wire Wire Line
-	6900 3650 7450 3650
+	6900 2950 7450 2950
+Wire Wire Line
+	6900 2850 7450 2850
 Text Label 7450 2150 2    50   ~ 0
 LCD_~CS~
 Text Label 7450 2250 2    50   ~ 0
 LCD_~RST~
-Text Label 7450 2750 2    50   ~ 0
+Text Label 7450 3450 2    50   ~ 0
 LCD_DB0
-Text Label 7450 3150 2    50   ~ 0
-LCD_DB2
 Text Label 7450 3250 2    50   ~ 0
-LCD_DB3
-Text Label 7450 3350 2    50   ~ 0
-LCD_DB4
-Text Label 7450 3550 2    50   ~ 0
-LCD_DB6
+LCD_DB2
 Text Label 7450 3650 2    50   ~ 0
+LCD_DB3
+Text Label 7450 3550 2    50   ~ 0
+LCD_DB4
+Text Label 7450 2950 2    50   ~ 0
+LCD_DB6
+Text Label 7450 2850 2    50   ~ 0
 LCD_DB7
-Text Label 7450 2650 2    50   ~ 0
-LCD_~RD~
-Text Label 7450 2550 2    50   ~ 0
-LCD_~WR~
-Text Label 7450 2350 2    50   ~ 0
+Text Label 7450 2750 2    50   ~ 0
 LCD_~DC~
 Wire Wire Line
-	6900 2650 7450 2650
-Wire Wire Line
-	6900 2550 7450 2550
-Wire Wire Line
-	6900 2350 7450 2350
-Text Label 7450 3450 2    50   ~ 0
+	6900 2750 7450 2750
+Text Label 7450 2350 2    50   ~ 0
 LCD_DB5
 Wire Wire Line
-	6900 3450 7450 3450
-Text Label 7450 2850 2    50   ~ 0
+	6900 2350 7450 2350
+Text Label 7450 3350 2    50   ~ 0
 LCD_DB1
 Wire Wire Line
-	6900 2850 7450 2850
+	6900 3350 7450 3350
 Wire Bus Line
 	5150 550  5150 4650
 Wire Bus Line
@@ -2221,18 +2201,6 @@ Wire Wire Line
 Text Label 6900 2450 0    50   ~ 0
 IO15
 $Comp
-L Interface_USB:FT231XS U2
-U 1 1 5E6D1202
-P 3100 6200
-F 0 "U2" H 2450 7250 50  0000 C CNN
-F 1 "FT231XS" H 2550 7150 50  0000 C CNN
-F 2 "Package_SO:SSOP-20_3.9x8.7mm_P0.635mm" H 4100 5400 50  0001 C CNN
-F 3 "https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf" H 3100 6200 50  0001 C CNN
-F 4 "768-1129-1-ND" H 3100 6200 50  0001 C CNN "digikey"
-	1    3100 6200
-	1    0    0    -1  
-$EndComp
-$Comp
 L CustomParts:TestPad J12
 U 1 1 5F244C41
 P 3950 6700
@@ -2306,4 +2274,40 @@ F 4 "296-14340-1-ND" H 9450 5500 50  0001 C CNN "digikey"
 	1    9450 5500
 	1    0    0    -1  
 $EndComp
+$Comp
+L Interface_USB:FT231XQ U2
+U 1 1 5EAC2083
+P 3100 6200
+F 0 "U2" H 3100 7281 50  0000 C CNN
+F 1 "FT231XQ" H 3100 7190 50  0000 C CNN
+F 2 "Package_DFN_QFN:QFN-20-1EP_4x4mm_P0.5mm_EP2.5x2.5mm" H 4450 5400 50  0001 C CNN
+F 3 "https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf" H 3100 6200 50  0001 C CNN
+F 4 "768-1128-1-ND" H 3100 6200 50  0001 C CNN "digikey"
+	1    3100 6200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3100 7100 3100 7200
+$Comp
+L Device:R R3
+U 1 1 5EAC0FC6
+P 1750 6000
+F 0 "R3" V 1550 6000 50  0000 C CNN
+F 1 "27" V 1650 6000 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1680 6000 50  0001 C CNN
+F 3 "~" H 1750 6000 50  0001 C CNN
+F 4 "RMCF0603JT27R0CT-ND" V 1750 6000 50  0001 C CNN "digikey"
+	1    1750 6000
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6900 2550 7450 2550
+Wire Wire Line
+	6900 2650 7450 2650
+Text Label 7450 2550 2    50   ~ 0
+LCD_~WR~
+Text Label 7450 2650 2    50   ~ 0
+LCD_~RD~
+Text Label 2450 1350 0    50   ~ 0
+PWR_IN
 $EndSCHEMATC
