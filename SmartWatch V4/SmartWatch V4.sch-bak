@@ -180,7 +180,7 @@ F 2 "CustomFootprints:AMPHENOL_10118192-0001LF" H 800 5900 50  0001 L BNN
 F 3 "Amphenol ICC" H 800 5900 50  0001 L BNN
 F 4 "None" H 800 5900 50  0001 L BNN "Field4"
 F 5 "Single Port 5 Contact Horizontal Right Angle Shielded Micro B USB 2.0 Connector" H 800 5900 50  0001 L BNN "Field5"
-F 6 "609-4613-1-ND" H 800 5900 50  0001 L BNN "Field6"
+F 6 "609-4613-1-ND" H 800 5900 50  0001 L BNN "digikey"
 F 7 "10118192-0001LF" H 800 5900 50  0001 L BNN "Field7"
 F 8 "https://www.digikey.com/product-detail/en/amphenol-icc-fci/10118192-0001LF/609-4613-1-ND/2785378?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol" H 800 5900 50  0001 L BNN "Field8"
 	1    800  5900
@@ -699,6 +699,7 @@ F 0 "D1" H 1350 1384 50  0000 C CNN
 F 1 "FSV340FP" H 1350 1475 50  0000 C CNN
 F 2 "Diode_SMD:D_SOD-123" H 1350 1600 50  0001 C CNN
 F 3 "https://www.onsemi.com/pub/Collateral/FSV360FP-D.PDF" H 1350 1600 50  0001 C CNN
+F 4 "FSV340FPCT-ND" H 1350 1600 50  0001 C CNN "digikey"
 	1    1350 1600
 	-1   0    0    1   
 $EndComp
@@ -716,7 +717,7 @@ VBUS
 Wire Wire Line
 	1650 800  1850 800 
 Text Label 1850 800  2    50   ~ 0
-BAT+
+BAT_SENSE
 Wire Wire Line
 	1650 800  1650 950 
 Wire Wire Line
@@ -1544,10 +1545,6 @@ Wire Bus Line
 	5200 4650 5200 550 
 Wire Bus Line
 	5150 4650 550  4650
-Wire Wire Line
-	2400 3800 2750 3800
-Text Label 2750 3800 2    50   ~ 0
-BAT_ALRT
 Text Label 4500 3850 2    50   ~ 0
 CHG_STAT
 Wire Wire Line
@@ -1639,98 +1636,32 @@ F 4 "MCP73832T-2ACI/OTCT-ND" H 3750 3750 50  0001 C CNN "digikey"
 	1    3750 3750
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2450 3900 2450 3950
-Wire Wire Line
-	2400 3900 2450 3900
-$Comp
-L power:GND #PWR0142
-U 1 1 5E922E03
-P 2450 3950
-F 0 "#PWR0142" H 2450 3700 50  0001 C CNN
-F 1 "GND" H 2455 3777 50  0000 C CNN
-F 2 "" H 2450 3950 50  0001 C CNN
-F 3 "" H 2450 3950 50  0001 C CNN
-	1    2450 3950
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:GND #PWR0143
 U 1 1 5E91C7C2
-P 1000 3850
-F 0 "#PWR0143" H 1000 3600 50  0001 C CNN
-F 1 "GND" H 1005 3677 50  0000 C CNN
-F 2 "" H 1000 3850 50  0001 C CNN
-F 3 "" H 1000 3850 50  0001 C CNN
-	1    1000 3850
+P 900 4050
+F 0 "#PWR0143" H 900 3800 50  0001 C CNN
+F 1 "GND" H 905 3877 50  0000 C CNN
+F 2 "" H 900 4050 50  0001 C CNN
+F 3 "" H 900 4050 50  0001 C CNN
+	1    900  4050
 	1    0    0    -1  
 $EndComp
+Connection ~ 900  3750
 Wire Wire Line
-	1000 3550 1350 3550
-Connection ~ 1000 3550
-Wire Wire Line
-	1350 3550 1500 3550
-Connection ~ 1350 3550
-Wire Wire Line
-	1350 3650 1350 3550
-Wire Wire Line
-	1500 3650 1350 3650
-Wire Wire Line
-	800  3550 1000 3550
-Wire Wire Line
-	1150 3950 1500 3950
-Wire Wire Line
-	1150 3850 1500 3850
-Text Label 1150 3850 0    50   ~ 0
-I2C_SCL
-Text Label 1150 3950 0    50   ~ 0
-I2C_SDA
-Text Label 800  3550 0    50   ~ 0
+	700  3750 900  3750
+Text Label 700  3750 0    50   ~ 0
 BAT+
-Wire Wire Line
-	1950 4300 1950 4350
-Wire Wire Line
-	1950 4350 2050 4350
-Connection ~ 1950 4350
-Wire Wire Line
-	2050 4350 2050 4300
-Wire Wire Line
-	1850 4350 1950 4350
-Wire Wire Line
-	1850 4300 1850 4350
-$Comp
-L power:GND #PWR0144
-U 1 1 5E8F1098
-P 1950 4350
-F 0 "#PWR0144" H 1950 4100 50  0001 C CNN
-F 1 "GND" H 1955 4177 50  0000 C CNN
-F 2 "" H 1950 4350 50  0001 C CNN
-F 3 "" H 1950 4350 50  0001 C CNN
-	1    1950 4350
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:MAX17048 U1
-U 1 1 5E8D870E
-P 1950 3850
-F 0 "U1" H 1150 4400 50  0000 C CNN
-F 1 "MAX17048" H 1300 4300 50  0000 C CNN
-F 2 "CustomFootprints:SON50P200X200X80-9N" H 1750 4350 50  0001 C CNN
-F 3 "https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf" H 1750 4350 50  0001 C CNN
-F 4 "MAX17048G+T10CT-ND" H 1950 3850 50  0001 C CNN "digikey"
-	1    1950 3850
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:C C1
 U 1 1 5E856FED
-P 1000 3700
-F 0 "C1" H 700 3750 50  0000 L CNN
-F 1 "10uF" H 700 3650 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 1038 3550 50  0001 C CNN
-F 3 "~" H 1000 3700 50  0001 C CNN
-F 4 "478-10766-1-ND" H 1000 3700 50  0001 C CNN "digikey"
-	1    1000 3700
+P 900 3900
+F 0 "C1" H 600 3950 50  0000 L CNN
+F 1 "10uF" H 600 3850 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 938 3750 50  0001 C CNN
+F 3 "~" H 900 3900 50  0001 C CNN
+F 4 "478-10766-1-ND" H 900 3900 50  0001 C CNN "digikey"
+	1    900  3900
 	1    0    0    -1  
 $EndComp
 Text Notes 600  4800 0    50   ~ 0
@@ -2310,4 +2241,104 @@ Text Label 7450 2650 2    50   ~ 0
 LCD_~RD~
 Text Label 2450 1350 0    50   ~ 0
 PWR_IN
+$Comp
+L CustomParts:MAX17260 U1
+U 1 1 5EB4B3BE
+P 1800 3800
+F 0 "U1" H 1300 4100 50  0000 C CNN
+F 1 "MAX17260" H 1250 4200 50  0000 C CNN
+F 2 "CustomFootprints:TDFN16-EP" H 1150 4950 50  0001 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf" H 1150 4950 50  0001 C CNN
+F 4 "175-MAX17260SEWL+TCT-ND" H 850 4850 50  0001 C CNN "digikey"
+	1    1800 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	900  3750 1350 3750
+Wire Wire Line
+	1400 3850 1350 3850
+Wire Wire Line
+	1350 3850 1350 3750
+Connection ~ 1350 3750
+Wire Wire Line
+	1350 3750 1400 3750
+$Comp
+L Device:R R23
+U 1 1 5EBB9EAC
+P 1800 3250
+F 0 "R23" H 1870 3296 50  0000 L CNN
+F 1 "6m" H 1870 3205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 1730 3250 50  0001 C CNN
+F 3 "https://d1d2qsbl8m0m72.cloudfront.net/en/products/databook/datasheet/passive/resistor/chip_resistor/pmr-e.pdf" H 1800 3250 50  0001 C CNN
+F 4 "RHM.006AKCT-ND" H 1800 3250 50  0001 C CNN "digikey"
+	1    1800 3250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1600 3300 1600 3250
+Wire Wire Line
+	1600 3250 1650 3250
+Wire Wire Line
+	1600 3250 900  3250
+Wire Wire Line
+	900  3250 900  3750
+Connection ~ 1600 3250
+Wire Wire Line
+	1950 3250 2050 3250
+Wire Wire Line
+	2050 3250 2050 3300
+Connection ~ 2050 3250
+Text Label 2650 3250 2    50   ~ 0
+BAT_SENSE
+Wire Wire Line
+	2050 3250 2650 3250
+Text Label 2650 3700 2    50   ~ 0
+BAT_ALRT
+Wire Wire Line
+	2200 3700 2650 3700
+Text Label 2650 3800 2    50   ~ 0
+I2C_SDA
+Text Label 2650 3900 2    50   ~ 0
+I2C_SCL
+Wire Wire Line
+	2200 3800 2650 3800
+Wire Wire Line
+	2200 3900 2650 3900
+$Comp
+L power:GND #PWR01
+U 1 1 5EE9C540
+P 1800 4200
+F 0 "#PWR01" H 1800 3950 50  0001 C CNN
+F 1 "GND" H 1805 4027 50  0000 C CNN
+F 2 "" H 1800 4200 50  0001 C CNN
+F 3 "" H 1800 4200 50  0001 C CNN
+	1    1800 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C11
+U 1 1 5EE9CCD7
+P 2250 4200
+F 0 "C11" H 2365 4246 50  0000 L CNN
+F 1 "0.1uF" H 2365 4155 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 2288 4050 50  0001 C CNN
+F 3 "~" H 2250 4200 50  0001 C CNN
+F 4 "1276-1006-1-ND" H 2250 4200 50  0001 C CNN "digikey"
+	1    2250 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2200 4050 2250 4050
+$Comp
+L power:GND #PWR02
+U 1 1 5EEB600A
+P 2250 4350
+F 0 "#PWR02" H 2250 4100 50  0001 C CNN
+F 1 "GND" H 2255 4177 50  0000 C CNN
+F 2 "" H 2250 4350 50  0001 C CNN
+F 3 "" H 2250 4350 50  0001 C CNN
+	1    2250 4350
+	1    0    0    -1  
+$EndComp
+NoConn ~ 1400 3950
 $EndSCHEMATC
