@@ -171,22 +171,6 @@ Connection ~ 3100 7200
 Wire Wire Line
 	3100 7200 3200 7200
 $Comp
-L Connector:USB_B_Micro J1
-U 1 1 5E6DBEE6
-P 800 5900
-F 0 "J1" H 700 6400 50  0000 C CNN
-F 1 "10118192-0001LF" H 1000 6300 50  0000 C CNN
-F 2 "CustomFootprints:AMPHENOL_10118192-0001LF" H 800 5900 50  0001 L BNN
-F 3 "Amphenol ICC" H 800 5900 50  0001 L BNN
-F 4 "None" H 800 5900 50  0001 L BNN "Field4"
-F 5 "Single Port 5 Contact Horizontal Right Angle Shielded Micro B USB 2.0 Connector" H 800 5900 50  0001 L BNN "Field5"
-F 6 "609-4613-1-ND" H 800 5900 50  0001 L BNN "digikey"
-F 7 "10118192-0001LF" H 800 5900 50  0001 L BNN "Field7"
-F 8 "https://www.digikey.com/product-detail/en/amphenol-icc-fci/10118192-0001LF/609-4613-1-ND/2785378?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol" H 800 5900 50  0001 L BNN "Field8"
-	1    800  5900
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R R2
 U 1 1 5E6E1024
 P 1750 5900
@@ -198,10 +182,10 @@ F 4 "RMCF0603JT27R0CT-ND" V 1750 5900 50  0001 C CNN "digikey"
 	1    1750 5900
 	0    -1   -1   0   
 $EndComp
-Text Label 1400 5700 2    50   ~ 0
+Text Label 1400 5800 2    50   ~ 0
 VBUS
 Wire Wire Line
-	1100 5700 1400 5700
+	1100 5800 1400 5800
 Wire Wire Line
 	1900 5900 2400 5900
 Wire Wire Line
@@ -366,12 +350,10 @@ Text Label 5750 5000 2    50   ~ 0
 TXD0
 Text Label 5750 5200 2    50   ~ 0
 RXD0
-Text Label 7300 1650 2    50   ~ 0
-RXD0
 Text Label 7300 1850 2    50   ~ 0
+RXD0
+Text Label 7300 1650 2    50   ~ 0
 TXD0
-Wire Bus Line
-	550  7600 550  4700
 Text Notes 550  7550 0    50   ~ 0
 CBUS0 needs to be configured to TX&RXLED# using the FT_PROG utility\n
 Wire Wire Line
@@ -434,39 +416,16 @@ Text Label 6100 6750 0    50   ~ 0
 IO15
 Text Label 7100 2150 2    50   ~ 0
 IO12
-Wire Wire Line
-	1300 6000 1400 5900
-Wire Wire Line
-	1400 5900 1600 5900
-Wire Wire Line
-	1100 6000 1300 6000
-Wire Wire Line
-	1600 6000 1400 6000
-Wire Wire Line
-	1400 6000 1300 5900
-Wire Wire Line
-	1300 5900 1100 5900
 NoConn ~ 1100 6100
-Wire Wire Line
-	700  6300 700  6400
-Wire Wire Line
-	700  6400 750  6400
-Wire Wire Line
-	800  6400 800  6300
-Wire Wire Line
-	750  6400 750  6450
-Connection ~ 750  6400
-Wire Wire Line
-	750  6400 800  6400
 $Comp
 L power:GND #PWR0108
 U 1 1 5E7C1DBF
-P 750 6450
-F 0 "#PWR0108" H 750 6200 50  0001 C CNN
-F 1 "GND" H 755 6277 50  0000 C CNN
-F 2 "" H 750 6450 50  0001 C CNN
-F 3 "" H 750 6450 50  0001 C CNN
-	1    750  6450
+P 1250 6450
+F 0 "#PWR0108" H 1250 6200 50  0001 C CNN
+F 1 "GND" H 1255 6277 50  0000 C CNN
+F 2 "" H 1250 6450 50  0001 C CNN
+F 3 "" H 1250 6450 50  0001 C CNN
+	1    1250 6450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1261,7 +1220,7 @@ Wire Wire Line
 	6900 2950 7450 2950
 Wire Wire Line
 	6900 2850 7450 2850
-Text Label 7450 2150 2    50   ~ 0
+Text Label 7450 2050 2    50   ~ 0
 LCD_~CS~
 Text Label 7450 2250 2    50   ~ 0
 LCD_~RST~
@@ -1293,7 +1252,7 @@ Wire Bus Line
 	5150 550  5150 4650
 Wire Bus Line
 	550  550  550  4650
-Text Label 7450 2450 2    50   ~ 0
+Text Label 7450 2550 2    50   ~ 0
 LCD_LED
 Wire Wire Line
 	6900 2450 7450 2450
@@ -1412,7 +1371,7 @@ Text Notes 5250 650  0    50   ~ 0
 ESP32
 Wire Wire Line
 	6900 2050 7450 2050
-Text Label 7450 2050 2    50   ~ 0
+Text Label 7450 2150 2    50   ~ 0
 LCD_EN
 Text Label 2950 2650 0    50   ~ 0
 LCD_EN
@@ -2235,7 +2194,7 @@ Wire Wire Line
 	6900 2550 7450 2550
 Wire Wire Line
 	6900 2650 7450 2650
-Text Label 7450 2550 2    50   ~ 0
+Text Label 7450 2450 2    50   ~ 0
 LCD_~WR~
 Text Label 7450 2650 2    50   ~ 0
 LCD_~RD~
@@ -2340,5 +2299,48 @@ F 3 "" H 2250 4350 50  0001 C CNN
 	1    2250 4350
 	1    0    0    -1  
 $EndComp
-NoConn ~ 1400 3950
+Text Notes 550  7750 0    50   ~ 0
+Lithium Ion Battery: https://www.digikey.com/product-detail/en/jauch-quartz/LP333437JU-PCM-WIRES-50MM/1908-1390-ND/9562753 (Not final)\n
+$Comp
+L power:GND #PWR0142
+U 1 1 5EB73B93
+P 1400 3950
+F 0 "#PWR0142" H 1400 3700 50  0001 C CNN
+F 1 "GND" H 1405 3777 50  0000 C CNN
+F 2 "" H 1400 3950 50  0001 C CNN
+F 3 "" H 1400 3950 50  0001 C CNN
+	1    1400 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:10118192-0001LF J1
+U 1 1 5E6DBEE6
+P 800 6100
+F 0 "J1" H 650 6700 50  0000 C CNN
+F 1 "10118192-0001LF" H 650 6550 50  0000 C CNN
+F 2 "CustomFootprints:AMPHENOL_10118192-0001LF" H 800 6100 50  0001 L BNN
+F 3 "Amphenol ICC" H 800 6100 50  0001 L BNN
+F 4 "None" H 800 6100 50  0001 L BNN "Field4"
+F 5 "Single Port 5 Contact Horizontal Right Angle Shielded Micro B USB 2.0 Connector" H 800 6100 50  0001 L BNN "Field5"
+F 6 "609-4613-1-ND" H 800 6100 50  0001 L BNN "digikey"
+F 7 "10118192-0001LF" H 800 6100 50  0001 L BNN "Field7"
+F 8 "https://www.digikey.com/product-detail/en/amphenol-icc-fci/10118192-0001LF/609-4613-1-ND/2785378?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol" H 800 6100 50  0001 L BNN "Field8"
+	1    800  6100
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1600 5900 1100 5900
+Wire Wire Line
+	1100 6000 1600 6000
+Wire Wire Line
+	1100 6400 1250 6400
+Wire Wire Line
+	1250 6400 1250 6450
+Wire Wire Line
+	1100 6200 1250 6200
+Wire Wire Line
+	1250 6200 1250 6400
+Connection ~ 1250 6400
+Wire Bus Line
+	550  4700 550  7600
 $EndSCHEMATC
