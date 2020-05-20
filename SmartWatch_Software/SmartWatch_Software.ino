@@ -1,16 +1,6 @@
 #include "Declarations.h"
 #include "TimeTracker.h"
-#include "Animations.h"
-#include "Window.h"
-#include "SelectionWindow.h"
-#include "Display.h"
-#include "Button.h"
-#include "Pages.h"
-#include "home.h"
-#include "settings.h"
-#include "apps.h"
-#include "Notifications.h"
-#include "battery.h"
+#include "LCD.h"
 #include <soc/rtc.h>
 #include <esp_clk.h>
 
@@ -20,6 +10,8 @@ void activate() ;
 #define SCREEN_TOUCH_ON_TIME 5000
 unsigned long lastTouch = 0;
 
+int count = 0; 
+
 void setup() {
   unsigned long chrono = micros();
 #ifdef DEBUG
@@ -27,92 +19,51 @@ void setup() {
   Serial.println("bootCount = " + String(bootCount));
   Serial.flush();
 #endif
-  gpio_hold_dis((gpio_num_t) LCD_LED_CTRL);
-  pinMode(TOUCH_INT, INPUT);
-  pinMode(LCD_LED_CTRL, OUTPUT);
 
   if (bootCount == 0) {
     getInternetTime();
   }
 
-  if (digitalRead(TOUCH_INT) == 0) {
-    activate();
-  }
-
   bootCount++;
 
-  digitalWrite(LCD_LED_CTRL, LOW);
-  gpio_hold_en((gpio_num_t)LCD_LED_CTRL);
-  gpio_deep_sleep_hold_en();
+  pinMode(LCD_DB0, OUTPUT);
+  pinMode(LCD_DB1, OUTPUT);
+  pinMode(LCD_DB2, OUTPUT);
+  pinMode(LCD_DB3, OUTPUT);
+  pinMode(LCD_DB4, OUTPUT);
+  pinMode(LCD_DB5, OUTPUT);
+  pinMode(LCD_DB6, OUTPUT);
+  pinMode(LCD_DB7, OUTPUT);
 
-  esp_sleep_enable_timer_wakeup(SleepTime);
+  pinMode(LCD_EN, OUTPUT); digitalWrite(LCD_EN, HIGH);
+  pinMode(LCD_CS, OUTPUT);
+  pinMode(LCD_RST, OUTPUT);
+  pinMode(LCD_WR, OUTPUT);
+  pinMode(LCD_RD, OUTPUT);
+  pinMode(LCD_DC, OUTPUT);
 
-  printLocalTime(); // This sets the internal clock
+  pinMode(LCD_LED, OUTPUT);
+  digitalWrite(LCD_LED, LOW);
+  Serial.println("LCD ON");
+  delay(1000);
+  initLCD();
+  Serial.println("Initialized LCD");
 
-  esp_deep_sleep_start();
+  delay(1000);
+
+  //  gpio_deep_sleep_hold_en();
+  //
+  //  esp_sleep_enable_timer_wakeup(SleepTime);
+  //
+  //  printLocalTime(); // This sets the internal clock
+  //
+  //  esp_deep_sleep_start();
+  Serial.println("Entering Display Loop");
+
 }
 
 void loop() {
 
+  disp();
+ Serial.println(count++);
 }
-
-void activate() {
-  digitalWrite(LCD_LED_CTRL, LOW);
-  pinMode(CHARGING_PIN, OUTPUT);
-  pinMode(BATTERY_SENSE, OUTPUT);
-  pinMode(TOUCH_INT, INPUT);
-  digitalWrite(CHARGING_PIN, LOW);
-
-  initLCD();
-  SweepClear();
-
-  page = HOME;
-  drawHome();
-
-  digitalWrite(LCD_LED_CTRL, HIGH);
-
-  long ActiveUntil = millis() + 10000;
-  long lastHomeDraw = 0;
-
-  while (ActiveUntil > millis()) {
-    if (digitalRead(TOUCH_INT) == 0) {
-      ActiveUntil = millis() + 10000;
-    }
-    interfaceLoop();
-
-//    Serial.println("Active = " + String(ActiveUntil));
-
-    if (lastHomeDraw + 1000 < millis()) {
-      lastHomeDraw = millis();
-      if (page == HOME) {
-        drawHome();
-      }
-    }
-  }
-}
-
-
-
-
-/* things like touch interfacing and other user input go here */
-void interfaceLoop() {
-
-  if (ts.touched()) {
-    struct point p = getTouchedPosition();
-    tft.drawCircle(p.x, p.y, 2, 0x1D07);
-
-    switch (page) {
-      case HOME: HomeTouchHandler(p.x, p.y); break;
-      case NOTIFICATIONS: NotificationsTouchHandler(p.x, p.y); break;
-      case SETTINGS: SettingsTouchHandler(p.x, p.y); break;
-    }
-  }
-}
-//
-///* things like drawing the time don't need to happen often at all, so we tuck them in here
-//*/
-//void lowPriority() {
-//  if (page == HOME) {
-//    drawHome();
-//  }
-//}

@@ -1,10 +1,39 @@
 #include <WiFi.h>
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
-#include <XPT2046_Touchscreen.h>
 #include "time.h"
-//#include "esp_sleep.h"
+
+//Pin Defs
+//touch
+#define TOUCH_IRQ 4
+
+//LCD CTRL
+#define LCD_EN 12
+#define LCD_CS 5
+#define LCD_RST 13
+#define LCD_LED 16
+#define LCD_WR 15
+#define LCD_RD 17
+#define LCD_DC 18
+
+//LCD Data
+#define LCD_DB0 27
+#define LCD_DB1 26
+#define LCD_DB2 25
+#define LCD_DB3 33
+#define LCD_DB4 32
+#define LCD_DB5 14
+#define LCD_DB6 21
+#define LCD_DB7 19
+
+//I2C
+#define I2C_SCL 22
+#define I2C_SDA 23
+
+//Battery and reg pins
+#define BAT_ALERT 34
+#define CHG_STAT 35
+#define REG_PG 36
+#define LCD_PG 39
+
 
 RTC_DATA_ATTR int bootCount = 0;
 RTC_DATA_ATTR time_t now;
@@ -13,43 +42,16 @@ RTC_DATA_ATTR struct tm * timeinfo;
 
 #define  SleepTime  50000       //we wake the micro-controller up after this many microseconds
 
-#define TEXT_COLOR ST77XX_WHITE
+#define TEXT_COLOR 0xFFFF
 #define INTERFACE_COLOR 0xFFFF
 
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 128
 
-#define CHARGING_PIN 4
-#define BATTERY_SENSE 32
+int BACKGROUND_COLOR =  0xFFFF;
+int ERROR_COLOR =  0xFFFF;
 
-int BACKGROUND_COLOR =  ST77XX_BLACK;
-int ERROR_COLOR =  ST77XX_BLUE;
-
-//#define  DEBUG
-
-#define LCD_LED_CTRL 25
-#define ACCEL_X 33
-#define ACCEL_Y 35
-#define ACCEL_Z 38
-
-#define TOUCH_CS  14
-#define TOUCH_INT 10
-
-XPT2046_Touchscreen ts(TOUCH_CS, TOUCH_INT);
-
-// TOUCH CALIBRATION
-#define XMAX 3711
-#define XMIN 259
-#define YMAX 3723
-#define YMIN 465
-
-struct point {
-  int x, y;
-};
-
-#define TFT_CS         5
-#define TFT_RST        22
-#define TFT_DC         21
+#define DEBUG
 
 String ssid       = "Bellafaire Family Wifi";
 String password   = "cashewbunny";
@@ -58,67 +60,8 @@ const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = -5 * 3600;
 const int   daylightOffset_sec = 0;
 
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
-
-//structures
-typedef struct onscreenButton button;
-typedef struct iconButton iconButton;
-
-struct onscreenButton {
-  int _x, _y, _width, _height, _color, _backgroundColor;
-  String _text;
-};
-
-struct iconButton {
-  int _x, _y, _width, _height, _color, _backgroundColor;
-  uint16_t icon[16]; //16x16 icon (single color)
-};
-
-//battery.h
-float getBatteryVoltage();
-
-//button.h
-int TextWidth(button b);
-void paintButton(iconButton b);
-void paintButton(button b);
-void paintButtonFull(button b);
-void paintButtonFull(iconButton b);
-bool checkButtonPress(iconButton b, int x, int y) ;
-bool checkButtonPress(button b, int x, int y);
-void pressButton(iconButton b);
-void pressButton(button b);
-
-//animations.h
-void SweepClear();
-
-//display.h
-void initLCD();
-struct point getTouchedPosition();
-void getTouchedPosition(int *x, int *y);
-
-//notifications.h
-void switchToNotifications();
-void drawNotifications();
-void NotificationsTouchHandler(int x, int y);
-
 //TimeTracker.h
 String getInternetTime();
 void drawDate(int x, int y, int textSize);
 void drawDateCentered(int y, int textSize);
 void drawTime(int x, int y, int textSize);
-
-//home.h
-void switchToHome();
-void drawHome();
-void HomeTouchHandler(int x, int y);
-
-//settings.h
-void switchToSettings();
-void drawSettings();
-void SettingsTouchHandler(int x, int y);
-void  reAdjustTime();
-void changeNetwork();
-void about();
-void testWifi();
-void batterySettings();
-void accelTest() ;

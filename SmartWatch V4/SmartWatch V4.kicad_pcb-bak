@@ -1045,7 +1045,7 @@
   (module CustomFootprints:NLSV4T244MUTAG (layer F.Cu) (tedit 0) (tstamp 5E8EA991)
     (at 139.55 65.9 180)
     (path /5E932609)
-    (fp_text reference U7 (at 0 0) (layer F.SilkS)
+    (fp_text reference U7 (at 2.75 -0.1) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value NLSV4T244 (at 0 0) (layer F.SilkS) hide
@@ -2595,7 +2595,7 @@
   (module CustomFootprints:TESTPAD (layer F.Cu) (tedit 5E1B7B22) (tstamp 5E8EA603)
     (at 142.24 77.978)
     (path /5E79D1AD)
-    (fp_text reference J4 (at -1.27 -2.4718) (layer F.SilkS)
+    (fp_text reference J4 (at -0.64 -2.178) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value TestPad (at -1.27 -3.4718) (layer F.Fab)
