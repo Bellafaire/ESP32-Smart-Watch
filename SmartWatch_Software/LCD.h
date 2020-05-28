@@ -20,14 +20,15 @@
 // The 8 bit data bus is connected to PORTA of the Arduino Mega2560
 // 5V voltage regulator on Arduino Mega has been replaced with a 3.3V regulator to provide 3.3V logic
 
-int DC = LCD_DC;      // D/C signal connected to Arduino digital pin 30
-int WR = LCD_WR;      // /WR signal connected to Arduino digital pin 31
-int RD = LCD_RD;      // /RD signal connected to Arduino digital pin 32
-int RST = LCD_RST;     // /RST signal connected to Arduino digital pin 33
+int DC = LCD_DC;   // D/C signal connected to Arduino digital pin 30
+int WR = LCD_WR;   // /WR signal connected to Arduino digital pin 31
+int RD = LCD_RD;   // /RD signal connected to Arduino digital pin 32
+int RST = LCD_RST; // /RST signal connected to Arduino digital pin 33
 
 // /CS signal tied to ground
 
-void writeDataBus(unsigned char c) {
+void writeDataBus(unsigned char c)
+{
   digitalWrite(LCD_DB0, bitRead(c, 0));
   digitalWrite(LCD_DB1, bitRead(c, 1));
   digitalWrite(LCD_DB2, bitRead(c, 2));
@@ -40,12 +41,13 @@ void writeDataBus(unsigned char c) {
 
 void comm_out(unsigned char c)
 {
+  digitalWrite(LCD_CS, LOW);
   digitalWrite(DC, LOW);
-  //  PORTA = c;
   writeDataBus(c);
   digitalWrite(WR, LOW);
   delayMicroseconds(5);
   digitalWrite(WR, HIGH);
+  delayMicroseconds(5);
 }
 
 void data_out(unsigned char d)
@@ -55,33 +57,35 @@ void data_out(unsigned char d)
   digitalWrite(WR, LOW);
   delayMicroseconds(5);
   digitalWrite(WR, HIGH);
+  delayMicroseconds(5);
 }
 void disp()
 {
   unsigned int i;
-  comm_out(0x2C);              //command to begin writing to frame memory
-  for (i = 0; i < 20480; i++)  //fill screen with red pixels
+  comm_out(0x2C);             //command to begin writing to frame memory
+  for (i = 0; i < 20480; i++) //fill screen with red pixels
   {
+    comm_out(0x2C);
     data_out(0xFF);
     data_out(0x00);
     data_out(0x00);
-
   }
   Serial.println("Filled RED");
-  for (i = 0; i < 20480; i++)  //fill screen with green pixels
+  for (i = 0; i < 20480; i++) //fill screen with green pixels
   {
     data_out(0x00);
     data_out(0xFF);
     data_out(0x00);
   }
-   Serial.println("Filled GREEN");
-  for (i = 0; i < 20480; i++)  //fill screen with blue pixels
+  Serial.println("Filled GREEN");
+  for (i = 0; i < 20480; i++) //fill screen with blue pixels
   {
     data_out(0x00);
     data_out(0x00);
     data_out(0xFF);
   }
-   Serial.println("Filled BLUE");
+  Serial.println("Filled BLUE");
+  digitalWrite(LCD_CS, HIGH);
 }
 
 void initLCD()
@@ -90,59 +94,65 @@ void initLCD()
   //  PORTC = 0x00;
   //  DDRA = 0xFF;
   //  PORTA = 0x00;
-  digitalWrite(RD, HIGH);
-  digitalWrite(WR, LOW);
-  digitalWrite(RST, LOW);
-  delay(150);
-  digitalWrite(RST, HIGH);
+
+  pinMode(LCD_DB0, OUTPUT);
+  pinMode(LCD_DB1, OUTPUT);
+  pinMode(LCD_DB2, OUTPUT);
+  pinMode(LCD_DB3, OUTPUT);
+  pinMode(LCD_DB4, OUTPUT);
+  pinMode(LCD_DB5, OUTPUT);
+  pinMode(LCD_DB6, OUTPUT);
+  pinMode(LCD_DB7, OUTPUT);
+
+  pinMode(LCD_EN, OUTPUT);
+  digitalWrite(LCD_EN, HIGH);
+
   delay(150);
 
-  comm_out(0x11);              //exit SLEEP mode
+  pinMode(LCD_CS, OUTPUT);
+  digitalWrite(LCD_CS, LOW);
+
+  pinMode(LCD_WR, OUTPUT);
+  digitalWrite(WR, LOW);
+
+  pinMode(LCD_RD, OUTPUT);
+  digitalWrite(RD, HIGH);
+
+  pinMode(LCD_DC, OUTPUT);
+
+  pinMode(LCD_RST, OUTPUT);
+  digitalWrite(LCD_RST, LOW);
+  delay(150);
+  pinMode(LCD_RST, HIGH);
+  delay(150);
+
+  comm_out(0x11); //exit SLEEP mode
 
   delay(100);
 
-  comm_out(0x28);              //display off
 
-  comm_out(0x26);              //select gamma curve
-  data_out(0x04);
-
-  comm_out(0xB1);              //frame rate control
-  data_out(0x0A);
-  data_out(0x14);
-
-  comm_out(0xC0);              //power control 1
-  data_out(0x0A);
+  comm_out(0x26); data_out(0x04);
+  comm_out(0xF2); data_out(0x00);
+  comm_out(0xB1); data_out(0x0A); data_out(0x14);
+  comm_out(0xC0); data_out(0x0A); data_out(0x00);
+  comm_out(0xC1); data_out(0x02);
+  comm_out(0xC5); data_out(0x2F); data_out(0x3E);
+  comm_out(0xC7); data_out(0x40);
+  comm_out(0x2A);
   data_out(0x00);
-
-  comm_out(0xC1);              //power control 2
-  data_out(0x02);
-
-  comm_out(0xC5);              //VCOM control 1
-  data_out(0x2F);
-  data_out(0x3E);
-
-  comm_out(0xC7);              //VCOM control 2
-  data_out(0x40);
-
-  comm_out(0x2A);              //column address set
   data_out(0x00);
-  data_out(0x00);                  //start 0x0000
   data_out(0x00);
-  data_out(0x7F);                  //end 0x007F
-
-  comm_out(0x2B);              //page address set
+  data_out(0x7F);
+  comm_out(0x2B);
   data_out(0x00);
-  data_out(0x00);                  //start 0x0000
   data_out(0x00);
-  data_out(0x9F);                  //end 0x009F
+  data_out(0x00);
+  data_out(0x9F);
+  comm_out(0x36); data_out(0x48);
+  comm_out(0x3A); data_out(0xC5);
+  comm_out(0x29);
+  comm_out(0x2C);
 
-  comm_out(0x36);              //memory access control
-  data_out(0xC8);
-
-  comm_out(0x3A);              //pixel format = 18 bit per pixel
-  data_out(0x06);
-
-  comm_out(0x29);              //display ON
 
   delay(10);
 }

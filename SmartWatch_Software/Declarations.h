@@ -9,8 +9,8 @@
 #define LCD_EN 12
 #define LCD_CS 5
 #define LCD_RST 13
-#define LCD_LED 16
-#define LCD_WR 15
+#define LCD_LED 15
+#define LCD_WR 16
 #define LCD_RD 17
 #define LCD_DC 18
 
