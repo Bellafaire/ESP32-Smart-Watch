@@ -16,43 +16,43 @@ $EndDescr
 $Comp
 L RF_Module:ESP32-WROOM-32 U6
 U 1 1 5E6BFC95
-P 6300 2750
-F 0 "U6" H 5550 4350 50  0000 C CNN
-F 1 "ESP32-WROOM-32" H 5850 4250 50  0000 C CNN
-F 2 "RF_Module:ESP32-WROOM-32" H 6300 1250 50  0001 C CNN
-F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 6000 2800 50  0001 C CNN
-F 4 "1904-1010-1-ND" H 6300 2750 50  0001 C CNN "digikey"
-	1    6300 2750
+P 6250 2750
+F 0 "U6" H 5500 4350 50  0000 C CNN
+F 1 "ESP32-WROOM-32" H 5800 4250 50  0000 C CNN
+F 2 "RF_Module:ESP32-WROOM-32" H 6250 1250 50  0001 C CNN
+F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 5950 2800 50  0001 C CNN
+F 4 "1904-1010-1-ND" H 6250 2750 50  0001 C CNN "digikey"
+	1    6250 2750
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3.3V #PWR0101
 U 1 1 5E6C26FC
-P 6300 1350
-F 0 "#PWR0101" H 6300 1200 50  0001 C CNN
-F 1 "+3.3V" H 6315 1523 50  0000 C CNN
-F 2 "" H 6300 1350 50  0001 C CNN
-F 3 "" H 6300 1350 50  0001 C CNN
-	1    6300 1350
+P 6250 1350
+F 0 "#PWR0101" H 6250 1200 50  0001 C CNN
+F 1 "+3.3V" H 6265 1523 50  0000 C CNN
+F 2 "" H 6250 1350 50  0001 C CNN
+F 3 "" H 6250 1350 50  0001 C CNN
+	1    6250 1350
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR0102
 U 1 1 5E6C3404
-P 6300 4150
-F 0 "#PWR0102" H 6300 3900 50  0001 C CNN
-F 1 "GND" H 6305 3977 50  0000 C CNN
-F 2 "" H 6300 4150 50  0001 C CNN
-F 3 "" H 6300 4150 50  0001 C CNN
-	1    6300 4150
+P 6250 4150
+F 0 "#PWR0102" H 6250 3900 50  0001 C CNN
+F 1 "GND" H 6255 3977 50  0000 C CNN
+F 2 "" H 6250 4150 50  0001 C CNN
+F 3 "" H 6250 4150 50  0001 C CNN
+	1    6250 4150
 	1    0    0    -1  
 $EndComp
-Text Label 7300 1550 2    50   ~ 0
+Text Label 7250 1550 2    50   ~ 0
 IO0
-Text Label 5500 1550 0    50   ~ 0
+Text Label 5450 1550 0    50   ~ 0
 EN
 Wire Wire Line
-	5700 1550 5500 1550
+	5650 1550 5450 1550
 $Comp
 L Device:R R15
 U 1 1 5E6C1594
@@ -304,12 +304,12 @@ NoConn ~ 3800 5900
 NoConn ~ 3800 6100
 NoConn ~ 3800 6200
 NoConn ~ 3800 6300
-NoConn ~ 5700 2750
-NoConn ~ 5700 2850
-NoConn ~ 5700 2950
-NoConn ~ 5700 3050
-NoConn ~ 5700 3150
-NoConn ~ 5700 3250
+NoConn ~ 5650 2750
+NoConn ~ 5650 2850
+NoConn ~ 5650 2950
+NoConn ~ 5650 3050
+NoConn ~ 5650 3150
+NoConn ~ 5650 3250
 $Comp
 L Device:R R11
 U 1 1 5E6E7602
@@ -350,18 +350,18 @@ Text Label 5750 5000 2    50   ~ 0
 TXD0
 Text Label 5750 5200 2    50   ~ 0
 RXD0
-Text Label 7300 1850 2    50   ~ 0
+Text Label 7250 1850 2    50   ~ 0
 RXD0
-Text Label 7300 1650 2    50   ~ 0
+Text Label 7250 1650 2    50   ~ 0
 TXD0
 Text Notes 550  7550 0    50   ~ 0
 CBUS0 needs to be configured to TX&RXLED# using the FT_PROG utility\n
 Wire Wire Line
-	6900 1550 7300 1550
+	6850 1550 7250 1550
 Wire Wire Line
-	6900 1650 7300 1650
+	6850 1650 7250 1650
 Wire Wire Line
-	6900 1850 7300 1850
+	6850 1850 7250 1850
 $Comp
 L CustomParts:TestPad J3
 U 1 1 5E79AD9A
@@ -414,7 +414,7 @@ Text Label 6100 6550 0    50   ~ 0
 IO12
 Text Label 6100 6750 0    50   ~ 0
 IO15
-Text Label 7100 2150 2    50   ~ 0
+Text Label 7400 2150 2    50   ~ 0
 IO12
 NoConn ~ 1100 6100
 $Comp
@@ -428,14 +428,6 @@ F 3 "" H 1250 6450 50  0001 C CNN
 	1    1250 6450
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6900 3150 7300 3150
-Wire Wire Line
-	6900 3050 7300 3050
-Text Label 7300 3150 2    50   ~ 0
-I2C_SDA
-Text Label 7300 3050 2    50   ~ 0
-I2C_SCL
 $Comp
 L Device:R R14
 U 1 1 5E875CFA
@@ -626,18 +618,18 @@ Wire Wire Line
 	7700 5450 7700 5800
 Wire Wire Line
 	7400 5450 7400 5800
-Text Label 7300 3850 2    50   ~ 0
+Text Label 7250 3850 2    50   ~ 0
 CHG_STAT
-Text Label 7300 3750 2    50   ~ 0
+Text Label 7250 3750 2    50   ~ 0
 BAT_ALRT
 Wire Wire Line
-	6900 3750 7300 3750
+	6850 3750 7250 3750
 Wire Wire Line
-	6900 3850 7300 3850
-Text Label 5300 1750 0    50   ~ 0
+	6850 3850 7250 3850
+Text Label 5250 1750 0    50   ~ 0
 REG_PG
 Wire Wire Line
-	5700 1750 5300 1750
+	5650 1750 5250 1750
 $Comp
 L Device:Q_PMOS_GSD Q1
 U 1 1 5E7D2126
@@ -910,17 +902,6 @@ F 4 "311-0.0GRCT-ND" H 2550 850 50  0001 C CNN "digikey"
 	1    2550 850 
 	0    1    1    0   
 $EndComp
-$Comp
-L power:+3.3V #PWR0123
-U 1 1 5EAC2EA9
-P 2150 850
-F 0 "#PWR0123" H 2150 700 50  0001 C CNN
-F 1 "+3.3V" H 2165 1023 50  0000 C CNN
-F 2 "" H 2150 850 50  0001 C CNN
-F 3 "" H 2150 850 50  0001 C CNN
-	1    2150 850 
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2150 850  2400 850 
 Wire Bus Line
@@ -967,53 +948,6 @@ F 3 "" H 1900 2600 50  0001 C CNN
 	1    1900 2600
 	1    0    0    -1  
 $EndComp
-$Comp
-L CustomParts:NHD-1.8-128160EF-CTXI#-T U11
-U 1 1 5E79FF28
-P 10800 1950
-F 0 "U11" H 9850 3300 50  0000 L CNN
-F 1 "NHD-1.8-128160EF-CTXI#-T" H 9850 3200 50  0000 L CNN
-F 2 "CustomFootprints:LCD_NHD-1.8-128160EF-CTXI#-T" H 10800 1950 50  0001 L BNN
-F 3 "http://www.newhavendisplay.com/specs/NHD-1.8-128160EF-CTXI-T.pdf" H 10800 1950 50  0001 L BNN
-F 4 "NHD-1.8-128160EF-CTXI#-T-ND" H 10800 1950 50  0001 C CNN "digikey"
-	1    10800 1950
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0125
-U 1 1 5E7AD62F
-P 9800 850
-F 0 "#PWR0125" H 9800 600 50  0001 C CNN
-F 1 "GND" H 9805 677 50  0000 C CNN
-F 2 "" H 9800 850 50  0001 C CNN
-F 3 "" H 9800 850 50  0001 C CNN
-	1    9800 850 
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+2V8 #PWR0126
-U 1 1 5E7B6085
-P 10150 1050
-F 0 "#PWR0126" H 10150 900 50  0001 C CNN
-F 1 "+2V8" H 10050 1200 50  0000 C CNN
-F 2 "" H 10150 1050 50  0001 C CNN
-F 3 "" H 10150 1050 50  0001 C CNN
-	1    10150 1050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9800 850  10400 850 
-Wire Wire Line
-	10400 950  10250 950 
-Wire Wire Line
-	10250 950  10250 1050
-Wire Wire Line
-	10250 1050 10150 1050
-Wire Wire Line
-	10250 1050 10400 1050
-Connection ~ 10250 1050
-Text Notes -50  -50  0    50   ~ 0
-TODO: \n- double check power management circuitry\n- go over checklist from last revision 
 Wire Wire Line
 	2800 1000 2800 850 
 Wire Wire Line
@@ -1029,10 +963,10 @@ Wire Wire Line
 	2900 1450 3300 1450
 Text Label 2900 1450 0    50   ~ 0
 LDO_EN
-Text Label 5300 1850 0    50   ~ 0
+Text Label 5250 1850 0    50   ~ 0
 LCD_PG
 Wire Wire Line
-	5300 1850 5700 1850
+	5250 1850 5650 1850
 Wire Wire Line
 	4250 2550 4750 2550
 Connection ~ 4250 2550
@@ -1058,29 +992,6 @@ F 1 "GND" H 3755 2827 50  0000 C CNN
 F 2 "" H 3750 3000 50  0001 C CNN
 F 3 "" H 3750 3000 50  0001 C CNN
 	1    3750 3000
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+2V8 #PWR0128
-U 1 1 5E888521
-P 4950 2650
-F 0 "#PWR0128" H 4950 2500 50  0001 C CNN
-F 1 "+2V8" H 4950 2800 50  0000 C CNN
-F 2 "" H 4950 2650 50  0001 C CNN
-F 3 "" H 4950 2650 50  0001 C CNN
-	1    4950 2650
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:LP5912-3.3DRVT U4
-U 1 1 5E7F57FB
-P 3750 2600
-F 0 "U4" H 3750 2965 50  0000 C CNN
-F 1 "LP5912-2.8DRVT" H 3750 2874 50  0000 C CNN
-F 2 "Package_SON:WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm_ThermalVias" H 3700 2850 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lp5912.pdf" H 3700 2850 50  0001 C CNN
-F 4 "296-44237-1-ND" H 3750 2600 50  0001 C CNN "digikey"
-	1    3750 2600
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1196,126 +1107,10 @@ Wire Bus Line
 	1500 2850 1500 2350
 Text Notes 1500 2300 0    50   ~ 0
 Battery Connector
-Text Label 7750 2550 0    50   ~ 0
-LCD_DB3
-Text Label 7750 3400 0    50   ~ 0
-LCD_DB4
-Text Label 7750 3500 0    50   ~ 0
-LCD_DB5
-Text Label 7750 3600 0    50   ~ 0
-LCD_DB6
-Text Label 7750 3700 0    50   ~ 0
-LCD_DB7
-Wire Wire Line
-	6900 2250 7450 2250
-Wire Wire Line
-	6900 3450 7450 3450
-Wire Wire Line
-	6900 3250 7450 3250
-Wire Wire Line
-	6900 3650 7450 3650
-Wire Wire Line
-	6900 3550 7450 3550
-Wire Wire Line
-	6900 2950 7450 2950
-Wire Wire Line
-	6900 2850 7450 2850
-Text Label 7450 2050 2    50   ~ 0
-LCD_~CS~
-Text Label 7450 2250 2    50   ~ 0
-LCD_~RST~
-Text Label 7450 3450 2    50   ~ 0
-LCD_DB0
-Text Label 7450 3250 2    50   ~ 0
-LCD_DB2
-Text Label 7450 3650 2    50   ~ 0
-LCD_DB3
-Text Label 7450 3550 2    50   ~ 0
-LCD_DB4
-Text Label 7450 2950 2    50   ~ 0
-LCD_DB6
-Text Label 7450 2850 2    50   ~ 0
-LCD_DB7
-Text Label 7450 2750 2    50   ~ 0
-LCD_~DC~
-Wire Wire Line
-	6900 2750 7450 2750
-Text Label 7450 2350 2    50   ~ 0
-LCD_DB5
-Wire Wire Line
-	6900 2350 7450 2350
-Text Label 7450 3350 2    50   ~ 0
-LCD_DB1
-Wire Wire Line
-	6900 3350 7450 3350
 Wire Bus Line
 	5150 550  5150 4650
 Wire Bus Line
 	550  550  550  4650
-Text Label 7450 2550 2    50   ~ 0
-LCD_LED
-Wire Wire Line
-	6900 2450 7450 2450
-$Comp
-L Device:Q_PMOS_GSD Q4
-U 1 1 5ECF404E
-P 10500 3850
-F 0 "Q4" H 10704 3896 50  0000 L CNN
-F 1 "FDN340P" H 10704 3805 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 10700 3950 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/FDN340P-D.PDF" H 10500 3850 50  0001 C CNN
-F 4 "FDN340PCT-ND" H 10500 3850 50  0001 C CNN "digikey"
-	1    10500 3850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10400 2550 10100 2550
-Wire Wire Line
-	10100 2550 10100 2650
-Wire Wire Line
-	10100 2650 10400 2650
-Text Label 10050 2450 0    50   ~ 0
-LED_PWR
-Text Label 10600 4400 1    50   ~ 0
-LED_PWR
-$Comp
-L power:+3.3V #PWR0132
-U 1 1 5ED697DB
-P 10600 3650
-F 0 "#PWR0132" H 10600 3500 50  0001 C CNN
-F 1 "+3.3V" H 10615 3823 50  0000 C CNN
-F 2 "" H 10600 3650 50  0001 C CNN
-F 3 "" H 10600 3650 50  0001 C CNN
-	1    10600 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R22
-U 1 1 5ED6C4DB
-P 10250 3650
-F 0 "R22" H 10320 3696 50  0000 L CNN
-F 1 "100k" H 10320 3605 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 10180 3650 50  0001 C CNN
-F 3 "~" H 10250 3650 50  0001 C CNN
-F 4 "CR0603-JW-104ELFCT-ND" H 10250 3650 50  0001 C CNN "digikey"
-	1    10250 3650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10250 3800 10250 3850
-Text Label 10250 4400 1    50   ~ 0
-LCD_LED
-$Comp
-L power:+3.3V #PWR0133
-U 1 1 5ED6C4E2
-P 10250 3500
-F 0 "#PWR0133" H 10250 3350 50  0001 C CNN
-F 1 "+3.3V" H 10265 3673 50  0000 C CNN
-F 2 "" H 10250 3500 50  0001 C CNN
-F 3 "" H 10250 3500 50  0001 C CNN
-	1    10250 3500
-	1    0    0    -1  
-$EndComp
 $Comp
 L CustomParts:EVQ-P7J01P SW2
 U 1 1 5EE0EE5B
@@ -1369,10 +1164,6 @@ Text Notes 4550 6800 0    50   ~ 0
 Reset/BOOT Switches
 Text Notes 5250 650  0    50   ~ 0
 ESP32
-Wire Wire Line
-	6900 2050 7450 2050
-Text Label 7450 2150 2    50   ~ 0
-LCD_EN
 Text Label 2950 2650 0    50   ~ 0
 LCD_EN
 Wire Wire Line
@@ -1474,30 +1265,7 @@ Wire Wire Line
 	8700 5650 8900 5650
 Wire Wire Line
 	8700 5750 8900 5750
-Text Label 10200 2750 0    50   ~ 0
-Y+
-Text Label 10200 2950 0    50   ~ 0
-Y-
-Text Label 10200 2850 0    50   ~ 0
-X+
-Text Label 10200 3050 0    50   ~ 0
-X-
-Wire Wire Line
-	10200 2750 10400 2750
-Wire Wire Line
-	10200 2950 10400 2950
-Wire Wire Line
-	10200 2850 10400 2850
-Wire Wire Line
-	10200 3050 10400 3050
-Wire Wire Line
-	10600 4050 10600 4400
-Wire Wire Line
-	10250 3850 10300 3850
-Connection ~ 10250 3850
-Wire Wire Line
-	10250 3850 10250 4400
-Text Notes 7600 650  0    50   ~ 0
+Text Notes 8450 700  0    50   ~ 0
 Touchscreen 
 Connection ~ 2100 5600
 Wire Bus Line
@@ -1664,10 +1432,10 @@ Wire Wire Line
 	10700 5200 10100 5200
 Connection ~ 10100 5200
 Wire Wire Line
-	6900 1950 7450 1950
-Text Label 7450 1950 2    50   ~ 0
+	6850 1950 7400 1950
+Text Label 7400 1950 2    50   ~ 0
 TOUCH_IRQ
-Text Label 7300 1750 2    50   ~ 0
+Text Label 7250 1750 2    50   ~ 0
 IO2
 $Comp
 L Device:R R19
@@ -1703,60 +1471,9 @@ Wire Bus Line
 Wire Bus Line
 	6050 5900 8250 5900
 Wire Wire Line
-	6900 1750 7300 1750
-$Comp
-L CustomParts:NLSV4T244 U7
-U 1 1 5E932609
-P 8500 1200
-F 0 "U7" H 8750 1450 50  0000 C CNN
-F 1 "NLSV4T244" H 8150 1450 50  0000 C CNN
-F 2 "CustomFootprints:NLSV4T244MUTAG" H 8200 1450 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/NLSV4T244-D.PDF" H 8200 1450 50  0001 C CNN
-F 4 "NLSV4T244MUTAGOSCT-ND" H 8550 1200 50  0001 C CNN "digikey"
-	1    8500 1200
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0147
-U 1 1 5E93703B
-P 8450 900
-F 0 "#PWR0147" H 8450 750 50  0001 C CNN
-F 1 "+3.3V" H 8350 1050 50  0000 C CNN
-F 2 "" H 8450 900 50  0001 C CNN
-F 3 "" H 8450 900 50  0001 C CNN
-	1    8450 900 
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+2V8 #PWR0148
-U 1 1 5E9376D8
-P 8550 900
-F 0 "#PWR0148" H 8550 750 50  0001 C CNN
-F 1 "+2V8" H 8600 1050 50  0000 C CNN
-F 2 "" H 8550 900 50  0001 C CNN
-F 3 "" H 8550 900 50  0001 C CNN
-	1    8550 900 
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0149
-U 1 1 5E971D64
-P 8500 1600
-F 0 "#PWR0149" H 8500 1350 50  0001 C CNN
-F 1 "GND" H 8505 1427 50  0000 C CNN
-F 2 "" H 8500 1600 50  0001 C CNN
-F 3 "" H 8500 1600 50  0001 C CNN
-	1    8500 1600
-	1    0    0    -1  
-$EndComp
+	6850 1750 7250 1750
 Wire Bus Line
-	5200 4650 7500 4650
-Wire Bus Line
-	7500 4650 7500 550 
-Wire Bus Line
-	7500 550  5200 550 
-Wire Bus Line
-	7550 550  7550 4650
+	8250 4650 8250 550 
 Wire Wire Line
 	4650 7150 4650 7300
 Wire Wire Line
@@ -1793,302 +1510,14 @@ Wire Bus Line
 Wire Bus Line
 	6050 5950 6050 7600
 Wire Bus Line
-	7550 4650 8300 4650
-Wire Bus Line
-	8300 4650 8300 6500
-Wire Bus Line
 	11200 550  11200 6500
 Wire Bus Line
-	7550 550  11200 550 
-Wire Bus Line
 	8300 6500 11200 6500
-$Comp
-L power:+3.3V #PWR0150
-U 1 1 5EC610A2
-P 8450 2000
-F 0 "#PWR0150" H 8450 1850 50  0001 C CNN
-F 1 "+3.3V" H 8350 2150 50  0000 C CNN
-F 2 "" H 8450 2000 50  0001 C CNN
-F 3 "" H 8450 2000 50  0001 C CNN
-	1    8450 2000
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+2V8 #PWR0151
-U 1 1 5EC610A8
-P 8550 2000
-F 0 "#PWR0151" H 8550 1850 50  0001 C CNN
-F 1 "+2V8" H 8600 2150 50  0000 C CNN
-F 2 "" H 8550 2000 50  0001 C CNN
-F 3 "" H 8550 2000 50  0001 C CNN
-	1    8550 2000
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0152
-U 1 1 5EC610AE
-P 8500 2700
-F 0 "#PWR0152" H 8500 2450 50  0001 C CNN
-F 1 "GND" H 8505 2527 50  0000 C CNN
-F 2 "" H 8500 2700 50  0001 C CNN
-F 3 "" H 8500 2700 50  0001 C CNN
-	1    8500 2700
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:NLSV4T244 U9
-U 1 1 5EC73320
-P 8500 3450
-F 0 "U9" H 8750 3700 50  0000 C CNN
-F 1 "NLSV4T244" H 8150 3700 50  0000 C CNN
-F 2 "CustomFootprints:NLSV4T244MUTAG" H 8200 3700 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/NLSV4T244-D.PDF" H 8200 3700 50  0001 C CNN
-F 4 "NLSV4T244MUTAGOSCT-ND" H 8550 3450 50  0001 C CNN "digikey"
-	1    8500 3450
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR0153
-U 1 1 5EC73326
-P 8450 3150
-F 0 "#PWR0153" H 8450 3000 50  0001 C CNN
-F 1 "+3.3V" H 8350 3300 50  0000 C CNN
-F 2 "" H 8450 3150 50  0001 C CNN
-F 3 "" H 8450 3150 50  0001 C CNN
-	1    8450 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+2V8 #PWR0154
-U 1 1 5EC7332C
-P 8550 3150
-F 0 "#PWR0154" H 8550 3000 50  0001 C CNN
-F 1 "+2V8" H 8600 3300 50  0000 C CNN
-F 2 "" H 8550 3150 50  0001 C CNN
-F 3 "" H 8550 3150 50  0001 C CNN
-	1    8550 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0155
-U 1 1 5EC73332
-P 8500 3850
-F 0 "#PWR0155" H 8500 3600 50  0001 C CNN
-F 1 "GND" H 8505 3677 50  0000 C CNN
-F 2 "" H 8500 3850 50  0001 C CNN
-F 3 "" H 8500 3850 50  0001 C CNN
-	1    8500 3850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10050 2450 10400 2450
-$Comp
-L power:GND #PWR0156
-U 1 1 5EE2B99D
-P 10100 2650
-F 0 "#PWR0156" H 10100 2400 50  0001 C CNN
-F 1 "GND" H 10105 2477 50  0000 C CNN
-F 2 "" H 10100 2650 50  0001 C CNN
-F 3 "" H 10100 2650 50  0001 C CNN
-	1    10100 2650
-	1    0    0    -1  
-$EndComp
-Connection ~ 10100 2650
-$Comp
-L power:GND #PWR0157
-U 1 1 5EE888D9
-P 7650 1050
-F 0 "#PWR0157" H 7650 800 50  0001 C CNN
-F 1 "GND" H 7655 877 50  0000 C CNN
-F 2 "" H 7650 1050 50  0001 C CNN
-F 3 "" H 7650 1050 50  0001 C CNN
-	1    7650 1050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7650 1050 8150 1050
-$Comp
-L power:GND #PWR0158
-U 1 1 5EE9BA7A
-P 7650 2150
-F 0 "#PWR0158" H 7650 1900 50  0001 C CNN
-F 1 "GND" H 7655 1977 50  0000 C CNN
-F 2 "" H 7650 2150 50  0001 C CNN
-F 3 "" H 7650 2150 50  0001 C CNN
-	1    7650 2150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7650 2150 8150 2150
-Text Label 7750 2450 0    50   ~ 0
-LCD_DB2
-Text Label 7750 2350 0    50   ~ 0
-LCD_DB1
-Text Label 7750 2250 0    50   ~ 0
-LCD_DB0
-Text Label 9850 1250 0    50   ~ 0
-LCD_~RST~
-Wire Wire Line
-	10400 1250 9850 1250
-$Comp
-L power:GND #PWR0159
-U 1 1 5EEADF99
-P 7650 3300
-F 0 "#PWR0159" H 7650 3050 50  0001 C CNN
-F 1 "GND" H 7655 3127 50  0000 C CNN
-F 2 "" H 7650 3300 50  0001 C CNN
-F 3 "" H 7650 3300 50  0001 C CNN
-	1    7650 3300
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7650 3300 8150 3300
-Wire Wire Line
-	6900 2150 7450 2150
-Wire Wire Line
-	8150 3400 7750 3400
-Wire Wire Line
-	8150 3500 7750 3500
-Wire Wire Line
-	8150 3600 7750 3600
-Wire Wire Line
-	8150 3700 7750 3700
-Wire Wire Line
-	8150 2550 7750 2550
-Wire Wire Line
-	8150 2450 7750 2450
-Wire Wire Line
-	8150 2350 7750 2350
-Wire Wire Line
-	8150 2250 7750 2250
-$Comp
-L CustomParts:NLSV4T244 U8
-U 1 1 5EC6109C
-P 8500 2300
-F 0 "U8" H 8750 2550 50  0000 C CNN
-F 1 "NLSV4T244" H 8150 2550 50  0000 C CNN
-F 2 "CustomFootprints:NLSV4T244MUTAG" H 8200 2550 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/NLSV4T244-D.PDF" H 8200 2550 50  0001 C CNN
-F 4 "NLSV4T244MUTAGOSCT-ND" H 8550 2300 50  0001 C CNN "digikey"
-	1    8500 2300
-	1    0    0    -1  
-$EndComp
-Text Label 7750 1150 0    50   ~ 0
-LCD_~CS~
-Text Label 7750 1250 0    50   ~ 0
-LCD_~DC~
-Text Label 7750 1350 0    50   ~ 0
-LCD_~WR~
-Text Label 7750 1450 0    50   ~ 0
-LCD_~RD~
-Wire Wire Line
-	8150 1150 7750 1150
-Wire Wire Line
-	8150 1250 7750 1250
-Wire Wire Line
-	8150 1350 7750 1350
-Wire Wire Line
-	8150 1450 7750 1450
-Text Label 9900 4400 1    50   ~ 0
-LCD_~RST~
-$Comp
-L Device:R R20
-U 1 1 5F0ADA65
-P 9900 3850
-F 0 "R20" H 9970 3896 50  0000 L CNN
-F 1 "100k" H 9970 3805 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 9830 3850 50  0001 C CNN
-F 3 "~" H 9900 3850 50  0001 C CNN
-F 4 "CR0603-JW-104ELFCT-ND" H 9900 3850 50  0001 C CNN "digikey"
-	1    9900 3850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9900 4400 9900 4000
-$Comp
-L power:+2V8 #PWR0160
-U 1 1 5F0F8BC4
-P 9900 3700
-F 0 "#PWR0160" H 9900 3550 50  0001 C CNN
-F 1 "+2V8" H 9950 3850 50  0000 C CNN
-F 2 "" H 9900 3700 50  0001 C CNN
-F 3 "" H 9900 3700 50  0001 C CNN
-	1    9900 3700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8850 1150 10400 1150
-Wire Wire Line
-	8850 1250 9500 1250
-Wire Wire Line
-	9500 1350 10400 1350
-Wire Wire Line
-	9500 1250 9500 1350
-Wire Wire Line
-	8850 1350 9400 1350
-Wire Wire Line
-	9400 1350 9400 1450
-Wire Wire Line
-	9400 1450 10400 1450
-Wire Wire Line
-	8850 1450 9300 1450
-Wire Wire Line
-	9300 1450 9300 1550
-Wire Wire Line
-	9300 1550 10400 1550
-Wire Wire Line
-	8850 2250 8950 2250
-Wire Wire Line
-	8950 2250 8950 1650
-Wire Wire Line
-	8950 1650 10400 1650
-Wire Wire Line
-	8850 2350 9050 2350
-Wire Wire Line
-	9050 2350 9050 1750
-Wire Wire Line
-	9050 1750 10400 1750
-Wire Wire Line
-	8850 2450 9150 2450
-Wire Wire Line
-	9150 2450 9150 1850
-Wire Wire Line
-	9150 1850 10400 1850
-Wire Wire Line
-	8850 2550 9250 2550
-Wire Wire Line
-	9250 2550 9250 1950
-Wire Wire Line
-	9250 1950 10400 1950
-Wire Wire Line
-	8850 3400 9350 3400
-Wire Wire Line
-	9350 3400 9350 2050
-Wire Wire Line
-	9350 2050 10400 2050
-Wire Wire Line
-	8850 3500 9450 3500
-Wire Wire Line
-	9450 3500 9450 2150
-Wire Wire Line
-	9450 2150 10400 2150
-Wire Wire Line
-	8850 3600 9550 3600
-Wire Wire Line
-	9550 3600 9550 2250
-Wire Wire Line
-	9550 2250 10400 2250
-Wire Wire Line
-	8850 3700 9650 3700
-Wire Wire Line
-	9650 3700 9650 2350
-Wire Wire Line
-	9650 2350 10400 2350
 Text Notes 9400 -50  0    50   ~ 0
 NOTE: LCD_RST should only be set to either LOW or HIGH-Z\n
 Wire Wire Line
 	8650 5050 8650 5150
-Text Label 6900 2450 0    50   ~ 0
+Text Label 7400 2450 2    50   ~ 0
 IO15
 $Comp
 L CustomParts:TestPad J12
@@ -2190,14 +1619,6 @@ F 4 "RMCF0603JT27R0CT-ND" V 1750 6000 50  0001 C CNN "digikey"
 	1    1750 6000
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	6900 2550 7450 2550
-Wire Wire Line
-	6900 2650 7450 2650
-Text Label 7450 2450 2    50   ~ 0
-LCD_~WR~
-Text Label 7450 2650 2    50   ~ 0
-LCD_~RD~
 Text Label 2450 1350 0    50   ~ 0
 PWR_IN
 $Comp
@@ -2343,4 +1764,315 @@ Wire Wire Line
 Connection ~ 1250 6400
 Wire Bus Line
 	550  4700 550  7600
+$Comp
+L CustomParts:LP5912-3.3DRVT U4
+U 1 1 5ED1AF13
+P 3750 2600
+F 0 "U4" H 3750 2965 50  0000 C CNN
+F 1 "LP5912-3.3DRVT" H 3750 2874 50  0000 C CNN
+F 2 "Package_SON:WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm_ThermalVias" H 3700 2850 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lp5912.pdf" H 3700 2850 50  0001 C CNN
+F 4 "296-44153-1-ND" H 3750 2600 50  0001 C CNN "digikey"
+	1    3750 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 2450 7400 2450
+Text Label 2150 850  0    50   ~ 0
+BAT+
+$Comp
+L CustomParts:ZJY117 A1
+U 1 1 5ED9505C
+P 10300 2100
+F 0 "A1" H 10100 3200 50  0000 L CNN
+F 1 "ZJY117" H 10100 3300 50  0000 L CNN
+F 2 "CustomFootprints:ZJY117" H 10100 3150 50  0001 C CNN
+F 3 "" H 10100 3150 50  0001 C CNN
+	1    10300 2100
+	1    0    0    -1  
+$EndComp
+Text Label 9800 2750 0    50   ~ 0
+Y+
+Wire Wire Line
+	9800 2750 10000 2750
+Text Label 9800 2850 0    50   ~ 0
+X+
+Wire Wire Line
+	9800 2850 10000 2850
+Text Label 9800 2950 0    50   ~ 0
+Y-
+Wire Wire Line
+	9800 2950 10000 2950
+Text Label 9800 3050 0    50   ~ 0
+X-
+Wire Wire Line
+	9800 3050 10000 3050
+Wire Wire Line
+	7300 2350 6850 2350
+Wire Wire Line
+	7300 2750 6850 2750
+Wire Wire Line
+	7300 2950 6850 2950
+Wire Wire Line
+	7300 3150 6850 3150
+Wire Wire Line
+	7300 2550 6850 2550
+Text Label 7300 2350 2    50   ~ 0
+LCD_CS
+Text Label 7300 2750 2    50   ~ 0
+LCD_SCK
+Text Label 7300 2950 2    50   ~ 0
+LCD_A0
+Text Label 7300 3150 2    50   ~ 0
+LCD_MOSI
+Text Label 7300 2550 2    50   ~ 0
+LCD_LED
+Text Label 4950 2650 2    50   ~ 0
+LCD_PWR
+Text Label 9400 2100 0    50   ~ 0
+LCD_PWR
+Wire Wire Line
+	9400 2100 9750 2100
+Wire Wire Line
+	9750 2100 9750 2200
+Wire Wire Line
+	9750 2200 10000 2200
+Connection ~ 9750 2100
+Wire Wire Line
+	9750 2100 10000 2100
+Text Label 7300 3050 2    50   ~ 0
+LCD_RST
+Wire Wire Line
+	7300 3050 6850 3050
+Text Label 7250 3550 2    50   ~ 0
+I2C_SCL
+Text Label 7250 3650 2    50   ~ 0
+I2C_SDA
+Wire Wire Line
+	6850 3550 7250 3550
+Wire Wire Line
+	6850 3650 7250 3650
+Wire Wire Line
+	6850 2150 7400 2150
+Text Label 7300 2250 2    50   ~ 0
+LCD_EN
+Wire Wire Line
+	6850 2250 7300 2250
+Text Label 9400 1500 0    50   ~ 0
+LCD_PWR
+Wire Wire Line
+	9400 1500 10000 1500
+NoConn ~ 10000 2500
+NoConn ~ 10000 1200
+$Comp
+L Device:R R20
+U 1 1 5EFBF8EC
+P 10800 3900
+F 0 "R20" H 10870 3946 50  0000 L CNN
+F 1 "0 (NC)" H 10870 3855 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 10730 3900 50  0001 C CNN
+F 3 "~" H 10800 3900 50  0001 C CNN
+F 4 "311-0.0GRCT-ND" H 10800 3900 50  0001 C CNN "digikey"
+	1    10800 3900
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:Q_NMOS_GSD Q4
+U 1 1 5EFC26EF
+P 9650 3850
+F 0 "Q4" H 9854 3896 50  0000 L CNN
+F 1 "2N7002K" H 9854 3805 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 9850 3950 50  0001 C CNN
+F 3 "~" H 9650 3850 50  0001 C CNN
+F 4 "2N7002KCT-ND" H 9650 3850 50  0001 C CNN "digikey"
+	1    9650 3850
+	1    0    0    -1  
+$EndComp
+Text Label 9100 3850 0    50   ~ 0
+LCD_LED
+Wire Wire Line
+	9100 3850 9450 3850
+$Comp
+L power:GND #PWR0123
+U 1 1 5F05964E
+P 9750 4050
+F 0 "#PWR0123" H 9750 3800 50  0001 C CNN
+F 1 "GND" H 9755 3877 50  0000 C CNN
+F 2 "" H 9750 4050 50  0001 C CNN
+F 3 "" H 9750 4050 50  0001 C CNN
+	1    9750 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0125
+U 1 1 5F05A121
+P 10800 4050
+F 0 "#PWR0125" H 10800 3800 50  0001 C CNN
+F 1 "GND" H 10805 3877 50  0000 C CNN
+F 2 "" H 10800 4050 50  0001 C CNN
+F 3 "" H 10800 4050 50  0001 C CNN
+	1    10800 4050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9750 3650 9750 3500
+Wire Wire Line
+	10000 1400 9400 1400
+Text Label 9400 1400 0    50   ~ 0
+LCD_CATHODE
+Text Label 9250 3500 0    50   ~ 0
+LCD_CATHODE
+Wire Wire Line
+	9250 3500 9750 3500
+Wire Wire Line
+	10800 3750 10800 3500
+Text Label 10250 3500 0    50   ~ 0
+LCD_CATHODE
+Wire Wire Line
+	10250 3500 10800 3500
+$Comp
+L power:GND #PWR0126
+U 1 1 5F0DD191
+P 9200 1300
+F 0 "#PWR0126" H 9200 1050 50  0001 C CNN
+F 1 "GND" H 9205 1127 50  0000 C CNN
+F 2 "" H 9200 1300 50  0001 C CNN
+F 3 "" H 9200 1300 50  0001 C CNN
+	1    9200 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0128
+U 1 1 5F0DDD32
+P 9200 1600
+F 0 "#PWR0128" H 9200 1350 50  0001 C CNN
+F 1 "GND" H 9205 1427 50  0000 C CNN
+F 2 "" H 9200 1600 50  0001 C CNN
+F 3 "" H 9200 1600 50  0001 C CNN
+	1    9200 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0132
+U 1 1 5F0DDD7C
+P 9200 2400
+F 0 "#PWR0132" H 9200 2150 50  0001 C CNN
+F 1 "GND" H 9205 2227 50  0000 C CNN
+F 2 "" H 9200 2400 50  0001 C CNN
+F 3 "" H 9200 2400 50  0001 C CNN
+	1    9200 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 1300 10000 1300
+Wire Wire Line
+	9200 1600 10000 1600
+Wire Wire Line
+	9200 2400 10000 2400
+Text Label 9550 1700 0    50   ~ 0
+LCD_RST
+Wire Wire Line
+	9550 1700 10000 1700
+Wire Wire Line
+	9550 1800 10000 1800
+Text Label 9550 1800 0    50   ~ 0
+LCD_A0
+Wire Wire Line
+	9550 1900 10000 1900
+Text Label 9550 1900 0    50   ~ 0
+LCD_MOSI
+Wire Wire Line
+	9550 2000 10000 2000
+Text Label 9550 2000 0    50   ~ 0
+LCD_SCK
+Wire Wire Line
+	9550 2300 10000 2300
+Text Label 9550 2300 0    50   ~ 0
+LCD_CS
+Wire Bus Line
+	11200 550  8300 550 
+Wire Bus Line
+	8300 550  8300 6500
+Wire Bus Line
+	5200 550  8250 550 
+Wire Bus Line
+	5200 4650 8250 4650
+$Comp
+L CustomParts:TestPad J15
+U 1 1 5F1F3B31
+P 7350 2050
+F 0 "J15" H 7600 2050 50  0000 L CNN
+F 1 "TestPad" H 7850 2050 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 2150 50  0001 C CNN
+F 3 "" H 7450 2150 50  0001 C CNN
+	1    7350 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J16
+U 1 1 5F1F47AF
+P 7350 2650
+F 0 "J16" H 7600 2650 50  0000 L CNN
+F 1 "TestPad" H 7850 2650 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 2750 50  0001 C CNN
+F 3 "" H 7450 2750 50  0001 C CNN
+	1    7350 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J17
+U 1 1 5F1F4D94
+P 7350 2850
+F 0 "J17" H 7600 2850 50  0000 L CNN
+F 1 "TestPad" H 7850 2850 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 2950 50  0001 C CNN
+F 3 "" H 7450 2950 50  0001 C CNN
+	1    7350 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J18
+U 1 1 5F1F51C0
+P 7350 3250
+F 0 "J18" H 7600 3250 50  0000 L CNN
+F 1 "TestPad" H 7850 3250 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 3350 50  0001 C CNN
+F 3 "" H 7450 3350 50  0001 C CNN
+	1    7350 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J19
+U 1 1 5F1F5439
+P 7350 3350
+F 0 "J19" H 7600 3350 50  0000 L CNN
+F 1 "TestPad" H 7850 3350 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 3450 50  0001 C CNN
+F 3 "" H 7450 3450 50  0001 C CNN
+	1    7350 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L CustomParts:TestPad J20
+U 1 1 5F1F569A
+P 7350 3450
+F 0 "J20" H 7600 3450 50  0000 L CNN
+F 1 "TestPad" H 7850 3450 50  0000 L CNN
+F 2 "CustomFootprints:TESTPAD" H 7450 3550 50  0001 C CNN
+F 3 "" H 7450 3550 50  0001 C CNN
+	1    7350 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 2050 7350 2050
+Wire Wire Line
+	6850 2650 7350 2650
+Wire Wire Line
+	6850 2850 7350 2850
+Wire Wire Line
+	6850 3250 7350 3250
+Wire Wire Line
+	6850 3350 7350 3350
+Wire Wire Line
+	6850 3450 7350 3450
 $EndSCHEMATC
