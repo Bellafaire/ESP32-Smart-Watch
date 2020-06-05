@@ -1,5 +1,9 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP ADXL337
+F https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL337.pdf
+$ENDCMP
+#
 $CMP LP5912-3.3DRVT
 F http://www.ti.com/lit/ds/symlink/lp5912.pdf
 $ENDCMP
@@ -9,6 +13,10 @@ F https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf
 $ENDCMP
 #
 $CMP MAX17260
+F https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf
+$ENDCMP
+#
+$CMP MAX17260_WLP
 F https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf
 $ENDCMP
 #

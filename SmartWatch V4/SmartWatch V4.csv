@@ -1,0 +1,15 @@
+Qty,Reference(s),Value,LibPart,Footprint,Datasheet,Field4,Field5,Field6,Field7,Field8,digikey
+1,Q4,2N7002K,Device:Q_NMOS_GSD,Package_TO_SOT_SMD:SOT-23,~,,,,,,2N7002KCT-ND
+4,"R1, R7, R8, R21",100k,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,CR0603-JW-104ELFCT-ND
+2,"R2, R3",27,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,RMCF0603JT27R0CT-ND
+3,"R5, R11, R12",0,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,311-0.0GRCT-ND
+11,"R6, R9, R10, R13, R14, R15, R16, R17, R18, R19, R22",10k,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,311-10.0KCRCT-ND
+10,R23,10m,Device:R,Resistor_SMD:R_0805_2012Metric,https://d1d2qsbl8m0m72.cloudfront.net/en/products/databook/datasheet/passive/resistor/chip_resistor/pmr-e.pdf,,,,,,RL12T.010JCT-ND
+2,"SW1, SW2",EVQ-P7J01P,CustomParts:EVQ-P7J01P,CustomFootprints:SW_EVQ-P7J01P,Panasonic,Manufacturer Recommendation,,,,,P16767CT-ND
+3,U2,FT231XQ,Interface_USB:FT231XQ,Package_DFN_QFN:QFN-20-1EP_4x4mm_P0.5mm_EP2.5x2.5mm,https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf,,,,,,768-1128-1-ND
+5,"U3, U4",LP5912-3.3DRVT,CustomParts:LP5912-3.3DRVT,Package_SON:WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm_ThermalVias,http://www.ti.com/lit/ds/symlink/lp5912.pdf,,,,,,296-44153-1-ND
+2,U5,MCP73832-2-OT,Battery_Management:MCP73832-2-OT,Package_TO_SOT_SMD:SOT-23-5,http://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf,,,,,,MCP73832T-2ACI/OTCT-ND
+2,U6,ESP32-WROOM-32,RF_Module:ESP32-WROOM-32,RF_Module:ESP32-WROOM-32,https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf,,,,,,1904-1010-1-ND
+3,U7,MAX17260_WLP,CustomParts:MAX17260_WLP,CustomFootprints:Maxim_WLP-9_1.595x1.415_Layout3x3_P0.4mm_Ball0.27mm_Pad0.25mm_NSMD,https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf,,,,,,MAX17260SEWL+T
+1,U8,ADXL337,CustomParts:ADXL337,CustomFootprints:ADXL337BCPZ-RL,https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL337.pdf,,,,,,ADXL337BCPZ-RLCT-ND
+1,U10,TSC2003IPWR,CustomParts:TSC2003IPWR,Package_SO:TSSOP-16_4.4x5mm_P0.65mm,http://www.ti.com/lit/ds/symlink/tsc2003.pdf,,,,,,296-14340-1-ND
