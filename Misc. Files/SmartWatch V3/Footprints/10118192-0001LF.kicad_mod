@@ -1,0 +1,128 @@
+PCBNEW-LibModule-V1  
+# encoding utf-8
+Units mm
+$INDEX
+AMPHENOL_10118192-0001LF
+$EndINDEX
+$MODULE AMPHENOL_10118192-0001LF
+Po 0 0 0 15 00000000 00000000 ~~
+Li AMPHENOL_10118192-0001LF
+Cd 
+Sc 00000000
+At SMD
+Op 0 0 0
+.SolderMask 0
+.SolderPaste 0
+T0 -2.95307 -2.27805 0.787417 0.787417 0 0.05 N V 21 "AMPHENOL_10118192-0001LF"
+T1 -2.58014 5.85033 0.787449 0.787449 0 0.05 N V 21 "VAL**"
+DS -3.75 -0.225 3.75 -0.225 0.127 27
+DS 3.75 -0.225 3.75 4.125 0.127 27
+DS 3.75 4.125 3.75 5.436 0.127 27
+DS 3.75 5.436 -3.75 5.436 0.127 27
+DS -3.75 5.436 -3.75 4.125 0.127 27
+DS -3.75 4.125 -3.75 -0.225 0.127 27
+DS 3.75 4.125 -3.75 4.125 0.127 27
+DS 3.75 4.125 7.15 4.125 0.127 27
+T2 5.204960 3.903720 1 1 0 .05 N V 51 "PCB~Edge"
+DS -3.75 1.15 -3.75 1.5 0.127 21
+DS 3.75 1.15 3.75 1.5 0.127 21
+DS -3.75 3.85 -3.75 4.125 0.127 21
+DS -3.75 4.125 3.75 4.125 0.127 21
+DS 3.75 4.125 3.75 3.85 0.127 21
+DS -1.83 -0.225 -1.72 -0.225 0.127 21
+DS 1.72 -0.225 1.83 -0.225 0.127 21
+DS -4.95 -0.925 4.95 -0.925 0.05 26
+DS 4.95 -0.925 4.95 5.686 0.05 26
+DS 4.95 5.686 -4.95 5.686 0.05 26
+DS -4.95 5.686 -4.95 -0.925 0.05 26
+DC -1.4 -1.3 -1.3 -1.3 0.3 21
+DC -1.4 -1.3 -1.3 -1.3 0.3 27
+$PAD
+Sh "3" R 0.4 1.35 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 0 0
+$EndPAD
+$PAD
+Sh "2" R 0.4 1.35 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -0.65 0
+$EndPAD
+$PAD
+Sh "4" R 0.4 1.35 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 0.65 0
+$EndPAD
+$PAD
+Sh "1" R 0.4 1.35 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -1.3 0
+$EndPAD
+$PAD
+Sh "5" R 0.4 1.35 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 1.3 0
+$EndPAD
+$PAD
+Sh "SH1" R 2.1 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -3.1 0.125
+$EndPAD
+$PAD
+Sh "SH2" R 2.1 1.6 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 3.1 0.125
+$EndPAD
+$PAD
+Sh "SH3" R 1.8 1.9 0 0 1800
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -3.8 2.675
+$EndPAD
+$PAD
+Sh "SH6" R 1.8 1.9 0 0 1800
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 3.8 2.675
+$EndPAD
+$PAD
+Sh "SH4" R 1.9 1.9 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po -1.2 2.675
+$EndPAD
+$PAD
+Sh "SH5" R 1.9 1.9 0 0 0
+At SMD N 00888000
+.SolderMask 0
+.SolderPaste 0
+Ne 0 ""
+Po 1.2 2.675
+$EndPAD
+$EndMODULE AMPHENOL_10118192-0001LF
