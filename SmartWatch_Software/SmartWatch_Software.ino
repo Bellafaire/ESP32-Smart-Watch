@@ -18,6 +18,7 @@ void setup()
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
   pinMode(TOUCH_IRQ, INPUT);
+  initTouch();
 
   //init I2C communication
   Wire.begin(I2C_SDA, I2C_SCL, 100000);
@@ -44,8 +45,8 @@ void setup()
   {
   case ESP_SLEEP_WAKEUP_EXT0:
     //if woken up by user touching screen
-    initLCD();
     initTouch();
+    initLCD();
     MainLoop();
     break;
   case ESP_SLEEP_WAKEUP_EXT1:

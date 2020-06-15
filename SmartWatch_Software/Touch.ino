@@ -2,7 +2,12 @@
 //attach IRQ interrupt
 void initTouch()
 {
-  readTouch(); //dummy read (IRQ may not be enabled on startup)
+
+  //dummy read the touch controller, bits 2 and 3 determine the power down state, 00 enables touch IRQ and puts the device into power down
+  struct point p;
+  p.xPos = map(readRegister(TOUCH_ADDR, 0b11010010) >> 8, X_MIN, X_MAX, 0, SCREEN_WIDTH);
+  p.yPos = map(readRegister(TOUCH_ADDR, 0b11000010) >> 8, Y_MIN, Y_MAX, SCREEN_HEIGHT, 0);
+
   attachInterrupt(TOUCH_IRQ, TOUCH_ISR, FALLING);
 }
 
@@ -59,6 +64,9 @@ void handleTouch()
     {
     case HOME:
       HomeTouchHandler(readTouch());
+      break;
+    case SETTINGS:
+      SettingsTouchHandler(readTouch());
       break;
     default:
       break;

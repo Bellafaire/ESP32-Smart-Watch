@@ -1308,8 +1308,6 @@ F 3 "" H 3250 2650 50  0001 C CNN
 	1    3250 2650
 	1    0    0    -1  
 $EndComp
-Text Label 3250 2350 2    50   ~ 0
-BAT+
 Wire Wire Line
 	2700 2350 3250 2350
 $Comp
@@ -2307,4 +2305,6 @@ F 3 "" H 9150 4500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9150 4500 9150 4350
+Text Label 3250 2350 2    50   ~ 0
+BAT_SENSE
 $EndSCHEMATC

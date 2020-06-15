@@ -56,7 +56,15 @@ void initBatMonitor()
 }
 
 float getBatteryCurrent() {
-  return ((short)readRegister(BAT_MONITOR_ADDR, 0x0A)) * 0.00026041; // for 0.006 ohm shunt
+  return ((short)readRegister(BAT_MONITOR_ADDR, 0x0A)) * 0.00015625; // for 0.010 ohm shunt
+}
+
+
+float getTimeUntilEmpty() {
+  int a = readRegister(BAT_MONITOR_ADDR, 0x11);
+  float t = (float)a * 5.625; //gives time til empty in seconds
+  t = (t) / 3600; //convert to hours
+  return t;
 }
 
 float getBatteryVoltage() {
@@ -68,13 +76,13 @@ float getBatteryVoltage() {
 //returns in Ah
 float getTotalCapacity() {
   int a = readRegister(BAT_MONITOR_ADDR, 0x10);
-  return a * 0.000833;
+  return a * 0.0005;
 }
 
 //returns in Ah
 float getRemainingCapacity() {
   int a = readRegister(BAT_MONITOR_ADDR, 0x05);
-  return a * 0.000833;
+  return a * 0.0005;
 }
 
 int getBatteryPercentage() {

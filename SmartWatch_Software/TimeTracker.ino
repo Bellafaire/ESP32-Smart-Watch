@@ -1,7 +1,8 @@
 boolean correctTime = true;
 
 //found here https://www.esp32.com/viewtopic.php?t=5398 (with some changes for timezone)
-void mjd_set_timezone_est() {
+void mjd_set_timezone_est()
+{
   ESP_LOGD(TAG, "%s()", __FUNCTION__);
 
   // @doc https://remotemonitoringsystems.ca/time-zone-abbreviations.php
@@ -10,7 +11,8 @@ void mjd_set_timezone_est() {
   tzset();
 }
 
-String getInternetTime() {
+String getInternetTime()
+{
   //connect to WiFi
   int wifiCounter = 0;
 
@@ -29,12 +31,14 @@ String getInternetTime() {
 
   WiFi.begin(ssid0, password0);
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
 #ifdef DEBUG
     Serial.print(".");
 #endif
-    if (++wifiCounter > 30) {
+    if (++wifiCounter > 30)
+    {
 #ifdef DEBUG
       Serial.println("COULD NOT CONNECT TO WIFI ");
 #endif
@@ -42,7 +46,8 @@ String getInternetTime() {
     }
   }
 #ifdef DEBUG
-  if  (WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() == WL_CONNECTED)
+  {
     Serial.println(" CONNECTED");
   }
 #endif
@@ -59,19 +64,24 @@ String getInternetTime() {
   return "00:00:00AM";
 }
 
-void printLocalTime() {
+void printLocalTime()
+{
   time(&now);
-  timeinfo = localtime (&now);
+  timeinfo = localtime(&now);
 #ifdef DEBUG
-  Serial.printf ("%s\n", asctime(timeinfo));
+  Serial.printf("%s\n", asctime(timeinfo));
   delay(2); // 26 bytes @ 115200 baud is less than 2 ms
 #endif
 }
 
-void updateTime (uint64_t elapsedTime) { // elapsedTime in us
-  if (elapsedTime == 0) Mics += micros();
-  else Mics += elapsedTime;
-  if (Mics > 1000000) {
+void updateTime(uint64_t elapsedTime)
+{ // elapsedTime in us
+  if (elapsedTime == 0)
+    Mics += micros();
+  else
+    Mics += elapsedTime;
+  if (Mics > 1000000)
+  {
     Mics = Mics % 1000000;
     now += Mics / 1000000;
   }
@@ -83,60 +93,95 @@ void updateTime (uint64_t elapsedTime) { // elapsedTime in us
 //   esp_deep_sleep_start();
 // }
 
-
-void drawDate(int x, int y, int textSize) {
+void drawDate(int x, int y, int textSize)
+{
   //configure current timezone (this information gets lost in deep sleep)
   mjd_set_timezone_est();
   time(&now);
-  timeinfo = localtime (&now);
+  timeinfo = localtime(&now);
 
   String weekday;
 
-  switch (timeinfo->tm_wday) {
-    case 0: weekday = "Sunday"; break;
-    case 1: weekday = "Monday"; break;
-    case 2: weekday = "Tuesday"; break;
-    case 3: weekday = "Wednesday"; break;
-    case 4: weekday = "Thursday"; break;
-    case 5: weekday = "Friday"; break;
-    case 6: weekday = "Saturday"; break;
-    default: weekday = "error"; break;
+  switch (timeinfo->tm_wday)
+  {
+  case 0:
+    weekday = "Sunday";
+    break;
+  case 1:
+    weekday = "Monday";
+    break;
+  case 2:
+    weekday = "Tuesday";
+    break;
+  case 3:
+    weekday = "Wednesday";
+    break;
+  case 4:
+    weekday = "Thursday";
+    break;
+  case 5:
+    weekday = "Friday";
+    break;
+  case 6:
+    weekday = "Saturday";
+    break;
+  default:
+    weekday = "error";
+    break;
   }
 
   String Date = weekday + ", " + String(timeinfo->tm_mon + 1) + "/" + String(timeinfo->tm_mday);
 
   tft.setTextSize(textSize);
   tft.setTextColor(TEXT_COLOR);
-  for (int a = 0; a < Date.length(); a++) {
+  for (int a = 0; a < Date.length(); a++)
+  {
     tft.fillRect(
-      x + a * 6 * textSize,
-      y,
-      6 * textSize,
-      7 * textSize,
-      BACKGROUND_COLOR
-    );
-    tft.setCursor(x + a * 6 * textSize, y );
+        x + a * 6 * textSize,
+        y,
+        6 * textSize,
+        7 * textSize,
+        BACKGROUND_COLOR);
+    tft.setCursor(x + a * 6 * textSize, y);
     tft.print(Date[a]);
   }
 }
 
-void drawDateCentered(int y, int textSize) {
+void drawDateCentered(int y, int textSize)
+{
   //configure current timezone (this information gets lost in deep sleep)
   mjd_set_timezone_est();
   time(&now);
-  timeinfo = localtime (&now);
+  timeinfo = localtime(&now);
 
   String weekday;
 
-  switch (timeinfo->tm_wday) {
-    case 0: weekday = "Sunday"; break;
-    case 1: weekday = "Monday"; break;
-    case 2: weekday = "Tuesday"; break;
-    case 3: weekday = "Wednesday"; break;
-    case 4: weekday = "Thursday"; break;
-    case 5: weekday = "Friday"; break;
-    case 6: weekday = "Saturday"; break;
-    default: weekday = "error"; break;
+  switch (timeinfo->tm_wday)
+  {
+  case 0:
+    weekday = "Sunday";
+    break;
+  case 1:
+    weekday = "Monday";
+    break;
+  case 2:
+    weekday = "Tuesday";
+    break;
+  case 3:
+    weekday = "Wednesday";
+    break;
+  case 4:
+    weekday = "Thursday";
+    break;
+  case 5:
+    weekday = "Friday";
+    break;
+  case 6:
+    weekday = "Saturday";
+    break;
+  default:
+    weekday = "error";
+    break;
   }
 
   String Date = weekday + ", " + String(timeinfo->tm_mon + 1) + "/" + String(timeinfo->tm_mday);
@@ -145,18 +190,17 @@ void drawDateCentered(int y, int textSize) {
 
   tft.setTextSize(textSize);
   tft.setTextColor(TEXT_COLOR);
-  for (int a = 0; a < Date.length(); a++) {
+  for (int a = 0; a < Date.length(); a++)
+  {
     tft.fillRect(
-      x + a * 6 * textSize,
-      y,
-      6 * textSize,
-      7 * textSize,
-      BACKGROUND_COLOR
-    );
-    tft.setCursor(x + a * 6 * textSize, y );
+        x + a * 6 * textSize,
+        y,
+        6 * textSize,
+        7 * textSize,
+        BACKGROUND_COLOR);
+    tft.setCursor(x + a * 6 * textSize, y);
     tft.print(Date[a]);
   }
-
 }
 
 void drawTime(int x, int y, int textSize)
@@ -164,12 +208,7 @@ void drawTime(int x, int y, int textSize)
   //configure current timezone (this information gets lost in deep sleep)
   mjd_set_timezone_est();
   time(&now);
-  timeinfo = localtime (&now);
-
-
-#ifdef DEBUG
-  Serial.println(timeinfo, "%A, %B %d %Y %H:%M:%S");
-#endif
+  timeinfo = localtime(&now);
 
   String Hour = String(timeinfo->tm_hour, DEC);
   String Minute = String(timeinfo->tm_min, DEC);
@@ -181,22 +220,26 @@ void drawTime(int x, int y, int textSize)
   second = timeinfo->tm_sec;
 
   char timestr[12] = "00:00:00 XM";
-  if (timeinfo->tm_hour > 12) {
+  if (timeinfo->tm_hour > 12)
+  {
     timestr[0] = '0' + ((hour - 12) / 10);
     timestr[1] = '0' + ((hour - 12) % 10);
     timestr[9] = 'P';
   }
-  else if (timeinfo->tm_hour == 12) {
+  else if (timeinfo->tm_hour == 12)
+  {
     timestr[0] = '1';
     timestr[1] = '2';
     timestr[9] = 'P';
   }
-  else if (timeinfo->tm_hour == 0) {
+  else if (timeinfo->tm_hour == 0)
+  {
     timestr[0] = '1';
     timestr[1] = '2';
     timestr[9] = 'A';
   }
-  else {
+  else
+  {
     timestr[0] = '0' + (timeinfo->tm_hour / 10);
     timestr[1] = '0' + (timeinfo->tm_hour % 10);
     timestr[9] = 'A';
@@ -212,22 +255,23 @@ void drawTime(int x, int y, int textSize)
        we fill in a black box behind it exactly the required size. we do this to try and prevent character "flashing"
        as much as possible.  */
   tft.setTextSize(textSize);
-  if (correctTime) {
+  if (correctTime)
+  {
     tft.setTextColor(TEXT_COLOR);
-  } else {
+  }
+  else
+  {
     tft.setTextColor(ERROR_COLOR);
   }
-  for (int a = 0; a < 11; a++) {
+  for (int a = 0; a < 11; a++)
+  {
     tft.fillRect(
-      x + a * 6 * textSize,
-      y,
-      6 * textSize,
-      7 * textSize,
-      BACKGROUND_COLOR
-    );
-    tft.setCursor(x + a * 6 * textSize, y );
+        x + a * 6 * textSize,
+        y,
+        6 * textSize,
+        7 * textSize,
+        BACKGROUND_COLOR);
+    tft.setCursor(x + a * 6 * textSize, y);
     tft.print(timestr[a]);
   }
-
-
 }

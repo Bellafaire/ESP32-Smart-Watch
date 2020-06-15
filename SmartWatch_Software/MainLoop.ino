@@ -9,15 +9,22 @@ void MainLoop()
     testScreen();
     break;
   case HOME:
-    #ifdef DEBUG
+#ifdef DEBUG
     Serial.println("Switched to Home");
-    #endif
+#endif
     switchToHome();
+    break;
+  case SETTINGS:
+#ifdef DEBUG
+    Serial.println("Switched to Settings");
+#endif
+    switchToSettings();
     break;
   default:
     currentPage = 0;
     break;
   }
+  digitalWrite(LCD_LED, LOW);
 }
 
 void testScreen()

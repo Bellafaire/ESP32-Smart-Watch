@@ -6,20 +6,20 @@
 
 #include "Pages.h"
 #include "Icons.h"
+//IconButtons.h is included below since it relies on some declarations
 
 //look and feel and colors
 #define BACKGROUND_COLOR ST77XX_BLACK
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR ST77XX_WHITE
-int ERROR_COLOR =  ST77XX_BLUE;
+int ERROR_COLOR = ST77XX_BLUE;
 
 #define screenOnTime 10000 //time before watch screen times out without user input
 
 //variables used globally
 boolean touchDetected = false;
 int currentPage = HOME;
-unsigned long lastTouchTime = 0; 
-
+unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
 #define DEBUG
@@ -65,6 +65,11 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 128
 
+//Accelerometer connections (optional extra)
+#define Z_ACCEL 25
+#define X_ACCEL 26
+#define Y_ACCEL 27
+
 //Time tracker variables (Stored in RTC)
 RTC_DATA_ATTR time_t now;
 RTC_DATA_ATTR uint64_t Mics = 0;
@@ -100,6 +105,8 @@ struct point
   int yPos;
 };
 
+#include "IconButtons.h"
+
 /***********************************************
  *                                             *
  *            Function Signitures              *
@@ -115,6 +122,7 @@ int getBatteryPercentage();
 void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite);
 int readRegister(byte deviceAddr, byte location);
 void sendWrite(byte deviceAddr, byte location, int d);
+float getTimeUntilEmpty();
 
 //Display.ino
 void initLCD();
@@ -154,3 +162,39 @@ void pressButton(iconButton b);
 void pressButton(button b);
 bool checkButtonPress(iconButton b, int x, int y);
 bool checkButtonPress(button b, int x, int y);
+
+//Settings.ino
+void about();
+void testWifi();
+void changeNetwork();
+void batterySettings();
+void reAdjustTime();
+void accelTest();
+void SettingsTouchHandler(struct point p);
+void drawSettings();
+void switchToSettings();
+void settingsLoop();
+
+//window object
+class Window
+{
+  iconButton WindowUpArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
+  iconButton WindowDownArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
+  boolean _scroll;
+  String textBuffer = "";
+  boolean focused = true;
+  int scrollPosition = 0;
+  int _x, _y, _width, _height, x_cursor, y_cursor;
+
+public:
+  Window(int x, int y, int width, int height, boolean scroll);
+  void print(String Text);
+  void println(String Text);
+  void touch();
+  void focus();
+  boolean isFocused();
+
+private:
+  String getValue(String data, char separator, int index);
+  void drawTextToWindow(boolean clr);
+};
