@@ -4,16 +4,28 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <SPI.h>
 
+#include "Pages.h"
+#include "Icons.h"
+
 //look and feel and colors
 #define BACKGROUND_COLOR ST77XX_BLACK
 #define TEXT_COLOR ST77XX_WHITE
+#define INTERFACE_COLOR ST77XX_WHITE
+int ERROR_COLOR =  ST77XX_BLUE;
+
+#define screenOnTime 10000 //time before watch screen times out without user input
+
+//variables used globally
+boolean touchDetected = false;
+int currentPage = HOME;
+unsigned long lastTouchTime = 0; 
 
 
 //prints debug information to the serial terminal when declared
-#define DEBUG 
+#define DEBUG
 
 //touch screen driver interrupt request
-#define TOUCH_IRQ 4 
+#define TOUCH_IRQ 4
 
 //LCD pins
 #define LCD_EN 13
@@ -38,7 +50,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define TOUCH_ADDR 0x48
 
 //Battery Monitor Configuration Values
-#define designcap 1200   //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
+#define designcap 1200 //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
 #define ichgterm 0x0640
 #define vempty 0x9650
 #define modelcfg 0x8400
@@ -49,17 +61,51 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define Y_MAX 230
 #define Y_MIN 14
 
+//screen resolution (don't need any magic numbers)
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 128
 
+//Time tracker variables (Stored in RTC)
+RTC_DATA_ATTR time_t now;
+RTC_DATA_ATTR uint64_t Mics = 0;
+RTC_DATA_ATTR struct tm *timeinfo;
+
+//just to avoid putting my wifi credentials on the public repo
+//Later the wifi credentials should be stored in eeprom or on the android device
+#include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h"
+
+const char *ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -5 * 3600;
+const int daylightOffset_sec = 0;
+
+//structures
+typedef struct onscreenButton button;
+typedef struct iconButton iconButton;
+
+struct onscreenButton
+{
+  int _x, _y, _width, _height, _color, _backgroundColor;
+  String _text;
+};
+
+struct iconButton
+{
+  int _x, _y, _width, _height, _color, _backgroundColor;
+  uint16_t icon[16]; //16x16 icon (single color)
+};
+
+struct point
+{
+  int xPos;
+  int yPos;
+};
 
 /***********************************************
  *                                             *
- *        Files and Function Signitures        *
- *    (functions then their associated file)   *
+ *            Function Signitures              *
  *                                             *
  ***********************************************/
-//Battery_Monitor.h
+//Battery_Monitor.ino
 void initBatMonitor();
 float getBatteryCurrent();
 float getBatteryVoltage();
@@ -70,18 +116,41 @@ void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite);
 int readRegister(byte deviceAddr, byte location);
 void sendWrite(byte deviceAddr, byte location, int d);
 
-//Display.h
+//Display.ino
 void initLCD();
 
 //Touch.h
 struct point readTouch();
 void printPoint(struct point p);
+void IRAM_ATTR TOUCH_ISR();
+void initTouch();
+void handleTouch();
 
-//MainLoop.h
+//MainLoop.ino
 void testScreen();
 void MainLoop();
 
-#include "Battery_Monitor.h"
-#include "Display.h"
-#include "Touch.h"
-#include "MainLoop.h"
+//TimeTracker.ino
+void printLocalTime();
+void updateTime(uint64_t elapsedTime);
+void beginTimedSleep(unsigned long tm0);
+
+//Home.ino
+void switchToHome();
+void drawHome();
+void HomeTouchHandler(int x, int y);
+void homeLoop();
+
+//animations.ino
+void SweepClear();
+
+//Button.ino
+int TextWidth(button b);
+void paintButton(button b);
+void paintButton(iconButton b);
+void paintButtonFull(button b);
+void paintButtonFull(iconButton b);
+void pressButton(iconButton b);
+void pressButton(button b);
+bool checkButtonPress(iconButton b, int x, int y);
+bool checkButtonPress(button b, int x, int y);

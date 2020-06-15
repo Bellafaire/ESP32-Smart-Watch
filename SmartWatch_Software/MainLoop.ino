@@ -3,7 +3,21 @@
  */
 void MainLoop()
 {
-  testScreen();
+  switch (currentPage)
+  {
+  case TEST_SCREEN:
+    testScreen();
+    break;
+  case HOME:
+    #ifdef DEBUG
+    Serial.println("Switched to Home");
+    #endif
+    switchToHome();
+    break;
+  default:
+    currentPage = 0;
+    break;
+  }
 }
 
 void testScreen()
@@ -24,9 +38,14 @@ void testScreen()
   tft.print("Charging Status: ");
   tft.println(digitalRead(CHG_STAT));
 
-  for (int a = 0; a < 5000; a++)
+  for (int a = 0; a < 10000; a++)
   {
-    readTouch();
+    // readTouch();
+    if (touchDetected)
+    {
+      readTouch();
+      touchDetected = false;
+    }
     delay(1);
   }
 }

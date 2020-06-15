@@ -24,6 +24,7 @@ void setup()
   //the battery monitor only needs to be configured once when powered on.
   if (bootCount == 0)
   {
+    getInternetTime();
     initBatMonitor();
 #ifdef DEBUG
     Serial.println("Battery Monitor initialized");
@@ -44,6 +45,7 @@ void setup()
   case ESP_SLEEP_WAKEUP_EXT0:
     //if woken up by user touching screen
     initLCD();
+    initTouch();
     MainLoop();
     break;
   case ESP_SLEEP_WAKEUP_EXT1:
