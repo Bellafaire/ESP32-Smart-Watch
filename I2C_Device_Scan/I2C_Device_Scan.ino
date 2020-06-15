@@ -5,8 +5,8 @@
 
 #include <Wire.h>
 
-#define I2C_SDA 23
-#define I2C_SCL 22
+#define I2C_SDA 33
+#define I2C_SCL 32
  
 void setup() {
   Wire.begin(I2C_SDA, I2C_SCL);

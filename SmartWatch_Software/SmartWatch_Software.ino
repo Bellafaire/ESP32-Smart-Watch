@@ -1,16 +1,9 @@
 #include "Declarations.h"
-#include "TimeTracker.h"
-#include "LCD.h"
-#include <soc/rtc.h>
-#include <esp_clk.h>
 
-void interfaceLoop();
-void activate();
+#define uS_TO_S_FACTOR 1000000ULL /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP 600         /* Time ESP32 will go to sleep (in seconds) */
 
-#define SCREEN_TOUCH_ON_TIME 5000
-unsigned long lastTouch = 0;
-
-int count = 0;
+RTC_DATA_ATTR int bootCount = 0;
 
 void setup()
 {
@@ -21,31 +14,60 @@ void setup()
   Serial.flush();
 #endif
 
+  esp_sleep_wakeup_cause_t wakeup_reason;
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+
+  pinMode(TOUCH_IRQ, INPUT);
+
+  //init I2C communication
+  Wire.begin(I2C_SDA, I2C_SCL, 100000);
+  //the battery monitor only needs to be configured once when powered on.
   if (bootCount == 0)
   {
-//    getInternetTime();
+    initBatMonitor();
+#ifdef DEBUG
+    Serial.println("Battery Monitor initialized");
+#endif
   }
 
-  bootCount++;
+  //Check if this is the first reboot and get ready to setup another sleep
+  ++bootCount;
 
-  delay(1000);
-  initLCD();
-  Serial.println("Initialized LCD");
+  //wakeup every 10 minutes, we'll use this for getting notification updates and things like that
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
 
-  delay(1000);
+  //wakeup when someone touches the screen
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
-  //  gpio_deep_sleep_hold_en();
-  //
-  //  esp_sleep_enable_timer_wakeup(SleepTime);
-  //
-  //  printLocalTime(); // This sets the internal clock
-  //
-  //  esp_deep_sleep_start();
-  Serial.println("Entering Display Loop");
+  switch (wakeup_reason)
+  {
+  case ESP_SLEEP_WAKEUP_EXT0:
+    //if woken up by user touching screen
+    initLCD();
+    MainLoop();
+    break;
+  case ESP_SLEEP_WAKEUP_EXT1:
+    break;
+  case ESP_SLEEP_WAKEUP_TIMER:
+//if woken up by 10 minute timer
+#ifdef DEBUG
+    Serial.println("Woken up by timer");
+#endif
+    break;
+  default:
+#ifdef DEBUG
+    Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeup_reason);
+#endif
+    break;
+  }
+
+#ifdef DEBUG
+  Serial.println("Going to sleep now");
+  Serial.flush();
+#endif;
+  esp_deep_sleep_start();
 }
 
 void loop()
 {
-  disp();
-  Serial.println(count++);
 }

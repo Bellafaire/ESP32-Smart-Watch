@@ -354,8 +354,6 @@ Text Label 8000 1850 2    50   ~ 0
 RXD0
 Text Label 8000 1650 2    50   ~ 0
 TXD0
-Text Notes 550  7550 0    50   ~ 0
-CBUS0 needs to be configured to TX&RXLED# using the FT_PROG utility\n
 Wire Wire Line
 	7600 1550 8000 1550
 Wire Wire Line

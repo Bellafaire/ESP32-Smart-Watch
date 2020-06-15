@@ -1,7 +1,7 @@
 //testing the I2C devices on the ESP32 Smartwatch project.
 #include <Wire.h>
-#define I2C_SDA 23
-#define I2C_SCL 22
+#define I2C_SDA 33
+#define I2C_SCL 32
 
 #define BAT_MONITOR_ADDR 0x36
 #define TOUCH_ADDR 0x48

@@ -1,67 +1,87 @@
 #include <WiFi.h>
-#include "time.h"
+#include <Wire.h>
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <SPI.h>
 
-//Pin Defs
-//touch
-#define TOUCH_IRQ 4
+//look and feel and colors
+#define BACKGROUND_COLOR ST77XX_BLACK
+#define TEXT_COLOR ST77XX_WHITE
 
-//LCD CTRL
-#define LCD_EN 12
-#define LCD_CS 5
-#define LCD_RST 13
-#define LCD_LED 15
-#define LCD_WR 16
-#define LCD_RD 17
-#define LCD_DC 18
 
-//LCD Data
-#define LCD_DB0 27
-#define LCD_DB1 26
-#define LCD_DB2 25
-#define LCD_DB3 33
-#define LCD_DB4 32
-#define LCD_DB5 14
-#define LCD_DB6 21
-#define LCD_DB7 19
+//prints debug information to the serial terminal when declared
+#define DEBUG 
 
-//I2C
-#define I2C_SCL 22
-#define I2C_SDA 23
+//touch screen driver interrupt request
+#define TOUCH_IRQ 4 
 
-//Battery and reg pins
-#define BAT_ALERT 34
+//LCD pins
+#define LCD_EN 13
+#define LCD_CS 14
+#define LCD_LED 16
+#define LCD_SCK 18
+#define LCD_DC 21 //LCD_A0
+#define LCD_RST 22
+#define LCD_MOSI 23
+Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
+
+//power regulation/monitoring pins
+//#define BAT_ALRT 34 //not used in v4.1
 #define CHG_STAT 35
 #define REG_PG 36
 #define LCD_PG 39
 
+//I2C Pins and Addresses
+#define I2C_SCL 32
+#define I2C_SDA 33
+#define BAT_MONITOR_ADDR 0x36
+#define TOUCH_ADDR 0x48
 
-RTC_DATA_ATTR int bootCount = 0;
-RTC_DATA_ATTR time_t now;
-RTC_DATA_ATTR uint64_t Mics = 0;
-RTC_DATA_ATTR struct tm * timeinfo;
+//Battery Monitor Configuration Values
+#define designcap 1200   //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
+#define ichgterm 0x0640
+#define vempty 0x9650
+#define modelcfg 0x8400
 
-#define  SleepTime  50000       //we wake the micro-controller up after this many microseconds
-
-#define TEXT_COLOR 0xFFFF
-#define INTERFACE_COLOR 0xFFFF
+//Touch Calibration
+#define X_MAX 233
+#define X_MIN 19
+#define Y_MAX 230
+#define Y_MIN 14
 
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 128
 
-int BACKGROUND_COLOR =  0xFFFF;
-int ERROR_COLOR =  0xFFFF;
 
-#define DEBUG
+/***********************************************
+ *                                             *
+ *        Files and Function Signitures        *
+ *    (functions then their associated file)   *
+ *                                             *
+ ***********************************************/
+//Battery_Monitor.h
+void initBatMonitor();
+float getBatteryCurrent();
+float getBatteryVoltage();
+float getTotalCapacity();
+float getRemainingCapacity();
+int getBatteryPercentage();
+void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite);
+int readRegister(byte deviceAddr, byte location);
+void sendWrite(byte deviceAddr, byte location, int d);
 
-String ssid       = "Bellafaire Family Wifi";
-String password   = "cashewbunny";
+//Display.h
+void initLCD();
 
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = -5 * 3600;
-const int   daylightOffset_sec = 0;
+//Touch.h
+struct point readTouch();
+void printPoint(struct point p);
 
-//TimeTracker.h
-String getInternetTime();
-void drawDate(int x, int y, int textSize);
-void drawDateCentered(int y, int textSize);
-void drawTime(int x, int y, int textSize);
+//MainLoop.h
+void testScreen();
+void MainLoop();
+
+#include "Battery_Monitor.h"
+#include "Display.h"
+#include "Touch.h"
+#include "MainLoop.h"
