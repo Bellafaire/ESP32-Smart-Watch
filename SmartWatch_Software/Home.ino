@@ -32,6 +32,9 @@ void drawHome()
     tft.print("Battery ");
     tft.print(String(getBatteryPercentage()));
     tft.print("%");
+    if(getBatteryCurrent() > 0.0){
+        tft.print(" Charging");
+    }
 
     paintButton(homeNotificationsButton);
     paintButton(homeAppsButton);

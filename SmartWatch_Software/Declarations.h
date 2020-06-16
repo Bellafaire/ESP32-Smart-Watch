@@ -51,7 +51,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 
 //Battery Monitor Configuration Values
 #define designcap 1200 //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
-#define ichgterm 0x0640
+#define ichgterm 20
 #define vempty 0x9650
 #define modelcfg 0x8400
 
@@ -106,6 +106,31 @@ struct point
 };
 
 #include "IconButtons.h"
+
+//window object
+class Window
+{
+  iconButton WindowUpArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
+  iconButton WindowDownArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
+  boolean _scroll;
+  String textBuffer = "";
+  boolean focused = true;
+  int scrollPosition = 0;
+  int _x, _y, _width, _height, x_cursor, y_cursor;
+
+public:
+  Window(int x, int y, int width, int height, boolean scroll);
+  void print(String Text);
+  void println(String Text);
+  void touch();
+  void focus();
+  boolean isFocused();
+
+private:
+  String getValue(String data, char separator, int index);
+  void drawTextToWindow(boolean clr);
+};
+
 
 /***********************************************
  *                                             *
@@ -174,27 +199,3 @@ void SettingsTouchHandler(struct point p);
 void drawSettings();
 void switchToSettings();
 void settingsLoop();
-
-//window object
-class Window
-{
-  iconButton WindowUpArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
-  iconButton WindowDownArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
-  boolean _scroll;
-  String textBuffer = "";
-  boolean focused = true;
-  int scrollPosition = 0;
-  int _x, _y, _width, _height, x_cursor, y_cursor;
-
-public:
-  Window(int x, int y, int width, int height, boolean scroll);
-  void print(String Text);
-  void println(String Text);
-  void touch();
-  void focus();
-  boolean isFocused();
-
-private:
-  String getValue(String data, char separator, int index);
-  void drawTextToWindow(boolean clr);
-};
