@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,51 +34,69 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> notificationHeaders, notificationText;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
 
     //creation method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try {
-            Bluetooth.openBT();
-            String[] splits = currentNotification.getText().toString().split("\n");
-            Bluetooth.sendData("Its me, ya boi, a smart phone");
-            Bluetooth.closeBT();
-        }catch(Exception e){
+        notificationHeaders = new ArrayList();
+        notificationText = new ArrayList();
 
+        setContentView(R.layout.activity_main);
+        currentNotification = (TextView) findViewById(R.id.CurrentNotificationString);
+        currentNotification.setMovementMethod(new ScrollingMovementMethod());
+
+        nReceiver = new NotificationReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+        registerReceiver(nReceiver, filter);
+        getCurrentNotifications();
+
+        Log.i("inform", "App starting....");
+        try {
+            Bluetooth.findBT();
+            Log.i("inform", "Found Bluetooth Device");
+            Bluetooth.openBT();
+            Log.i("inform", "Opened Bluetooth");
+//            String[] splits = currentNotification.getText().toString().split("\n");
+            Bluetooth.sendData("App startup test message");
+            Log.i("inform", "Sent data over bluetooth");
+            Bluetooth.closeBT();
+            Log.i("inform", "Closed Bluetooth Connection");
+        }catch(Exception e){
+            Log.i("inform", e.getMessage());
         }
         Runnable notificationUpdater = new Runnable() {
             @Override
             public void run() {
                 getCurrentNotifications();
+                Log.i("inform", "Got current notifications");
             }
         };
 
         Runnable DataSender = new Runnable() {
             @Override
             public void run() {
-                sendNotificationData();
+                Log.i("inform", "Attempting to send data");
+                Looper.prepare();
+                try{
+                    sendNotificationData();
+                    Log.i("inform", "Sent current notification data");
+                    }
+                catch(Exception e){
+                    Log.i("inform", "failed to send data over bluetooth due to " + e.getMessage());
+                }
+            Looper.loop();
             }
         };
 
-        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 30, TimeUnit.SECONDS);
-        scheduler.scheduleAtFixedRate(DataSender, 15, 30, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(DataSender, 1, 5, TimeUnit.SECONDS);
+        Log.i("inform", "Scheduled data sender and notification updater");
 
 
-        notificationHeaders = new ArrayList();
-        notificationText = new ArrayList();
-
-        nReceiver = new NotificationReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-        registerReceiver(nReceiver, filter);
-
-        setContentView(R.layout.activity_main);
-        currentNotification = (TextView) findViewById(R.id.CurrentNotificationString);
-        currentNotification.setMovementMethod(new ScrollingMovementMethod());
-        Bluetooth.findBT();
     }
 
 
@@ -91,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
     //sends notification data over bluetooth
     public void sendNotificationData() {
         try {
+            Bluetooth.findBT();
             Bluetooth.openBT();
             String[] splits = currentNotification.getText().toString().split("\n");
             for (int a = 0; a < splits.length; a++) {
@@ -98,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 Thread.sleep(2);
             }
             Bluetooth.closeBT();
+            Log.i("inform", "sent notification data from thread" );
         } catch (IOException | InterruptedException e) {
+            Log.i("inform", "Could not send notification data due to error: " + e.getMessage());
         }
     }
 
