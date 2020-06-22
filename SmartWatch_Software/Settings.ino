@@ -5,7 +5,7 @@
 #define SETTING_BUTTON_HEIGHT 25
 
 int settingScrollPosition = 0;
-#define SETTING_OPTIONS 4
+#define SETTING_OPTIONS 5
 
 PROGMEM iconButton upArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
 PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
@@ -14,12 +14,14 @@ PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROU
 #define REUPDATE_TIME 0
 #define BATTERY 1
 #define ACCELTEST 2
-#define ABOUT 3
+#define NETWORK_SELECT 3
+#define ABOUT 4
 
 button settingButtons[SETTING_OPTIONS] = {
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
 };
 
@@ -36,6 +38,23 @@ void settingsLoop()
     handleTouch();
     delay(10);
   }
+}
+
+//not currently working
+void changeNetwork() {
+  SelectionWindow w = SelectionWindow(0, 14, 160, 100);
+
+  int networks[networkNumber];
+
+  for(int a = 0; a < networkNumber; a++){
+    networks[a] = w.addOption(ssidList[a]);
+  }
+  
+  int selectedOption = w.focus();
+
+  ssid = ssidList[selectedOption];
+  password = passwordList[selectedOption];
+  testWifi();
 }
 
 void switchToSettings()
@@ -114,6 +133,9 @@ void SettingsTouchHandler(struct point p)
           break;
         case ABOUT:
           about();
+          break;
+        case NETWORK_SELECT: 
+//           changeNetwork(); //uncomment to renable the network change
           break;
         case BATTERY:
           batterySettings();

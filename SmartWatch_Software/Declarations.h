@@ -4,6 +4,11 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <SPI.h>
 
+//just to avoid putting my wifi credentials on the public repo
+//Later the wifi credentials should be stored in eeprom or on the android device
+//#include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //desktop computer location
+#include "C:\Users\James\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //laptop computer location
+
 #include "Pages.h"
 #include "Icons.h"
 //IconButtons.h is included below since it relies on some declarations
@@ -22,7 +27,7 @@ int currentPage = HOME;
 unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
-#define DEBUG
+//#define DEBUG
 
 //touch screen driver interrupt request
 #define TOUCH_IRQ 4
@@ -75,10 +80,6 @@ RTC_DATA_ATTR time_t now;
 RTC_DATA_ATTR uint64_t Mics = 0;
 RTC_DATA_ATTR struct tm *timeinfo;
 
-//just to avoid putting my wifi credentials on the public repo
-//Later the wifi credentials should be stored in eeprom or on the android device
-#include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h"
-
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
@@ -129,6 +130,28 @@ public:
 private:
   String getValue(String data, char separator, int index);
   void drawTextToWindow(boolean clr);
+};
+
+/* a simple menu to allow a user to select from a list of choices, returns an integer for the selected value */
+class SelectionWindow {
+    int selection;
+    int sectionWidth;
+    boolean focused = false;
+    int _x, _y, _width, _height;
+    int totalOptions = 1;
+    String options = "Cancel";
+    iconButton RightArrowButton =   { 128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR,   {(0b00000000 << 8) | 0b10000000,  (0b00000000 << 8) | 0b11000000,  (0b00000000 << 8) | 0b11100000,  (0b00000000 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111000,  (0b11111111 << 8) | 0b11111100,  (0b11111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111100,  (0b11111111 << 8) | 0b11111000,  (0b00000000 << 8) | 0b11110000,  (0b00000000 << 8) | 0b11100000,  (0b00000000 << 8) | 0b11000000,  (0b00000000 << 8) | 0b10000000}};
+    iconButton LeftArrowButton =    {    128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR,  {      (0b00000001 << 8) | 0b00000000,      (0b00000011 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00001111 << 8) | 0b00000000,  (0b00011111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b00011111 << 8) | 0b11111111,  (0b00001111 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00000011 << 8) | 0b00000000,  (0b00000001 << 8) | 0b00000000    }  };
+    button okButton =  {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, "Ok"};
+
+  public:
+    SelectionWindow(int x, int y, int width, int height);  //constructor determines form/size
+    int addOption(String s); //adds option and returns option number
+    int focus(); //focuses the window, will return integer representitive of the selected option
+  private:
+    void drawCurrentOption(); //draws the option's string to the screen
+    String getValue(String data, char separator, int index); //splits the options string
+    void touch(); //touch handler
 };
 
 
