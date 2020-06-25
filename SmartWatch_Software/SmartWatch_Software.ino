@@ -25,8 +25,11 @@ void setup()
   //the battery monitor only needs to be configured once when powered on.
   if (bootCount == 0)
   {
-    getInternetTime();
+    initTouch();
+    initLCD();
     initBatMonitor();
+    testScreen();
+    getInternetTime();
 #ifdef DEBUG
     Serial.println("Battery Monitor initialized");
 #endif

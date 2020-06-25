@@ -18,17 +18,15 @@ PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROU
 #define ABOUT 4
 
 button settingButtons[SETTING_OPTIONS] = {
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
-};
+    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
+    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
+    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
+    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
+    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}};
 
 String settingOptions[] = {
-  "Re-update Time",
-  "About"
-};
+    "Re-update Time",
+    "About"};
 
 void settingsLoop()
 {
@@ -41,20 +39,42 @@ void settingsLoop()
 }
 
 //not currently working
-void changeNetwork() {
+void changeNetwork()
+{
   SelectionWindow w = SelectionWindow(0, 14, 160, 100);
 
   int networks[networkNumber];
 
-  for(int a = 0; a < networkNumber; a++){
-    networks[a] = w.addOption(ssidList[a]);
+  for (int a = 0; a < networkNumber; a++)
+  {
+    w.addOption(ssidList[a]);
   }
-  
-  int selectedOption = w.focus();
 
-  ssid = ssidList[selectedOption];
-  password = passwordList[selectedOption];
-  testWifi();
+#ifdef DEBUG
+  Serial.println("Focusing network selection window");
+#endif
+  delay(50); //in some cases the touch can get read twice and exit the selection screen right away, this delay prevents it
+
+  int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
+
+#ifdef DEBUG
+  Serial.println("network selection window lost focus with selected option: " + String(selectedOption));
+#endif
+
+  if (selectedOption >= 0)
+  {
+    ssid = ssidList[selectedOption];
+    password = passwordList[selectedOption];
+    testWifi();
+  }
+  else
+  {
+    switchToSettings(); //normally the popup window would clear the screen but since we don't do anything that needs to happen on its own
+    delay(100);
+#ifdef DEBUG
+    Serial.println("user exited selection window with cancel button");
+#endif
+  }
 }
 
 void switchToSettings()
@@ -128,21 +148,21 @@ void SettingsTouchHandler(struct point p)
     {
       switch (a)
       {
-        case REUPDATE_TIME:
-          reAdjustTime();
-          break;
-        case ABOUT:
-          about();
-          break;
-        case NETWORK_SELECT: 
-//           changeNetwork(); //uncomment to renable the network change
-          break;
-        case BATTERY:
-          batterySettings();
-          break;
-        case ACCELTEST:
-          accelTest();
-          break;
+      case REUPDATE_TIME:
+        reAdjustTime();
+        break;
+      case ABOUT:
+        about();
+        break;
+      case NETWORK_SELECT:
+        changeNetwork(); //uncomment to renable the network change
+        break;
+      case BATTERY:
+        batterySettings();
+        break;
+      case ACCELTEST:
+        accelTest();
+        break;
       }
     }
   }

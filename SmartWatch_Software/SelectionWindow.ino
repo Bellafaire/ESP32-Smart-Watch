@@ -43,7 +43,7 @@ int SelectionWindow::focus() {
 int SelectionWindow::addOption(String s) {
   options += optionDivider + s;
   totalOptions++;
-  return totalOptions - 1;
+  return totalOptions-1; //default "cancel" option is automatically included so we can't count that one
 }
 
 //touch handling, checks buttons and handles functionality associated with them

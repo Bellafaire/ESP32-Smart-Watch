@@ -45,14 +45,6 @@ void testScreen()
   tft.print("Charging Status: ");
   tft.println(digitalRead(CHG_STAT));
 
-  for (int a = 0; a < 10000; a++)
-  {
-    // readTouch();
-    if (touchDetected)
-    {
-      readTouch();
-      touchDetected = false;
-    }
-    delay(1);
-  }
+  tft.println("Starting device....");
+
 }
