@@ -1,2 +1,0 @@
-include ':app'
-rootProject.name='ESP32_Companion_App'
