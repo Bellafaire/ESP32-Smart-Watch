@@ -1,7 +1,9 @@
 package com.example.esp32_companion_app;
 
-import android.bluetooth.BluetoothDevice;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,45 +14,56 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-
-import com.harrysoft.androidbluetoothserial.BluetoothManager;
-import com.harrysoft.androidbluetoothserial.BluetoothSerialDevice;
-import com.harrysoft.androidbluetoothserial.SimpleBluetoothDeviceInterface;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+/*  Using Harry1453's android-bluetooth serial library to simplify bluetooth communication
+    https://github.com/harry1453/android-bluetooth-serial */
 
 public class MainActivity extends AppCompatActivity {
     private long lastSendTime = 0;
 
     public static TextView currentNotification;
-    private NLService.NLServiceReceiver nlservicereciver;
+    public static String currentNotificationString = "";
     private NotificationReceiver nReceiver;
 
     public ArrayList<String> notificationHeaders, notificationText;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+    //scheduling objects
+    ComponentName serviceComponent;
+    JobInfo.Builder builder;
+    JobScheduler jobScheduler;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
-    //bluetooth connection stuff
-    private String deviceAddress;
+    private Runnable periodicSend = new Runnable() {
+        @Override
+        public void run() {
 
-    private enum Connected {False, Pending, True}
+            builder = new JobInfo.Builder(11, serviceComponent);
 
-    private Connected connected = Connected.False;
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
 
-    private SimpleBluetoothDeviceInterface deviceInterface;
-    BluetoothManager bluetoothManager;
+            jobScheduler = getSystemService(JobScheduler.class);
+            jobScheduler.schedule(builder.build());
+        }
+    };
+
+    private Runnable notificationUpdater = new Runnable() {
+        @Override
+        public void run() {
+            getCurrentNotifications();
+        }
+    };
+
+
 
     //creation method
     @Override
@@ -71,70 +84,19 @@ public class MainActivity extends AppCompatActivity {
         getCurrentNotifications();
 
         Log.i("inform", "App starting....");
-        deviceAddress = "24:6F:28:79:E1:6E"; //this is the public address of the esp32 over bluetooth
-        Log.i("inform", "Setting device address to fixed value of: " + deviceAddress);
 
-        // Setup our BluetoothManager
-        bluetoothManager = BluetoothManager.getInstance();
-        if (bluetoothManager == null) {
-            // Bluetooth unavailable on this device :( tell the user
-            Toast.makeText(getApplicationContext(), "Bluetooth not available.", Toast.LENGTH_LONG).show(); // Replace context with your context instance.
-            finish();
-        }
 
-        //get list of paired devices
-        Collection<BluetoothDevice> pairedDevices = bluetoothManager.getPairedDevicesList();
-        for (BluetoothDevice device : pairedDevices) {
-            Log.d("test", "Device name: " + device.getName());
-            Log.d("test", "Device MAC Address: " + device.getAddress());
-            if (device.getName().toLowerCase().equals("ESPWatch".toLowerCase())) {
-                Log.d("test", "Found ESP32 watch");
-                connectDevice(device.getAddress());
-            }
-        }
-//        deviceInterface.sendMessage(currentNotification.getText().toString());
+//        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        serviceComponent = new ComponentName(this, BluetoothNotificationSender.class);
+        scheduler.scheduleAtFixedRate(periodicSend, 1, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 5, TimeUnit.SECONDS);
     }
 
-    private void connectDevice(String mac) {
-        bluetoothManager.openSerialDevice(mac)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onConnected, this::onError);
-    }
-
-    private void onConnected(BluetoothSerialDevice connectedDevice) {
-        // You are now connected to this device!
-        // Here you may want to retain an instance to your device:
-        deviceInterface = connectedDevice.toSimpleDeviceInterface();
-
-        // Listen to bluetooth events
-        deviceInterface.setListeners(this::onMessageReceived, this::onMessageSent, this::onError);
-
-        // Let's send a message:
-//        deviceInterface.sendMessage(currentNotification.getText().toString());
-        sendNotificationData();
-    }
-
-    private void onMessageSent(String message) {
-        // We sent a message! Handle it here.
-        Toast.makeText(getApplicationContext(), "Sent a message! Message was: " + message, Toast.LENGTH_LONG).show(); // Replace context with your context instance.
-    }
-
-    private void onMessageReceived(String message) {
-        // We received a message! Handle it here.
-        Toast.makeText(getApplicationContext(), "Received a message! Message was: " + message, Toast.LENGTH_LONG).show(); // Replace context with your context instance.
-    }
-
-    private void onError(Throwable error) {
-        // Handle the error
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        bluetoothManager.close(); //close the bluetooth manager
     }
-
 
     //menu items
     @Override
@@ -149,13 +111,14 @@ public class MainActivity extends AppCompatActivity {
         //send data in callback of getting the current notifications
         if (lastSendTime + 1000 < System.currentTimeMillis()) {
             lastSendTime = System.currentTimeMillis();
-            deviceInterface.sendMessage(currentNotification.getText().toString());
+//            deviceInterface.sendMessage(currentNotification.getText().toString());
         }
     }
 
     //updates the onscreen text view with the current notifications active on the device
     public void getCurrentNotifications() {
         currentNotification.setText("");
+        currentNotificationString = "";
         notificationHeaders = new ArrayList();
         notificationText = new ArrayList();
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
@@ -280,9 +243,17 @@ public class MainActivity extends AppCompatActivity {
 
     //returns a string representing the date and time
     public static String getDateAndTime() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+//        LocalDateTime now = LocalDateTime.now();
+//        return dtf.format(now);
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("hh:mm:ssa dd-MM-yyyy");
+        String formattedDate = df.format(c);
+        return formattedDate;
+
     }
 
     //class to handle reading notifications from the device.
@@ -361,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             MainActivity.currentNotification.setText(disp);
+            currentNotificationString = disp;
         }
     }
 
