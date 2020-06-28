@@ -27,7 +27,7 @@ int currentPage = HOME;
 unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
-#define DEBUG
+// #define DEBUG
 
 //touch screen driver interrupt request
 #define TOUCH_IRQ 4

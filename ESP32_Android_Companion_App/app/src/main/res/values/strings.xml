@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ESP32_Companion_App</string>
+    <string name="devices">Bluetooth Devices</string>
 </resources>

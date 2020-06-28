@@ -1,32 +1,38 @@
 package com.example.esp32_companion_app;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+
+import com.harrysoft.androidbluetoothserial.BluetoothManager;
+import com.harrysoft.androidbluetoothserial.BluetoothSerialDevice;
+import com.harrysoft.androidbluetoothserial.SimpleBluetoothDeviceInterface;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
+    private long lastSendTime = 0;
 
     public static TextView currentNotification;
     private NLService.NLServiceReceiver nlservicereciver;
@@ -35,6 +41,16 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<String> notificationHeaders, notificationText;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+
+    //bluetooth connection stuff
+    private String deviceAddress;
+
+    private enum Connected {False, Pending, True}
+
+    private Connected connected = Connected.False;
+
+    private SimpleBluetoothDeviceInterface deviceInterface;
+    BluetoothManager bluetoothManager;
 
     //creation method
     @Override
@@ -55,48 +71,68 @@ public class MainActivity extends AppCompatActivity {
         getCurrentNotifications();
 
         Log.i("inform", "App starting....");
-        try {
-            Bluetooth.findBT();
-            Log.i("inform", "Found Bluetooth Device");
-            Bluetooth.openBT();
-            Log.i("inform", "Opened Bluetooth");
-//            String[] splits = currentNotification.getText().toString().split("\n");
-            Bluetooth.sendData("App startup test message");
-            Log.i("inform", "Sent data over bluetooth");
-            Bluetooth.closeBT();
-            Log.i("inform", "Closed Bluetooth Connection");
-        }catch(Exception e){
-            Log.i("inform", e.getMessage());
+        deviceAddress = "24:6F:28:79:E1:6E"; //this is the public address of the esp32 over bluetooth
+        Log.i("inform", "Setting device address to fixed value of: " + deviceAddress);
+
+        // Setup our BluetoothManager
+        bluetoothManager = BluetoothManager.getInstance();
+        if (bluetoothManager == null) {
+            // Bluetooth unavailable on this device :( tell the user
+            Toast.makeText(getApplicationContext(), "Bluetooth not available.", Toast.LENGTH_LONG).show(); // Replace context with your context instance.
+            finish();
         }
-        Runnable notificationUpdater = new Runnable() {
-            @Override
-            public void run() {
-                getCurrentNotifications();
-                Log.i("inform", "Got current notifications");
+
+        //get list of paired devices
+        Collection<BluetoothDevice> pairedDevices = bluetoothManager.getPairedDevicesList();
+        for (BluetoothDevice device : pairedDevices) {
+            Log.d("test", "Device name: " + device.getName());
+            Log.d("test", "Device MAC Address: " + device.getAddress());
+            if (device.getName().toLowerCase().equals("ESPWatch".toLowerCase())) {
+                Log.d("test", "Found ESP32 watch");
+                connectDevice(device.getAddress());
             }
-        };
+        }
+//        deviceInterface.sendMessage(currentNotification.getText().toString());
+    }
 
-        Runnable DataSender = new Runnable() {
-            @Override
-            public void run() {
-                Log.i("inform", "Attempting to send data");
-                Looper.prepare();
-                try{
-                    sendNotificationData();
-                    Log.i("inform", "Sent current notification data");
-                    }
-                catch(Exception e){
-                    Log.i("inform", "failed to send data over bluetooth due to " + e.getMessage());
-                }
-            Looper.loop();
-            }
-        };
+    private void connectDevice(String mac) {
+        bluetoothManager.openSerialDevice(mac)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onConnected, this::onError);
+    }
 
-        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 5, TimeUnit.SECONDS);
-        scheduler.scheduleAtFixedRate(DataSender, 1, 5, TimeUnit.SECONDS);
-        Log.i("inform", "Scheduled data sender and notification updater");
+    private void onConnected(BluetoothSerialDevice connectedDevice) {
+        // You are now connected to this device!
+        // Here you may want to retain an instance to your device:
+        deviceInterface = connectedDevice.toSimpleDeviceInterface();
 
+        // Listen to bluetooth events
+        deviceInterface.setListeners(this::onMessageReceived, this::onMessageSent, this::onError);
 
+        // Let's send a message:
+//        deviceInterface.sendMessage(currentNotification.getText().toString());
+        sendNotificationData();
+    }
+
+    private void onMessageSent(String message) {
+        // We sent a message! Handle it here.
+        Toast.makeText(getApplicationContext(), "Sent a message! Message was: " + message, Toast.LENGTH_LONG).show(); // Replace context with your context instance.
+    }
+
+    private void onMessageReceived(String message) {
+        // We received a message! Handle it here.
+        Toast.makeText(getApplicationContext(), "Received a message! Message was: " + message, Toast.LENGTH_LONG).show(); // Replace context with your context instance.
+    }
+
+    private void onError(Throwable error) {
+        // Handle the error
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bluetoothManager.close(); //close the bluetooth manager
     }
 
 
@@ -110,18 +146,10 @@ public class MainActivity extends AppCompatActivity {
 
     //sends notification data over bluetooth
     public void sendNotificationData() {
-        try {
-            Bluetooth.findBT();
-            Bluetooth.openBT();
-            String[] splits = currentNotification.getText().toString().split("\n");
-            for (int a = 0; a < splits.length; a++) {
-                Bluetooth.sendData(splits[a]);
-                Thread.sleep(2);
-            }
-            Bluetooth.closeBT();
-            Log.i("inform", "sent notification data from thread" );
-        } catch (IOException | InterruptedException e) {
-            Log.i("inform", "Could not send notification data due to error: " + e.getMessage());
+        //send data in callback of getting the current notifications
+        if (lastSendTime + 1000 < System.currentTimeMillis()) {
+            lastSendTime = System.currentTimeMillis();
+            deviceInterface.sendMessage(currentNotification.getText().toString());
         }
     }
 
@@ -333,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
 
 
             MainActivity.currentNotification.setText(disp);
-
         }
     }
 
