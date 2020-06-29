@@ -5,7 +5,7 @@
 #define SETTING_BUTTON_HEIGHT 25
 
 int settingScrollPosition = 0;
-#define SETTING_OPTIONS 6
+#define SETTING_OPTIONS 7
 
 PROGMEM iconButton upArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
 PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
@@ -16,7 +16,8 @@ PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROU
 #define ACCELTEST 2
 #define NETWORK_SELECT 3
 #define OBTAIN_NOTIFICATIONS 4
-#define ABOUT 5
+#define VIEW_RAW_NOTIFICATIONS 5
+#define ABOUT 6
 
 button settingButtons[SETTING_OPTIONS] = {
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
@@ -24,6 +25,7 @@ button settingButtons[SETTING_OPTIONS] = {
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Obtain Notifications"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "View Raw Notifications"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
 };
 
@@ -167,6 +169,9 @@ void SettingsTouchHandler(struct point p)
         case OBTAIN_NOTIFICATIONS:
           getNotifications();
           break;
+        case VIEW_RAW_NOTIFICATIONS:
+          viewNotifications();
+          break;
         case ACCELTEST:
           accelTest();
           break;
@@ -174,7 +179,6 @@ void SettingsTouchHandler(struct point p)
     }
   }
 }
-
 
 void getNotifications() {
 
@@ -184,9 +188,9 @@ void getNotifications() {
 
   getPhoneNotifications(30000);
 
-//  for (int a = 0; a < 2048; a++) {
-//    w.print(String(notificationData[a]));
-//  }
+  //  for (int a = 0; a < 2048; a++) {
+  //    w.print(String(notificationData[a]));
+  //  }
 
   w.println("Done");
 
@@ -354,6 +358,14 @@ void testWifi()
 
   w.println("Disconnected from wifi");
 
+  SweepClear();
+  drawSettings();
+}
+
+void viewNotifications() {
+  Window w = Window(0, 14, 160, 100, true);
+  w.println(String(notificationData));
+  w.focus();
   SweepClear();
   drawSettings();
 }
