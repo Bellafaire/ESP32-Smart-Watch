@@ -63,28 +63,30 @@ public class NLService extends NotificationListenerService {
                 NLService.this.cancelAllNotifications();
             } else if (intent.getStringExtra("command").equals("list")) {
                 Intent i1 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                i1.putExtra("notification_event", "");
+                i1.putExtra("notification_event", "***");
                 sendBroadcast(i1);
                 for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
                     Intent i2 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
                     //reference for pulling information out of notification objects http://gmariotti.blogspot.com/2013/11/notificationlistenerservice-and-kitkat.html
-                    i2.putExtra("notification_event",
-                            ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
-                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)) + ","
-                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)) + ","
-                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)) + ","
-                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)) + ","
-                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)) + ","
-                                    + convToString(sbn.getNotification().extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)) +
-                                    "\n"); //this line formats our outputs
-                    sendBroadcast(i2);
+                    try {
+                        i2.putExtra("notification_event",
+                                ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)) + ","
+                                        + convToString(sbn.getNotification().extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)) +
+                                        "\n"); //this line formats our outputs
+                        sendBroadcast(i2);
+                    } catch (Exception e) {
+                        Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
+                    }
                 }
                 Intent i3 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
                 i3.putExtra("notification_event", "");
                 sendBroadcast(i3);
-
             }
-
         }
     }
 
