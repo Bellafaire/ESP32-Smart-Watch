@@ -1,5 +1,9 @@
 boolean correctTime = true;
 
+
+//header file for the time.h library https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/esp32-hal-timer.h (closest thing to documentation I've found so far)
+
+
 //found here https://www.esp32.com/viewtopic.php?t=5398 (with some changes for timezone)
 void mjd_set_timezone_est()
 {
@@ -73,25 +77,6 @@ void printLocalTime()
   delay(2); // 26 bytes @ 115200 baud is less than 2 ms
 #endif
 }
-
-void updateTime(uint64_t elapsedTime)
-{ // elapsedTime in us
-  if (elapsedTime == 0)
-    Mics += micros();
-  else
-    Mics += elapsedTime;
-  if (Mics > 1000000)
-  {
-    Mics = Mics % 1000000;
-    now += Mics / 1000000;
-  }
-}
-
-// void beginTimedSleep (unsigned long tm0) {
-//   updateTime (SleepTime - (micros() - tm0));
-//   esp_sleep_enable_timer_wakeup(SleepTime - (micros() - tm0));
-//   esp_deep_sleep_start();
-// }
 
 void drawDate(int x, int y, int textSize)
 {
