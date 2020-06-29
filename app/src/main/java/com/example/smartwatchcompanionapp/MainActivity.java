@@ -1,16 +1,12 @@
 package com.example.smartwatchcompanionapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,8 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
 
-    public static TextView txtView;
-    private Button settings;
+    public static TextView txtView ;
+    public static TextView status;
+    private Button settings, forceSend;
     private Button btn;
     private NotificationReceiver nReceiver;
 
@@ -36,6 +33,7 @@ public class MainActivity extends Activity {
 
     String TAG = "inform";
 
+  public static  Handler handler = new Handler();
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final ExecutorService threads = Executors.newCachedThreadPool();
@@ -55,15 +53,25 @@ public class MainActivity extends Activity {
     private Runnable sendBT = new Runnable() {
         @Override
         public void run() {
+
+            handler.post(new Runnable(){
+                public void run() {
+                    status.setText("Status: Sending Bluetooth Data");
+                }
+            });
+
             Log.d("bt", "attempting to send bluetooth data");
             bns = new BluetoothNotificationSender();
             bns.connectToWatch();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 //            bns.end();
+
+            handler.post(new Runnable(){
+                public void run() {
+                    status.setText("Status: Last Sent Data at " + getDateAndTime());
+                }
+            });
+
+
         }
     };
 
@@ -75,9 +83,11 @@ public class MainActivity extends Activity {
         Log.i(TAG, "application starting");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        status   = (TextView) findViewById(R.id.statusInformationBar);
         txtView = (TextView) findViewById(R.id.txt);
         btn = (Button) findViewById(R.id.button);
         settings = (Button) findViewById(R.id.settings);
+        settings = (Button) findViewById(R.id.sendButton);
 
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
@@ -95,7 +105,14 @@ public class MainActivity extends Activity {
     }
 
     public void sendBluetoothData() {
+
         threads.execute(sendBT);
+
+    }
+
+
+    public void forceSend(View view) {
+        sendBluetoothData();
     }
 
 

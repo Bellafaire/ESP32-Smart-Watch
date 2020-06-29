@@ -55,6 +55,13 @@ public class BluetoothNotificationSender {
             Log.d("bt", "Device MAC Address: " + device.getAddress());
             if (device.getName().toLowerCase().equals("ESPWatch".toLowerCase())) {
                 Log.d("test", "Found ESP32 watch");
+               MainActivity.handler.post(new Runnable(){
+                    public void run() {
+                        MainActivity.status.setText("Status: Found ESPWatch");
+                    }
+                });
+
+//                MainActivity.status.setText("Status: Found ESPWatch");
                 connectDevice(device.getAddress());
             }
         }
