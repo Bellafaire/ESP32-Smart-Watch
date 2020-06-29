@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
 
     public void updateText() {
         Log.d(TAG, "update text function has been called");
-        txtView.setText(getDateAndTime());
+        txtView.setText( getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
         sendBroadcast(i);
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
 
     public void updateText(View view) {
         Log.i(TAG, "update text button has been pressed");
-        txtView.setText(getDateAndTime());
+        txtView.setText( getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
         sendBroadcast(i);
