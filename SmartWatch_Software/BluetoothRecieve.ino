@@ -32,13 +32,11 @@ void getPhoneNotifications(int timeout) {
           break;
         }
       }
-
-
       currentPosition++;
     }
   }
 
-  SerialBT.end();
+//  SerialBT.end(); //apparently this causes a crash (https://github.com/espressif/arduino-esp32/issues/2718)
 #ifdef DEBUG
   Serial.println("***BT Closed***");
 #endif

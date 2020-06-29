@@ -53,7 +53,9 @@ void setup()
       initBatMonitor();
       testScreen();
       getPhoneNotifications(30000);
+      tft.println("phone notifications obtained");
       getInternetTime();
+      tft.println("obtained time"); 
 #ifdef DEBUG
       Serial.println("Battery Monitor initialized");
 #endif

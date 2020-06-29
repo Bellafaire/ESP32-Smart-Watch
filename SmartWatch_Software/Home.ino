@@ -26,7 +26,7 @@ void writeNotifications() {
   tft.println("Notifications");
 
   if (lines > 1) {
-    for (int a = 1; a < lines - 3; a++) {
+    for (int a = 1; a < lines - 1; a++) {
       tft.println(parseFromNotifications(a, 0) + "-" + parseFromNotifications(a, 1));
     }
   } else {
@@ -45,6 +45,11 @@ int getNotificationLines() {
   for (int a = 0; a < 2048; a++) {
     if (notificationData[a] == '\n') {
       lineCount++;
+    }
+    if (notificationData[a] == '*' &&
+        notificationData[a - 1] == '*' &&
+        notificationData[a - 2] == '*') {
+      break;
     }
   }
   return lineCount;
