@@ -34,9 +34,9 @@ void writeNotifications() {
   }
   tft.setTextWrap(true);
 
-  paintButton(homeNotificationsButton);
-  paintButton(homeAppsButton);
-  paintButton(homeSettingsButton);
+  paintButtonFull(homeNotificationsButton);
+  paintButtonFull(homeAppsButton);
+  paintButtonFull(homeSettingsButton);
 
 }
 

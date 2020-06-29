@@ -71,6 +71,7 @@ float getBatteryVoltage() {
   int a = readRegister(BAT_MONITOR_ADDR, 0x19);
   float voltage = (float)a * 0.000078125;
   return voltage;
+//return 3.19; //debug
 }
 
 //returns in Ah
