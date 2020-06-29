@@ -34,6 +34,13 @@ void writeNotifications() {
   }
   tft.setTextWrap(true);
 
+#ifdef SHOW_LAST_NOTIFICATION_TIME
+  tft.setTextColor(GRAYED);
+  tft.setCursor(2, SCREEN_HEIGHT - 20);
+  tft.println(parseFromNotifications(lines - 1, 0));
+  tft.setTextColor(INTERFACE_COLOR);
+#endif
+
   paintButtonFull(homeNotificationsButton);
   paintButtonFull(homeAppsButton);
   paintButtonFull(homeSettingsButton);

@@ -14,10 +14,12 @@
 #include "Icons.h"
 //IconButtons.h is included below since it relies on some declarations
 
+//color picker here http://www.barth-dev.de/online/rgb565-color-picker/
 //look and feel and colors
 #define BACKGROUND_COLOR ST77XX_BLACK
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR ST77XX_WHITE
+#define GRAYED 0xBDF7
 int ERROR_COLOR = ST77XX_BLUE;
 
 #define screenOnTime 10000 //time before watch screen times out without user input
@@ -29,6 +31,7 @@ unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
 // #define DEBUG
+#define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //touch screen driver interrupt request
 #define TOUCH_IRQ 4

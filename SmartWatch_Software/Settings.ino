@@ -25,7 +25,7 @@ button settingButtons[SETTING_OPTIONS] = {
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Obtain Notifications"},
-  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "View Raw Notifications"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Raw Notifications"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
 };
 
@@ -161,7 +161,7 @@ void SettingsTouchHandler(struct point p)
           about();
           break;
         case NETWORK_SELECT:
-          changeNetwork(); //uncomment to renable the network change
+          changeNetwork();
           break;
         case BATTERY:
           batterySettings();
