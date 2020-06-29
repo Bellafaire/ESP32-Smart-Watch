@@ -13,17 +13,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 public class MainActivity extends Activity {
 
-    private TextView txtView;
+    private static TextView txtView;
     private Button settings;
     private Button btn;
     private NotificationReceiver nReceiver;
+
+    public ArrayList<String> notificationHeaders, notificationText;
+    String currentNotificationString = "";
 
     String TAG = "inform";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        notificationHeaders = new ArrayList();
+        notificationText = new ArrayList();
+
         Log.i(TAG, "application starting");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -64,6 +75,18 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(nReceiver);
+    }
+
+
+    //returns a string representing the date and time
+    public static String getDateAndTime() {
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("hh:mm:ssa dd-MM-yyyy");
+        String formattedDate = df.format(c);
+        return formattedDate;
+
     }
 
     class NotificationReceiver extends BroadcastReceiver {
