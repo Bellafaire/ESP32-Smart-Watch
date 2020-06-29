@@ -5,7 +5,7 @@
 #define SETTING_BUTTON_HEIGHT 25
 
 int settingScrollPosition = 0;
-#define SETTING_OPTIONS 5
+#define SETTING_OPTIONS 6
 
 PROGMEM iconButton upArrowButton = {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
 PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
@@ -15,18 +15,22 @@ PROGMEM iconButton downArrowButton = {128, 48, 32, 48, INTERFACE_COLOR, BACKGROU
 #define BATTERY 1
 #define ACCELTEST 2
 #define NETWORK_SELECT 3
-#define ABOUT 4
+#define OBTAIN_NOTIFICATIONS 4
+#define ABOUT 5
 
 button settingButtons[SETTING_OPTIONS] = {
-    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
-    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
-    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
-    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
-    {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}};
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Select Network"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Obtain Notifications"},
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
+};
 
 String settingOptions[] = {
-    "Re-update Time",
-    "About"};
+  "Re-update Time",
+  "About"
+};
 
 void settingsLoop()
 {
@@ -148,25 +152,51 @@ void SettingsTouchHandler(struct point p)
     {
       switch (a)
       {
-      case REUPDATE_TIME:
-        reAdjustTime();
-        break;
-      case ABOUT:
-        about();
-        break;
-      case NETWORK_SELECT:
-        changeNetwork(); //uncomment to renable the network change
-        break;
-      case BATTERY:
-        batterySettings();
-        break;
-      case ACCELTEST:
-        accelTest();
-        break;
+        case REUPDATE_TIME:
+          reAdjustTime();
+          break;
+        case ABOUT:
+          about();
+          break;
+        case NETWORK_SELECT:
+          changeNetwork(); //uncomment to renable the network change
+          break;
+        case BATTERY:
+          batterySettings();
+          break;
+        case OBTAIN_NOTIFICATIONS:
+          getNotifications();
+          break;
+        case ACCELTEST:
+          accelTest();
+          break;
       }
     }
   }
 }
+
+
+void getNotifications() {
+
+  Window w = Window(0, 14, 160, 100, true);
+
+  w.println("Getting phone notifications");
+
+  getPhoneNotifications(30000);
+
+//  for (int a = 0; a < 2048; a++) {
+//    w.print(String(notificationData[a]));
+//  }
+
+  w.println("Done");
+
+
+  w.focus();
+
+  SweepClear();
+  drawSettings();
+}
+
 
 void accelTest()
 {

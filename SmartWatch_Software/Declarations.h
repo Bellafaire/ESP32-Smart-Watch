@@ -3,6 +3,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <SPI.h>
+#include "BluetoothSerial.h"
 
 //just to avoid putting my wifi credentials on the public repo
 //Later the wifi credentials should be stored in eeprom or on the android device
@@ -27,7 +28,7 @@ int currentPage = HOME;
 unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
-// #define DEBUG
+ #define DEBUG
 
 //touch screen driver interrupt request
 #define TOUCH_IRQ 4
@@ -76,6 +77,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define Y_ACCEL 27
 
 //Time tracker variables (Stored in RTC)
+RTC_DATA_ATTR char notificationData[2048];
 RTC_DATA_ATTR time_t now;
 RTC_DATA_ATTR uint64_t Mics = 0;
 RTC_DATA_ATTR struct tm *timeinfo;
@@ -83,6 +85,9 @@ RTC_DATA_ATTR struct tm *timeinfo;
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
+
+//bluetooth serial object used in BluetoothRecieve
+BluetoothSerial SerialBT;
 
 //structures
 typedef struct onscreenButton button;
@@ -196,6 +201,10 @@ void switchToHome();
 void drawHome();
 void HomeTouchHandler(int x, int y);
 void homeLoop();
+void writeNotifications();
+String parseFromNotifications(int line, int field);
+int getNotificationLines();
+String getValue(String data, char separator, int index);
 
 //animations.ino
 void SweepClear();
@@ -222,3 +231,6 @@ void SettingsTouchHandler(struct point p);
 void drawSettings();
 void switchToSettings();
 void settingsLoop();
+
+//BluetoothRecieve.ino
+void getPhoneNotifications(int timeout);

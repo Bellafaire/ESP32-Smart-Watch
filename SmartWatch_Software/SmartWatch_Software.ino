@@ -1,7 +1,7 @@
 #include "Declarations.h"
 
 #define uS_TO_S_FACTOR 1000000ULL /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP 600         /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP 300         /* Time ESP32 will go to sleep (in seconds) */
 
 RTC_DATA_ATTR int bootCount = 0;
 
@@ -25,10 +25,12 @@ void setup()
   //the battery monitor only needs to be configured once when powered on.
   if (bootCount == 0)
   {
+    notificationData[0] = 0;
     initTouch();
     initLCD();
     initBatMonitor();
     testScreen();
+    getPhoneNotifications(30000);
     getInternetTime();
 #ifdef DEBUG
     Serial.println("Battery Monitor initialized");
@@ -46,25 +48,42 @@ void setup()
 
   switch (wakeup_reason)
   {
-  case ESP_SLEEP_WAKEUP_EXT0:
-    //if woken up by user touching screen
-    initTouch();
-    initLCD();
-    MainLoop();
-    break;
-  case ESP_SLEEP_WAKEUP_EXT1:
-    break;
-  case ESP_SLEEP_WAKEUP_TIMER:
-//if woken up by 10 minute timer
+    case ESP_SLEEP_WAKEUP_EXT0:
+      //if woken up by user touching screen
 #ifdef DEBUG
-    Serial.println("Woken up by timer");
+      Serial.println("current notification data in memory");
+      for (int a = 0; a < 2048; a++) {
+        Serial.print(notificationData[a]); //dump all RTC notification data to the serial terminal
+        if (a > 3)
+        {
+          if (notificationData[a] == '*' &&
+              notificationData[a - 1] == '*' &&
+              notificationData[a - 2] == '*') {
+            break;
+          }
+        }
+      }
 #endif
-    break;
-  default:
+
+      initTouch();
+      initLCD();
+      MainLoop();
+
+      break;
+    case ESP_SLEEP_WAKEUP_EXT1:
+      break;
+    case ESP_SLEEP_WAKEUP_TIMER:
+      //if woken up by 5 minute timer
+      getPhoneNotifications(30000);
 #ifdef DEBUG
-    Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeup_reason);
+      Serial.println("Woken up by timer");
 #endif
-    break;
+      break;
+    default:
+#ifdef DEBUG
+      Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeup_reason);
+#endif
+      break;
   }
 
 #ifdef DEBUG

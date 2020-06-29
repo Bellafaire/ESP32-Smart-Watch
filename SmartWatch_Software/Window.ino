@@ -177,7 +177,7 @@ void Window::drawTextToWindow(boolean clr)
     }
 
 #ifdef DEBUG
-    Serial.println(textBuffer);
+//    Serial.println(textBuffer);
 #endif
 
     //set the initial y position
