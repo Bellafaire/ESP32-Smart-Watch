@@ -101,9 +101,9 @@ SelectionWindow::SelectionWindow(int x, int y, int width, int height) {
   okButton._height = _height / 3;
 
   //draw buttons
-  paintButton(LeftArrowButton);
-  paintButton(RightArrowButton);
-  paintButton(okButton);
+  paintButtonNoBuffer(LeftArrowButton);
+  paintButtonNoBuffer(RightArrowButton);
+  paintButtonNoBuffer(okButton);
   drawCurrentOption();
 
 }
@@ -125,4 +125,3 @@ String SelectionWindow::getValue(String data, char separator, int index)
 
   return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
-

@@ -50,8 +50,8 @@ Window::Window(int x, int y, int width, int height, boolean scroll)
     WindowDownArrowButton._y = y + height / 2;
 
     //paint buttons
-    paintButton(WindowUpArrowButton);
-    paintButton(WindowDownArrowButton);
+    paintButtonNoBuffer(WindowUpArrowButton);
+    paintButtonNoBuffer(WindowDownArrowButton);
   }
   else
   {
@@ -99,8 +99,8 @@ void Window::touch()
       }
 
       //repaint buttons in case something went wrong and text overflowed
-      paintButtonFull(WindowUpArrowButton);
-      paintButtonFull(WindowDownArrowButton);
+      paintButtonNoBuffer(WindowUpArrowButton);
+      paintButtonNoBuffer(WindowDownArrowButton);
 
       //check if user tapped outside of window (this closes window)
       if (p.xPos < _x || p.yPos < _y || p.xPos > _x + _width + 32 || p.yPos > _y + _height)

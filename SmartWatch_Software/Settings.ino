@@ -88,7 +88,7 @@ void switchToSettings()
 #ifdef DEBUG
   Serial.println("Switched to Settings");
 #endif
-  SweepClear();
+//  SweepClear();
   settingScrollPosition = 0;
   drawSettings();
   paintButtonFull(homeButton);
@@ -98,6 +98,8 @@ void switchToSettings()
 
 void drawSettings()
 {
+   frameBuffer -> fillScreen(BACKGROUND_COLOR);
+   
   //configuring buttons
   if (SETTING_OPTIONS > MAX_ON_SCREEN_SETTINGS_BUTTONS)
   {
@@ -121,6 +123,8 @@ void drawSettings()
   paintButton(downArrowButton);
 
   paintButton(homeButton);
+
+  tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);  
 }
 
 void SettingsTouchHandler(struct point p)
@@ -135,7 +139,7 @@ void SettingsTouchHandler(struct point p)
     if (settingScrollPosition > 0)
     {
       settingScrollPosition--;
-      SweepClear();
+//      SweepClear();
       drawSettings();
     }
   }
@@ -144,7 +148,7 @@ void SettingsTouchHandler(struct point p)
     if (settingScrollPosition < SETTING_OPTIONS - MAX_ON_SCREEN_SETTINGS_BUTTONS)
     {
       settingScrollPosition++;
-      SweepClear();
+//      SweepClear();
       drawSettings();
     }
   }
@@ -197,7 +201,7 @@ void getNotifications() {
 
   w.focus();
 
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -245,7 +249,7 @@ void accelTest()
     }
   }
   // digitalWrite(CHARGING_PIN, LOW);
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -257,7 +261,7 @@ void reAdjustTime()
   delay(500);
   w.println("Done");
   delay(500);
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -318,7 +322,7 @@ void batterySettings()
       break;
     }
   }
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -358,7 +362,7 @@ void testWifi()
 
   w.println("Disconnected from wifi");
 
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -366,7 +370,7 @@ void viewNotifications() {
   Window w = Window(0, 14, 160, 100, true);
   w.println(String(notificationData));
   w.focus();
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }
 
@@ -381,6 +385,6 @@ void about()
 
   w.focus();
 
-  SweepClear();
+//  SweepClear();
   drawSettings();
 }

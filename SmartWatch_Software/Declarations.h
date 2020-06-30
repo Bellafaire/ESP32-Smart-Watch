@@ -74,6 +74,9 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 128
 
+//frame buffer for drawing more elaborate UI elements
+ GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
+
 //Accelerometer connections (optional extra)
 #define Z_ACCEL 25
 #define X_ACCEL 26

@@ -1,11 +1,11 @@
 void switchToHome()
 {
-  SweepClear();
-  tft.drawFastHLine(0, 5, tft.width(), INTERFACE_COLOR);
+//  SweepClear();
+  frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
-  tft.drawFastHLine(0, 29, tft.width(), INTERFACE_COLOR);
+  frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
   drawDateCentered(26, 1);
-  tft.setTextSize(1);
+  frameBuffer->setTextSize(1);
 
   writeNotifications();
 
@@ -18,27 +18,27 @@ void switchToHome()
 }
 
 void writeNotifications() {
-  tft.setCursor(0, 40);
-  tft.setTextSize(0);
-  tft.setTextWrap(false);
+  frameBuffer->setCursor(0, 40);
+  frameBuffer->setTextSize(0);
+  frameBuffer->setTextWrap(false);
 
   int lines = getNotificationLines();
-  tft.println("Notifications");
+  frameBuffer->println("Notifications");
 
   if (lines > 1) {
     for (int a = 1; a < lines - 1; a++) {
-      tft.println(parseFromNotifications(a, 0) + "-" + parseFromNotifications(a, 1));
+      frameBuffer->println(parseFromNotifications(a, 0) + "-" + parseFromNotifications(a, 1));
     }
   } else {
-    tft.println("No Notifications");
+    frameBuffer->println("No Notifications");
   }
-  tft.setTextWrap(true);
+  frameBuffer->setTextWrap(true);
 
 #ifdef SHOW_LAST_NOTIFICATION_TIME
-  tft.setTextColor(GRAYED);
-  tft.setCursor(2, SCREEN_HEIGHT - 20);
-  tft.println(parseFromNotifications(lines - 1, 0));
-  tft.setTextColor(INTERFACE_COLOR);
+  frameBuffer->setTextColor(GRAYED);
+  frameBuffer->setCursor(2, SCREEN_HEIGHT - 20);
+  frameBuffer->println(parseFromNotifications(lines - 1, 0));
+  frameBuffer->setTextColor(INTERFACE_COLOR);
 #endif
 
   paintButtonFull(homeNotificationsButton);
@@ -91,27 +91,32 @@ String getValue(String data, char separator, int index)
 
 void drawHome()
 {
-  tft.drawFastHLine(0, 5, tft.width(), INTERFACE_COLOR);
+
+  frameBuffer -> fillScreen(BACKGROUND_COLOR);
+
+  frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
-  tft.drawFastHLine(0, 29, tft.width(), INTERFACE_COLOR);
+  frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
   drawDateCentered(26, 1);
-  tft.setTextSize(1);
-  tft.setCursor(0, 40);
+  frameBuffer->setTextSize(1);
+  frameBuffer->setCursor(0, 40);
 
   writeNotifications() ;
 
-  tft.fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
-  tft.setCursor(0, SCREEN_HEIGHT - 10);
-  tft.print("Battery ");
-  tft.print(String(getBatteryPercentage()));
-  tft.print("%");
+  frameBuffer->fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
+  frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
+  frameBuffer->print("Battery ");
+  frameBuffer->print(String(getBatteryPercentage()));
+  frameBuffer->print("%");
   if (getBatteryCurrent() > 0.0) {
-    tft.print(" Charging");
+    frameBuffer->print(" Charging");
   }
 
   paintButton(homeNotificationsButton);
   paintButton(homeAppsButton);
   paintButton(homeSettingsButton);
+
+  tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void HomeTouchHandler(struct point p)

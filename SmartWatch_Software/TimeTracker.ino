@@ -117,18 +117,18 @@ void drawDate(int x, int y, int textSize)
 
   String Date = weekday + ", " + String(timeinfo->tm_mon + 1) + "/" + String(timeinfo->tm_mday);
 
-  tft.setTextSize(textSize);
-  tft.setTextColor(TEXT_COLOR);
+  frameBuffer->setTextSize(textSize);
+  frameBuffer->setTextColor(TEXT_COLOR);
   for (int a = 0; a < Date.length(); a++)
   {
-    tft.fillRect(
+    frameBuffer->fillRect(
         x + a * 6 * textSize,
         y,
         6 * textSize,
         7 * textSize,
         BACKGROUND_COLOR);
-    tft.setCursor(x + a * 6 * textSize, y);
-    tft.print(Date[a]);
+    frameBuffer->setCursor(x + a * 6 * textSize, y);
+    frameBuffer->print(Date[a]);
   }
 }
 
@@ -173,18 +173,18 @@ void drawDateCentered(int y, int textSize)
 
   int x = (160 - (Date.length() * 6 * textSize)) / 2;
 
-  tft.setTextSize(textSize);
-  tft.setTextColor(TEXT_COLOR);
+  frameBuffer->setTextSize(textSize);
+  frameBuffer->setTextColor(TEXT_COLOR);
   for (int a = 0; a < Date.length(); a++)
   {
-    tft.fillRect(
+    frameBuffer->fillRect(
         x + a * 6 * textSize,
         y,
         6 * textSize,
         7 * textSize,
         BACKGROUND_COLOR);
-    tft.setCursor(x + a * 6 * textSize, y);
-    tft.print(Date[a]);
+    frameBuffer->setCursor(x + a * 6 * textSize, y);
+    frameBuffer->print(Date[a]);
   }
 }
 
@@ -239,24 +239,24 @@ void drawTime(int x, int y, int textSize)
   /*  when writing the time we assume that we're writing over something, so for each character
        we fill in a black box behind it exactly the required size. we do this to try and prevent character "flashing"
        as much as possible.  */
-  tft.setTextSize(textSize);
+  frameBuffer->setTextSize(textSize);
   if (correctTime)
   {
-    tft.setTextColor(TEXT_COLOR);
+    frameBuffer->setTextColor(TEXT_COLOR);
   }
   else
   {
-    tft.setTextColor(ERROR_COLOR);
+    frameBuffer->setTextColor(ERROR_COLOR);
   }
   for (int a = 0; a < 11; a++)
   {
-    tft.fillRect(
+    frameBuffer->fillRect(
         x + a * 6 * textSize,
         y,
         6 * textSize,
         7 * textSize,
         BACKGROUND_COLOR);
-    tft.setCursor(x + a * 6 * textSize, y);
-    tft.print(timestr[a]);
+    frameBuffer->setCursor(x + a * 6 * textSize, y);
+    frameBuffer->print(timestr[a]);
   }
 }
