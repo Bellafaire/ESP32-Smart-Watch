@@ -1,14 +1,7 @@
-bool startup = true;
+bool firstHomeSwitch = true;
 
 void switchToHome()
 {
-  if (startup) {
-    //we want to draw the time really quickly to cover the black background but we also need to
-    //make sure that it only happens when the screen is first being turned on otherwise it writes over menus
-    quickDrawTime(13, 10, 2);
-    startup = false;
-  }
-
 
   //  SweepClear();
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
@@ -24,7 +17,13 @@ void switchToHome()
   paintButtonFull(homeAppsButton);
 
   currentPage = HOME;
+//  if (firstHomeSwitch) {
+//    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+//    firstHomeSwitch = false;
+//  }
   homeLoop();
+
+
 }
 
 void writeNotifications() {
@@ -103,19 +102,21 @@ void drawHome()
 {
 
   frameBuffer -> fillScreen(BACKGROUND_COLOR);
-  
+
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
-  
+
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
-  frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
+  frameBuffer->drawLine(0, 29, 10, 29, INTERFACE_COLOR);
+  frameBuffer->drawLine(SCREEN_WIDTH, 29, SCREEN_WIDTH - 10, 29, INTERFACE_COLOR);
   drawDateCentered(26, 1);
   frameBuffer->setTextSize(1);
   frameBuffer->setCursor(0, 40);
 
   writeNotifications() ;
 
-  frameBuffer->fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
+  //since we use the framebuffer now we don't really need to fill in the background
+  //  frameBuffer->fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
   frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
   frameBuffer->print("Battery ");
   frameBuffer->print(String(getBatteryPercentage()));
@@ -150,11 +151,11 @@ void homeLoop()
   lastTouchTime = millis();
   while (lastTouchTime + screenOnTime > millis())
   {
+    drawHome();
     for (int a = 0; a < 100; a++)
     {
       handleTouch();
       delay(10);
     }
-    drawHome();
   }
 }
