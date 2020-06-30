@@ -4,29 +4,33 @@ void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int a
   //we thetaStart % 360 so that any value over 360 will be cut down to the acceptable range this way rotation can be achieved just by iterating a variable
   for (int t = thetaStart % 360; t < (thetaStart % 360) + arcLength; t++) {
     //using floats in a for loop kind of annoys me but otherwise we get gaps in the arc
-    for (float l = outerRadius - thickness; l < outerRadius; l += .5) {
+    for (float l = outerRadius - thickness; l < outerRadius; l += 1) {
       //we start from thetaStart then rotate around drawing every pixel that is within our bounds
       int _x = floor((float)(l) * (sin((float)t * PI / 180.0))) + x;
-      int _y = floor((float)(l) * (cos((float)t * PI / 180.0))) + y;
-      frameBuffer-> drawPixel(_x, _y, color);
+      if (_x > 0 && _x < SCREEN_WIDTH) {
+        int _y = floor((float)(l) * (cos((float)t * PI / 180.0))) + y;
+        if (_y > 0 && _y < SCREEN_HEIGHT) {
+          frameBuffer-> drawPixel(_x, _y, color);
+        }
+      }
     }
   }
 }
 
 
 #define animationRadius 80
-#define maxVel 15
-#define arcNum 8
+#define maxVel 10
+#define arcNum 24
 #define maxLength 220
 
 boolean firstArcDraw = true;
 
-int arc_colors[] = {0xB596, 0x7BEF, 0x4A69, 0xB596, 0x7BEF, 0x4A69,0xB596, 0x7BEF, 0x4A69, 0x4A69};
-int arc_thickness[] = {6, 4, 2, 2, 2, 1 , 1, 1, 1, 1};
-int arc_radius[] = {30, 45, 60, 30, 45, 60, 30, 45, 60, 60};
-int arc_length[] = {60, 120, 180, 60, 60, 60, 60, 60, 60, 60};
-float arc_positions[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float arc_velocities[] = {10, 8, 4, 10, 8, 4, 4, 10, 8, 10};
+int arc_colors[arcNum];
+int arc_thickness[arcNum];
+int arc_radius[arcNum];
+int arc_length[arcNum];
+float arc_positions[arcNum];
+float arc_velocities[arcNum];
 /* A complete self-running animation of arcs to give the homescreen it's own feel
 
 */
@@ -37,9 +41,12 @@ void drawCircularAnimation1(int x, int y) {
     for (int a = 0; a < arcNum; a++) {
       randomSeed(89751); //i kind of don't care how random this is just an animation
       arc_positions[a] = random(360000) / 1000;
+      arc_thickness[a] = 1;
       arc_radius[a] = (animationRadius / arcNum) * (a + 1);
       arc_length[a] = (maxLength / arcNum) * (a + 1);
-      arc_velocities[a] = (maxVel / arcNum) * (a + 1);
+      arc_velocities[a] = ((float)maxVel / (float)arcNum) * (float)(a + 1);
+      //generate shades of red (BGR) for the arcs
+      arc_colors[a] = (0x001F / arcNum) * (arcNum - a);
     }
     firstArcDraw = false;
   }
@@ -47,9 +54,6 @@ void drawCircularAnimation1(int x, int y) {
   for (int a = 0; a < arcNum; a++) {
     drawArc(x, y, arc_radius[a], arc_thickness[a], round(arc_positions[a]), arc_length[a],  arc_colors[a]);
     arc_positions[a] += arc_velocities[a];
-    //    if(millis() - startAnimation > 60){
-    //      break;
-    //    }
   }
 #ifdef DEBUG
   Serial.println("Required " + String(millis() - startAnimation) + "ms to draw circles animation");
