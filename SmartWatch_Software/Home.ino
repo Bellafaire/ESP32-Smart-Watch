@@ -17,10 +17,10 @@ void switchToHome()
   paintButtonFull(homeAppsButton);
 
   currentPage = HOME;
-//  if (firstHomeSwitch) {
-//    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
-//    firstHomeSwitch = false;
-//  }
+  //  if (firstHomeSwitch) {
+  //    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  //    firstHomeSwitch = false;
+  //  }
   homeLoop();
 
 
@@ -98,12 +98,17 @@ String getValue(String data, char separator, int index)
 }
 
 
+int circlePosition = 0;
+
 void drawHome()
 {
 
   frameBuffer -> fillScreen(BACKGROUND_COLOR);
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+  drawCircularAnimation1(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+  //  drawArc(80, 60, 50, 10, circlePosition++, 30,  0x0011);
 
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
@@ -152,10 +157,10 @@ void homeLoop()
   while (lastTouchTime + screenOnTime > millis())
   {
     drawHome();
-    for (int a = 0; a < 100; a++)
-    {
+    if (touchDetected) {
       handleTouch();
-      delay(10);
+      touchDetected = false;
     }
+
   }
 }
