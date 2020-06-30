@@ -1,7 +1,15 @@
+bool startup = true;
+
 void switchToHome()
 {
-  quickDrawTime(13, 10, 2);
-  
+  if (startup) {
+    //we want to draw the time really quickly to cover the black background but we also need to
+    //make sure that it only happens when the screen is first being turned on otherwise it writes over menus
+    quickDrawTime(13, 10, 2);
+    startup = false;
+  }
+
+
   //  SweepClear();
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
@@ -95,7 +103,9 @@ void drawHome()
 {
 
   frameBuffer -> fillScreen(BACKGROUND_COLOR);
-
+  
+  frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+  
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
   frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
