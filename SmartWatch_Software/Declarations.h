@@ -200,7 +200,8 @@ void MainLoop();
 //TimeTracker.ino
 void printLocalTime();
 void updateTime(uint64_t elapsedTime);
-void beginTimedSleep(unsigned long tm0);
+//void beginTimedSleep(unsigned long tm0);
+void quickDrawTime(int x, int y, int textSize);
 
 //Home.ino
 void switchToHome();

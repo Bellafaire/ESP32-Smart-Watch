@@ -1,6 +1,8 @@
 void switchToHome()
 {
-//  SweepClear();
+  quickDrawTime(13, 10, 2);
+  
+  //  SweepClear();
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
   drawTime(13, 10, 2);
   frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
