@@ -160,8 +160,7 @@ void Window::print(String Text)
 }
 
 //draw the text to the screen (inside the window)
-void Window::drawTextToWindow(boolean clr)
-{
+void Window::drawTextToWindow(boolean clr) {
 
   //determine how many lines we can fit with the window's height
   int maxLines = _height / 8;
@@ -171,49 +170,63 @@ void Window::drawTextToWindow(boolean clr)
   tft.setTextSize(1);
 
   //if parameter indicates that we should clear the screen then we clear the screen (things like scrolling require this)
-  if (clr)
-  {
-    tft.fillRect(_x + 1, _y + 1, _width - 2, _height - 2, BACKGROUND_COLOR);
+  if (clr) {
+    tft.fillRect(_x + 1 , _y + 1, _width - 2, _height - 2, BACKGROUND_COLOR);
   }
 
 #ifdef DEBUG
-  //    Serial.println(textBuffer);
+  Serial.println(textBuffer);
 #endif
 
   //set the initial y position
-  int ypos = _y + 2;
+  int ypos = _y + 2 ;
 
   //set position
   tft.setCursor(_x + 2, ypos);
 
-  int charactersPerLine = _width / 6;
-
   /*split text buffer by line breaks, we will write the text to the window one line at a time (since we only want a
-    subset of the text buffer's lines). also we give each line of text an extra pixel gap for readability
+     subset of the text buffer's lines). also we give each line of text an extra pixel gap for readability
   */
-
-  int cnt = 0;
-
-  for (int a = scrollPosition; a < scrollPosition + maxLines; a++)
-  {
+  for (int a = scrollPosition; a < scrollPosition + maxLines; a++) {
     String line = getValue(textBuffer, '\n', a);
+    if (line.length() < 22) { //TODO remove hardcoded max-characters-per-row
+      tft.print(line);
+    } else {
+      int startPos = 0;
+      int endPos = 22;
 
-    for (int b = 0; b < line.length(); b++) {
-      if (line[b] != '\n') {
-        tft.print(line[b]);
-        cnt++;
-        if (cnt % charactersPerLine == 0) {
+#ifdef DEBUG
+      Serial.print("Splitting line (length:" + String(line.length()) + ") " + line + " in window ");
+      int cnt = 0;
+#endif
+
+      do {
+        tft.print(line.substring(startPos, endPos));
+#ifdef DEBUG
+        Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
+#endif
+        if (endPos + 22 > line.length()) {
+          endPos = line.length();
+          startPos += 22;
           ypos += 8;
           tft.setCursor(_x + 2, ypos);
+          tft.print(line.substring(startPos, endPos));
+#ifdef DEBUG
+          Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
+#endif
+        } else {
+          endPos += 22;
+          startPos += 22;
         }
-      } else {
-        ypos += 8;
-        tft.setCursor(_x + 2, ypos);
       }
+      while (endPos < line.length());
+      
+#ifdef DEBUG
+        Serial.println("");
+#endif
     }
-
-    //    ypos += 8;
-    //    tft.setCursor(_x + 2, ypos);
+    ypos += 8;
+    tft.setCursor(_x + 2, ypos);
   }
 }
 
