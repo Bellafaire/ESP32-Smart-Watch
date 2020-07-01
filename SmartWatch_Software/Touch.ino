@@ -62,14 +62,17 @@ void handleTouch()
   {
     switch (currentPage)
     {
-    case HOME:
-      HomeTouchHandler(readTouch());
-      break;
-    case SETTINGS:
-      SettingsTouchHandler(readTouch());
-      break;
-    default:
-      break;
+      case HOME:
+        HomeTouchHandler(readTouch());
+        break;
+      case SETTINGS:
+        SettingsTouchHandler(readTouch());
+        break;
+      case NOTIFICATIONS:
+        NotificationsTouchHandler(readTouch());
+        break;
+      default:
+        break;
     }
     touchDetected = false;
   }

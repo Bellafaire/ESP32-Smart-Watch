@@ -166,6 +166,8 @@ class SelectionWindow {
 };
 
 
+
+
 /***********************************************
  *                                             *
               Function Signitures
@@ -209,9 +211,16 @@ void drawHome();
 void HomeTouchHandler(int x, int y);
 void homeLoop();
 void writeNotifications();
-String parseFromNotifications(int line, int field);
+
+//notifications.ino
 int getNotificationLines();
+String parseFromNotifications(int line, int field);
 String getValue(String data, char separator, int index);
+void switchToNotifications();
+void drawNotifications();
+void NotificationsTouchHandler(struct point p);
+void notificationsLoop();
+void openNotification(int sel);
 
 //animations.ino
 void SweepClear();

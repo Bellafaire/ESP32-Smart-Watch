@@ -56,48 +56,6 @@ void writeNotifications() {
 
 }
 
-int getNotificationLines() {
-  int lineCount = 0;
-  for (int a = 0; a < 2048; a++) {
-    if (notificationData[a] == '\n') {
-      lineCount++;
-    }
-    if (notificationData[a] == '*' &&
-        notificationData[a - 1] == '*' &&
-        notificationData[a - 2] == '*') {
-      break;
-    }
-  }
-  return lineCount;
-}
-
-//find the information contained in a given line and given position in a comma seperated value
-String parseFromNotifications(int line, int field) {
-  String lineData = getValue(String(notificationData), '\n', line);
-  return getValue(lineData, ',', field);
-}
-
-//duplicated in settings.ino
-String getValue(String data, char separator, int index)
-{
-  int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length() - 1;
-
-  for (int i = 0; i <= maxIndex && found <= index; i++)
-  {
-    if (data.charAt(i) == separator || i == maxIndex)
-    {
-      found++;
-      strIndex[0] = strIndex[1] + 1;
-      strIndex[1] = (i == maxIndex) ? i + 1 : i;
-    }
-  }
-
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
-}
-
-
 int circlePosition = 0;
 
 void drawHome()
@@ -107,7 +65,7 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  drawCircularAnimation1(SCREEN_WIDTH/4, SCREEN_HEIGHT/2 + 30);
+  drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
   //  drawArc(80, 60, 50, 10, circlePosition++, 30,  0x0011);
 
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
@@ -142,7 +100,7 @@ void HomeTouchHandler(struct point p)
   if (checkButtonPress(homeNotificationsButton, p.xPos, p.yPos))
   {
     pressButton(homeNotificationsButton);
-    // switchToNotifications();
+    switchToNotifications();
   }
   if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {

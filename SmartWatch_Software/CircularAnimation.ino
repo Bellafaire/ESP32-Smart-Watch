@@ -56,7 +56,7 @@ void drawCircularAnimation1(int x, int y) {
     arc_positions[a] += arc_velocities[a];
   }
 #ifdef DEBUG
-  Serial.println("Required " + String(millis() - startAnimation) + "ms to draw circles animation");
+//  Serial.println("Required " + String(millis() - startAnimation) + "ms to draw circles animation");
 #endif
 
 }
