@@ -18,10 +18,10 @@ void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int a
 }
 
 
-#define animationRadius 80
-#define maxVel 10
+#define arc_animationRadius 80
+#define arc_maxVel 10
 #define arcNum 24
-#define maxLength 220
+#define arc_maxLength 220
 
 boolean firstArcDraw = true;
 
@@ -42,9 +42,9 @@ void drawCircularAnimation1(int x, int y) {
       randomSeed(89751); //i kind of don't care how random this is just an animation
       arc_positions[a] = random(360000) / 1000;
       arc_thickness[a] = 1;
-      arc_radius[a] = (animationRadius / arcNum) * (a + 1);
-      arc_length[a] = (maxLength / arcNum) * (a + 1);
-      arc_velocities[a] = ((float)maxVel / (float)arcNum) * (float)(a + 1);
+      arc_radius[a] = (arc_animationRadius / arcNum) * (a + 1);
+      arc_length[a] = (arc_maxLength / arcNum) * (a + 1);
+      arc_velocities[a] = ((float)arc_maxVel / (float)arcNum) * (float)(a + 1);
       //generate shades of red (BGR) for the arcs
       arc_colors[a] = (0x001F / arcNum) * (arcNum - a);
     }
