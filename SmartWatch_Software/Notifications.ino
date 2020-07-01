@@ -38,38 +38,38 @@ void openNotification(int sel) {
   w.println(parseFromNotifications(sel, 0)); //app name
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 1).length() > 0) {
+  if (parseFromNotifications(sel, 1).length() > 0 && !parseFromNotifications(sel, 1).equals(",")) {
     w.println("_Title_");
     w.println(parseFromNotifications(sel, 1));
   }
 
   //EXTRA_TEXT
-  if (parseFromNotifications(sel, 2).length() > 0) {
+  if (parseFromNotifications(sel, 2).length() > 0 && !parseFromNotifications(sel, 2).equals(",")) {
     w.println("_Text_");
     w.println( parseFromNotifications(sel, 2));
 
   }
 
   //EXTRA_INFO_TEXT
-  if (parseFromNotifications(sel, 3).length() > 0) {
+  if (parseFromNotifications(sel, 3).length() > 0 && !parseFromNotifications(sel, 3).equals(",")) {
     w.println("_Info_");
     w.println(parseFromNotifications(sel, 3));
   }
 
   //EXTRA_SUB_TEXT
-  if (parseFromNotifications(sel, 4).length() > 0) {
+  if (parseFromNotifications(sel, 4).length() > 0 && !parseFromNotifications(sel, 4).equals(",")) {
     w.println("_Subtext_");
     w.println(parseFromNotifications(sel, 4));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 5).length() > 0) {
+  if (parseFromNotifications(sel, 5).length() > 0 && !parseFromNotifications(sel, 5).equals(",")) {
     w.println("_extratitle_");
     w.println(parseFromNotifications(sel, 5));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 6).length() > 0) {
+  if (parseFromNotifications(sel, 6).length() > 0 && !parseFromNotifications(sel, 6).equals(",")) {
     w.println("_other_");
     w.println(parseFromNotifications(sel, 6));
   }
