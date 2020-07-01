@@ -184,16 +184,18 @@ void Window::drawTextToWindow(boolean clr) {
   //set position
   tft.setCursor(_x + 2, ypos);
 
+  int maxCharactersPerRow = _width/6;
+
   /*split text buffer by line breaks, we will write the text to the window one line at a time (since we only want a
      subset of the text buffer's lines). also we give each line of text an extra pixel gap for readability
   */
   for (int a = scrollPosition; a < scrollPosition + maxLines; a++) {
     String line = getValue(textBuffer, '\n', a);
-    if (line.length() < 22) { //TODO remove hardcoded max-characters-per-row
+    if (line.length() < maxCharactersPerRow) { //TODO remove hardcoded max-characters-per-row
       tft.print(line);
     } else {
       int startPos = 0;
-      int endPos = 22;
+      int endPos = maxCharactersPerRow;
 
 #ifdef DEBUG
       Serial.print("Splitting line (length:" + String(line.length()) + ") " + line + " in window ");
@@ -205,9 +207,9 @@ void Window::drawTextToWindow(boolean clr) {
 #ifdef DEBUG
         Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
 #endif
-        if (endPos + 22 > line.length()) {
+        if (endPos + maxCharactersPerRow > line.length()) {
           endPos = line.length();
-          startPos += 22;
+          startPos += maxCharactersPerRow;
           ypos += 8;
           tft.setCursor(_x + 2, ypos);
           tft.print(line.substring(startPos, endPos));
@@ -215,14 +217,14 @@ void Window::drawTextToWindow(boolean clr) {
           Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
 #endif
         } else {
-          endPos += 22;
-          startPos += 22;
+          endPos += maxCharactersPerRow;
+          startPos += maxCharactersPerRow;
         }
       }
       while (endPos < line.length());
-      
+
 #ifdef DEBUG
-        Serial.println("");
+      Serial.println("");
 #endif
     }
     ypos += 8;
