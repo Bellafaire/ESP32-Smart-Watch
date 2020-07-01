@@ -166,8 +166,12 @@ void Window::drawTextToWindow(boolean clr) {
   int maxLines = _height / 8;
 
   //set color;
-  tft.setTextColor(INTERFACE_COLOR);
+  tft.setTextColor(TEXT_COLOR);
   tft.setTextSize(1);
+
+  //to make things easier to read in some cases surrounding a word with '_' should cause that word to be displayed as gray.
+  //we use this variable to control that change.
+  boolean isGrayed = false;
 
   //if parameter indicates that we should clear the screen then we clear the screen (things like scrolling require this)
   if (clr) {
@@ -184,15 +188,26 @@ void Window::drawTextToWindow(boolean clr) {
   //set position
   tft.setCursor(_x + 2, ypos);
 
-  int maxCharactersPerRow = _width/6;
+  int maxCharactersPerRow = _width / 6;
 
   /*split text buffer by line breaks, we will write the text to the window one line at a time (since we only want a
      subset of the text buffer's lines). also we give each line of text an extra pixel gap for readability
   */
   for (int a = scrollPosition; a < scrollPosition + maxLines; a++) {
     String line = getValue(textBuffer, '\n', a);
-    if (line.length() < maxCharactersPerRow) { //TODO remove hardcoded max-characters-per-row
-      tft.print(line);
+    if (line.length() < maxCharactersPerRow) {
+      for (int b = 0; b < line.length(); b++) {
+        if (line[b] == '_') {
+          isGrayed = !isGrayed;
+          if (isGrayed) {
+            tft.setTextColor(GRAYED);
+          } else {
+            tft.setTextColor(TEXT_COLOR);
+          }
+        } else {
+          tft.print(line[b]);
+        }
+      }
     } else {
       int startPos = 0;
       int endPos = maxCharactersPerRow;

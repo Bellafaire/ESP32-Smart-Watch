@@ -39,37 +39,38 @@ void openNotification(int sel) {
 
   //EXTRA_TITLE
   if (parseFromNotifications(sel, 1).length() > 0) {
-    w.println("Title");
+    w.println("_Title_");
     w.println(parseFromNotifications(sel, 1));
   }
 
   //EXTRA_TEXT
   if (parseFromNotifications(sel, 2).length() > 0) {
-    w.println("Text");
+    w.println("_Text_");
     w.println( parseFromNotifications(sel, 2));
 
   }
 
   //EXTRA_INFO_TEXT
   if (parseFromNotifications(sel, 3).length() > 0) {
-    w.println("Info");
+    w.println("_Info_");
     w.println(parseFromNotifications(sel, 3));
   }
 
   //EXTRA_SUB_TEXT
   if (parseFromNotifications(sel, 4).length() > 0) {
-    w.println("Subtext");
+    w.println("_Subtext_");
     w.println(parseFromNotifications(sel, 4));
   }
 
   //EXTRA_TITLE
   if (parseFromNotifications(sel, 5).length() > 0) {
-    w.println("extratitle");
+    w.println("_extratitle_");
     w.println(parseFromNotifications(sel, 5));
   }
 
   //EXTRA_TITLE
   if (parseFromNotifications(sel, 6).length() > 0) {
+    w.println("_other_");
     w.println(parseFromNotifications(sel, 6));
   }
 
