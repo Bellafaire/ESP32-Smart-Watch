@@ -8,9 +8,9 @@ void getPhoneNotifications(int timeout) {
 #ifdef DEBUG
   Serial.println("Opening Bluetooth");
 #endif
-  //  SerialBT.begin("ESPWatch"); //Open up bluetooth and wait for data to come in
+    SerialBT.begin("ESPWatch",true); //Open up bluetooth and wait for data to come in
   SerialBT.connect(deviceBTAddr); //your device name here
-  SerialBT.begin("ESPWatch");
+//  SerialBT.begin("ESPWatch");
   
   //recieve data until either 30 seconds has passed (timeout) or the "***" has been recieved indicating the end of the transmission.
   //also allow user touching the screen to interrup the process
