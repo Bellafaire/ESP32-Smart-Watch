@@ -1,29 +1,29 @@
 package com.example.smartwatchcompanionapp;
 
 
-import android.app.job.JobParameters;
-import android.app.job.JobService;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-//import android.widget.Toast;
+import android.widget.Toast;
 
 import com.harrysoft.androidbluetoothserial.BluetoothManager;
 import com.harrysoft.androidbluetoothserial.BluetoothSerialDevice;
+import com.harrysoft.androidbluetoothserial.SimpleBluetoothDeviceInterface;
 
 import java.util.Collection;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+//import android.widget.Toast;
 /*  Using Harry1453's android-bluetooth serial library to simplify bluetooth communication
     https://github.com/harry1453/android-bluetooth-serial */
-import com.harrysoft.androidbluetoothserial.BluetoothManager;
-import com.harrysoft.androidbluetoothserial.BluetoothSerialDevice;
-import com.harrysoft.androidbluetoothserial.SimpleBluetoothDeviceInterface;
 
 
-public class BluetoothNotificationSender {
+public class BluetoothNotificationSender extends BroadcastReceiver {
 
     private SimpleBluetoothDeviceInterface deviceInterface;
     BluetoothManager bluetoothManager;
@@ -55,7 +55,7 @@ public class BluetoothNotificationSender {
             Log.d("bt", "Device MAC Address: " + device.getAddress());
             if (device.getName().toLowerCase().equals("ESPWatch".toLowerCase())) {
                 Log.d("test", "Found ESP32 watch");
-               MainActivity.handler.post(new Runnable(){
+                MainActivity.handler.post(new Runnable() {
                     public void run() {
                         MainActivity.status.setText("Status: Found ESPWatch");
                     }
@@ -102,5 +102,52 @@ public class BluetoothNotificationSender {
         // Handle the error
     }
 
+    /*   Everything that needs to happen whenever we Receive a bluetooth connection notification     */
+    @Override
+    public void onReceive(Context context, Intent intent) {
 
+        String action = intent.getAction();
+
+        Log.d("inform", "Broadcast received action:  " + action + "received");
+
+        if (action.equals("android.bluetooth.device.action.ACL_CONNECTED")) {
+            final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+
+
+            Log.d("inform", "Broadcast received action:  " + action + "received");
+
+
+            //this is dirty but really i just want to see whether this approach can even work
+            //this should update the notification string displayed in the application
+            Toast.makeText(context, "Bluetooth device has connected", Toast.LENGTH_LONG);
+
+            MainActivity.txtView.setText(MainActivity.getDateAndTime() + "\n***");
+            Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+            i.putExtra("command", "list");
+            context.sendBroadcast(i);
+
+            //check for the '***' terminator at the end of the notification string since notification's are received in NLService
+            //line by line
+            while (!MainActivity.txtView.getText().toString().contains("***")) {
+                //basically nop here
+            }
+
+            Toast.makeText(context, "Notification Data has been updated", Toast.LENGTH_LONG);
+
+//            BluetoothNotificationSender bt = new BluetoothNotificationSender();
+//            bt.connectToWatch();
+//            bt.end();
+
+            MainActivity.bns = new BluetoothNotificationSender();
+            Log.d("inform", "Created new bns");
+            MainActivity.bns.connectToWatch();
+            Log.d("inform", "Connected to watch");
+            MainActivity.bns.end();
+
+            Toast.makeText(context, "Data sent to device", Toast.LENGTH_LONG);
+
+        }
+
+
+    }
 }

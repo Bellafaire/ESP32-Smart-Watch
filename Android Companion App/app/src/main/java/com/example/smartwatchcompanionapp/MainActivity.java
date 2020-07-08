@@ -1,6 +1,7 @@
 package com.example.smartwatchcompanionapp;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +39,7 @@ public class MainActivity extends Activity {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final ExecutorService threads = Executors.newCachedThreadPool();
 
-    BluetoothNotificationSender bns;
+    public static BluetoothNotificationSender bns;
 
     private Runnable notificationUpdater = new Runnable() {
         @Override
@@ -63,7 +64,7 @@ public class MainActivity extends Activity {
             Log.d("bt", "attempting to send bluetooth data");
             bns = new BluetoothNotificationSender();
             bns.connectToWatch();
-//            bns.end();
+            bns.end();
 
             handler.post(new Runnable(){
                 public void run() {
@@ -80,7 +81,7 @@ public class MainActivity extends Activity {
         notificationHeaders = new ArrayList();
         notificationText = new ArrayList();
 
-        Log.i(TAG, "application starting");
+        Log.i(TAG, "application starting...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         status   = (TextView) findViewById(R.id.statusInformationBar);
@@ -100,14 +101,21 @@ public class MainActivity extends Activity {
         sendBroadcast(i);
 
         Log.i("inform", "App starting....");
-        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 30, TimeUnit.SECONDS);
-        Log.i("inform", "scheduled notification updater");
+
+        //I hope i never need to uncomment this code
+//        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 30, TimeUnit.SECONDS);
+//        Log.i("inform", "scheduled notification updater");
+
+        bns = new BluetoothNotificationSender();
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction("android.bluetooth.device.action.ACL_CONNECTED");
+        registerReceiver(bns, filter2);
+
     }
 
+    //only used by the force BT send button
     public void sendBluetoothData() {
-
         threads.execute(sendBT);
-
     }
 
 
@@ -142,6 +150,7 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(nReceiver);
+        unregisterReceiver(bns);
         bns.end();
     }
 
@@ -164,9 +173,9 @@ public class MainActivity extends Activity {
             Log.i(TAG, "onRecieve method callback received ");
             String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
             txtView.setText(temp.replace("\n\n", "\n"));
-            if (txtView.getText().toString().contains("***")) {
-                sendBluetoothData();
-            }
+//            if (txtView.getText().toString().contains("***")) {
+////                sendBluetoothData();
+//            }
 
         }
     }
