@@ -1,10 +1,13 @@
 package com.example.smartwatchcompanionapp;
 
+//resources that make the BLE stuff actually work on the android side of things (these were absolutely invalueable)
 //https://stackoverflow.com/questions/37181843/android-using-bluetoothgattserver
+//https://riptutorial.com/android/example/30768/using-a-gatt-server
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
@@ -58,6 +61,10 @@ public class MainActivity extends Activity {
     public static Handler handler = new Handler();
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothManager mBluetoothManager;
+    private BluetoothLeAdvertiser bluetoothLeAdvertiser;
+    private BluetoothGattServer bluetoothGattServer;
+    private BluetoothGattService service;
+    private BluetoothGattCharacteristic characteristic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,83 +107,87 @@ public class MainActivity extends Activity {
                 .setIncludeTxPowerLevel(true)
                 .build();
 
-        AdvertiseCallback callback = new AdvertiseCallback() {
-            @Override
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                Log.d(TAG, "BLE advertisement added successfully");
-            }
 
-            @Override
-            public void onStartFailure(int errorCode) {
-                Log.e(TAG, "Failed to add BLE advertisement, reason: " + errorCode);
-            }
-        };
 
         mBluetoothManager = getApplicationContext().getSystemService(BluetoothManager.class);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        BluetoothLeAdvertiser bluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
+        bluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
         bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponseData, callback);
 
-
-        BluetoothGattServerCallback gattCallback = new BluetoothGattServerCallback() {
-            @Override
-            public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-                super.onConnectionStateChange(device, status, newState);
-            }
-
-            @Override
-            public void onServiceAdded(int status, BluetoothGattService service) {
-                super.onServiceAdded(status, service);
-            }
-
-            @Override
-            public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-                super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-                Log.d("inform", "Characteristic read request received, should return: " + characteristic.getStringValue(0));
-            }
-
-            @Override
-            public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-            }
-
-            @Override
-            public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
-            }
-
-            @Override
-            public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
-                super.onDescriptorReadRequest(device, requestId, offset, descriptor);
-                Log.d("inform", "Descriptor read request received");
-            }
-
-            @Override
-            public void onNotificationSent(BluetoothDevice device, int status) {
-                super.onNotificationSent(device, status);
-            }
-
-            @Override
-            public void onMtuChanged(BluetoothDevice device, int mtu) {
-                super.onMtuChanged(device, mtu);
-            }
-
-            @Override
-            public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
-                super.onExecuteWrite(device, requestId, execute);
-            }
-        };
-
-        BluetoothGattServer bluetoothGattServer = mBluetoothManager.openGattServer(getApplicationContext(), gattCallback);
-        BluetoothGattService service = new BluetoothGattService(serviceID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+        bluetoothGattServer = mBluetoothManager.openGattServer(getApplicationContext(), gattCallback);
+        service = new BluetoothGattService(serviceID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
 //add a read characteristic.
-        BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(characteristicID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
-        characteristic.setValue("Test Data");
+        characteristic = new BluetoothGattCharacteristic(characteristicID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
+        characteristic.setValue("Test3");
         service.addCharacteristic(characteristic);
         bluetoothGattServer.addService(service);
+
+        //        bluetoothGattServer.getService(serviceID).getCharacteristic(characteristicID).setValue("Test3");
     }
+
+    BluetoothGattServerCallback gattCallback = new BluetoothGattServerCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+            super.onConnectionStateChange(device, status, newState);
+        }
+
+        @Override
+        public void onServiceAdded(int status, BluetoothGattService service) {
+            super.onServiceAdded(status, service);
+        }
+
+        @Override
+        public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+            Log.d("inform", "Characteristic read request received, should return: " + characteristic.getStringValue(0));
+            bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "test5".getBytes());
+        }
+
+        @Override
+        public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+            super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
+        }
+
+        @Override
+        public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+            super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
+        }
+
+        @Override
+        public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
+            super.onDescriptorReadRequest(device, requestId, offset, descriptor);
+            Log.d("inform", "Descriptor read request received");
+        }
+
+        @Override
+        public void onNotificationSent(BluetoothDevice device, int status) {
+            super.onNotificationSent(device, status);
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothDevice device, int mtu) {
+            super.onMtuChanged(device, mtu);
+        }
+
+        @Override
+        public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
+            super.onExecuteWrite(device, requestId, execute);
+        }
+    };
+
+    AdvertiseCallback callback = new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            Log.d(TAG, "BLE advertisement added successfully");
+        }
+
+        @Override
+        public void onStartFailure(int errorCode) {
+            Log.e(TAG, "Failed to add BLE advertisement, reason: " + errorCode);
+        }
+    };
 
     //only used by the force BT send button
     public void sendBluetoothData() {
@@ -239,11 +250,6 @@ public class MainActivity extends Activity {
             Log.i(TAG, "onRecieve method callback received " + intent.getStringExtra("notification_event"));
             String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
             txtView.setText(temp.replace("\n\n", "\n"));
-            if (txtView.getText().toString().contains("***")) {
-                Log.d("inform", "Notification receiver is attempting to send bluetooth data");
-//                sendBluetoothData();
-            }
-
         }
     }
 
