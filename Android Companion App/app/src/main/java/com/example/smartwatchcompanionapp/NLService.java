@@ -21,8 +21,8 @@ public class NLService extends NotificationListenerService {
         super.onCreate();
         nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("android.bluetooth.device.action.ACL_CONNECTED");
-        registerReceiver(nlservicereciver, filter);
+        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+        registerReceiver(nlservicereciver,filter);
     }
 
     @Override
@@ -58,39 +58,35 @@ public class NLService extends NotificationListenerService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
-                Log.i("inform", "NLServiceReciever has received a broadcast");
-                if (intent.getStringExtra("command").equals("clearall")) {
-                    NLService.this.cancelAllNotifications();
-                } else if (intent.getStringExtra("command").equals("list")) {
-                    Intent i1 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                    i1.putExtra("notification_event", "");
-                    sendBroadcast(i1);
-                    for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
-                        Intent i2 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                        //reference for pulling information out of notification objects http://gmariotti.blogspot.com/2013/11/notificationlistenerservice-and-kitkat.html
-                        try {
-                            i2.putExtra("notification_event",
-                                    ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
-                                            + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)) + ","
-                                            + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)) + ","
-                                            + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)) + ","
-                                            + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)) + ","
-                                            + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)) + ","
-                                            + convToString(sbn.getNotification().extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)) +
-                                            "\n"); //this line formats our outputs
-                            sendBroadcast(i2);
-                        } catch (Exception e) {
-                            Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
-                        }
+            Log.i("inform", "NLServiceReciever has received a broadcast");
+            if (intent.getStringExtra("command").equals("clearall")) {
+                NLService.this.cancelAllNotifications();
+            } else if (intent.getStringExtra("command").equals("list")) {
+                Log.i("inform", "Processing Request to list notifications");
+                Intent i1 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+                i1.putExtra("notification_event", "");
+                sendBroadcast(i1);
+                for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
+                    Intent i2 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+                    //reference for pulling information out of notification objects http://gmariotti.blogspot.com/2013/11/notificationlistenerservice-and-kitkat.html
+                    try {
+                        i2.putExtra("notification_event",
+                                ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)) + ","
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)) + ","
+                                        + convToString(sbn.getNotification().extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)) +
+                                        "\n"); //this line formats our outputs
+                        sendBroadcast(i2);
+                    } catch (Exception e) {
+                        Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
                     }
-                    Intent i3 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                    i3.putExtra("notification_event", "");
-                    sendBroadcast(i3);
                 }
-            } catch (
-                    NullPointerException e) {
-                Log.e("inform", "NLServiceReciever has failed to receive a broadcast due to an error");
+                Intent i3 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+                i3.putExtra("notification_event", "");
+                sendBroadcast(i3);
             }
         }
     }

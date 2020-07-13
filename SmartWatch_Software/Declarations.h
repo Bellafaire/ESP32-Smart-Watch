@@ -30,7 +30,7 @@ int currentPage = HOME;
 unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
-//#define DEBUG
+#define DEBUG
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //touch screen driver interrupt request

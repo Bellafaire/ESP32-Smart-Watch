@@ -1,13 +1,28 @@
 package com.example.smartwatchcompanionapp;
 
+//https://stackoverflow.com/questions/37181843/android-using-bluetoothgattserver
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattServer;
+import android.bluetooth.BluetoothGattServerCallback;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelUuid;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,64 +32,32 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 public class MainActivity extends Activity {
 
-    public static TextView txtView ;
+    UUID serviceID = UUID.fromString("d3bde760-c538-11ea-8b6e-0800200c9a66");
+    UUID characteristicID = UUID.fromString("d3bde760-c538-11ea-8b6e-0800200c9a67");
+    UUID descriptorID = UUID.fromString("d3bde760-c538-11ea-8b6e-0800200c9a68");
+
+    public static TextView txtView;
     public static TextView status;
     private Button settings, forceSend;
     private Button btn;
     private NotificationReceiver nReceiver;
 
+    //    private String deviceAddress = "24:6F:28:81:82:4E"; //watch address
+//    private String deviceAddress = "24:6F:28:79:E1:6E"; //esp32 test board
+
+    private TextView messages;
+
     public ArrayList<String> notificationHeaders, notificationText;
 
     String TAG = "inform";
 
-  public static  Handler handler = new Handler();
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final ExecutorService threads = Executors.newCachedThreadPool();
-
-    public static BluetoothNotificationSender bns;
-
-    private Runnable notificationUpdater = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                updateText();
-            } catch (Exception e) {
-            }
-        }
-    };
-
-    private Runnable sendBT = new Runnable() {
-        @Override
-        public void run() {
-
-            handler.post(new Runnable(){
-                public void run() {
-                    status.setText("Status: Sending Bluetooth Data");
-                }
-            });
-
-            Log.d("bt", "attempting to send bluetooth data");
-            bns = new BluetoothNotificationSender();
-            bns.connectToWatch();
-            bns.end();
-
-            handler.post(new Runnable(){
-                public void run() {
-                    status.setText("Status: Last Sent Data at " + getDateAndTime());
-                }
-            });
-
-
-        }
-    };
+    public static Handler handler = new Handler();
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothManager mBluetoothManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +67,17 @@ public class MainActivity extends Activity {
         Log.i(TAG, "application starting...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        status   = (TextView) findViewById(R.id.statusInformationBar);
+        status = (TextView) findViewById(R.id.statusInformationBar);
+        status.setMovementMethod(new ScrollingMovementMethod());
         txtView = (TextView) findViewById(R.id.txt);
         btn = (Button) findViewById(R.id.button);
         settings = (Button) findViewById(R.id.settings);
         settings = (Button) findViewById(R.id.sendButton);
+        messages = (TextView) findViewById(R.id.messages);
 
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-
         registerReceiver(nReceiver, filter);
 
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
@@ -102,20 +86,106 @@ public class MainActivity extends Activity {
 
         Log.i("inform", "App starting....");
 
-        //I hope i never need to uncomment this code
-//        scheduler.scheduleAtFixedRate(notificationUpdater, 0, 30, TimeUnit.SECONDS);
-//        Log.i("inform", "scheduled notification updater");
+        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                .setConnectable(true)
+                .build();
 
-        bns = new BluetoothNotificationSender();
-        IntentFilter filter2 = new IntentFilter();
-        filter2.addAction("android.bluetooth.device.action.ACL_CONNECTED");
-        registerReceiver(bns, filter2);
+        AdvertiseData advertiseData = new AdvertiseData.Builder()
+                .setIncludeDeviceName(true)
+                .setIncludeTxPowerLevel(true)
+                .build();
 
+        AdvertiseData scanResponseData = new AdvertiseData.Builder()
+                .addServiceUuid(new ParcelUuid(serviceID))
+                .setIncludeTxPowerLevel(true)
+                .build();
+
+        AdvertiseCallback callback = new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                Log.d(TAG, "BLE advertisement added successfully");
+            }
+
+            @Override
+            public void onStartFailure(int errorCode) {
+                Log.e(TAG, "Failed to add BLE advertisement, reason: " + errorCode);
+            }
+        };
+
+        mBluetoothManager = getApplicationContext().getSystemService(BluetoothManager.class);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        BluetoothLeAdvertiser bluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
+        bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponseData, callback);
+
+
+        BluetoothGattServerCallback gattCallback = new BluetoothGattServerCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+                super.onConnectionStateChange(device, status, newState);
+            }
+
+            @Override
+            public void onServiceAdded(int status, BluetoothGattService service) {
+                super.onServiceAdded(status, service);
+            }
+
+            @Override
+            public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
+                super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+                Log.d("inform", "Characteristic read request received, should return: " + characteristic.getStringValue(0));
+            }
+
+            @Override
+            public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
+            }
+
+            @Override
+            public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
+            }
+
+            @Override
+            public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
+                super.onDescriptorReadRequest(device, requestId, offset, descriptor);
+                Log.d("inform", "Descriptor read request received");
+            }
+
+            @Override
+            public void onNotificationSent(BluetoothDevice device, int status) {
+                super.onNotificationSent(device, status);
+            }
+
+            @Override
+            public void onMtuChanged(BluetoothDevice device, int mtu) {
+                super.onMtuChanged(device, mtu);
+            }
+
+            @Override
+            public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
+                super.onExecuteWrite(device, requestId, execute);
+            }
+        };
+
+        BluetoothGattServer bluetoothGattServer = mBluetoothManager.openGattServer(getApplicationContext(), gattCallback);
+        BluetoothGattService service = new BluetoothGattService(serviceID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+
+//add a read characteristic.
+        BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(characteristicID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
+        characteristic.setValue("Test Data");
+        service.addCharacteristic(characteristic);
+        bluetoothGattServer.addService(service);
     }
 
     //only used by the force BT send button
     public void sendBluetoothData() {
-        threads.execute(sendBT);
+
+    }
+
+
+    private void status(String str) {
+        messages.append(str + "\n");
     }
 
 
@@ -131,7 +201,7 @@ public class MainActivity extends Activity {
 
     public void updateText() {
         Log.d(TAG, "update text function has been called");
-        txtView.setText( getDateAndTime() + "\n***");
+        txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
         sendBroadcast(i);
@@ -139,19 +209,16 @@ public class MainActivity extends Activity {
 
     public void updateText(View view) {
         Log.i(TAG, "update text button has been pressed");
-        txtView.setText( getDateAndTime() + "\n***");
+        txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
         sendBroadcast(i);
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(nReceiver);
-        unregisterReceiver(bns);
-        bns.end();
     }
 
 
@@ -167,18 +234,17 @@ public class MainActivity extends Activity {
     }
 
     class NotificationReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "onRecieve method callback received ");
+            Log.i(TAG, "onRecieve method callback received " + intent.getStringExtra("notification_event"));
             String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
             txtView.setText(temp.replace("\n\n", "\n"));
-//            if (txtView.getText().toString().contains("***")) {
-////                sendBluetoothData();
-//            }
+            if (txtView.getText().toString().contains("***")) {
+                Log.d("inform", "Notification receiver is attempting to send bluetooth data");
+//                sendBluetoothData();
+            }
 
         }
     }
-
 
 }
