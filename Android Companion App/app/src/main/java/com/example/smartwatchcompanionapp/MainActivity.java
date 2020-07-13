@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -194,7 +195,8 @@ public class MainActivity extends Activity {
 
     //only used by the force BT send button
     public void sendBluetoothData() {
-
+        Toast.makeText(getApplicationContext(), "sendBluetoothData() disabled (for now)",
+                Toast.LENGTH_SHORT).show();
     }
 
 
@@ -224,7 +226,7 @@ public class MainActivity extends Activity {
 
     public void updateText(View view) {
         Log.i(TAG, "update text button has been pressed");
-        messages.append("Last Update Sent: " + getDateAndTime() + "\n");
+        messages.append("Manually updated: " + getDateAndTime() + "\n");
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
