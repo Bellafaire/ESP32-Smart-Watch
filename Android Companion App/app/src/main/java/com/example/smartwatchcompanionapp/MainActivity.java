@@ -162,6 +162,7 @@ public class MainActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    messages.append("Last Update Sent: " + getDateAndTime() + "\n");
                     updateText();
                 }
             });
@@ -214,7 +215,7 @@ public class MainActivity extends Activity {
 
     public void updateText() {
         Log.d(TAG, "update text function has been called");
-        messages.append("Last Update Sent: " + getDateAndTime() + "\n");
+
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
