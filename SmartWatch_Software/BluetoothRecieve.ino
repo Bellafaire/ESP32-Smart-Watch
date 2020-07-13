@@ -60,7 +60,12 @@ String connectToServer(int timeout) {
 
   pRemoteCharacteristic->writeValue('a', 1);
 
-  delay(1000);
+for(int a = 0; a < 100; a++){
+  delay(10); 
+  if(touchDetected){
+    return ""; 
+  }
+}
 
   String ret = "";
 
@@ -120,7 +125,8 @@ void getPhoneNotifications(int timeout) {
 
   String rdata = connectToServer(timeout);
 
-  if (rdata.length() > 10) {
+  //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
+  if (rdata[rdata.length() - 1] == '*' && rdata[rdata.length() - 2] == '*' && rdata[rdata.length() - 3] == '*') {
     for (int a = 0; a < 2048; a++) {
       notificationData[a] = rdata[a];
     }
