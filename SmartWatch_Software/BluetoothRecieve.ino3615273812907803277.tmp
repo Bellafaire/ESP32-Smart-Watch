@@ -33,28 +33,46 @@ class MyClientCallback : public BLEClientCallbacks {
 
 String connectToServer(int timeout) {
   unsigned long startTime = millis();
+#ifdef BT_DEBUG
+  Serial.print("Forming a connection to ");
+  Serial.println(myDevice->getAddress().toString().c_str());
+#endif;
   BLEClient*  pClient  = BLEDevice::createClient();
+
+#ifdef BT_DEBUG
+  Serial.println(" - Created client");
+#endif;
 
   pClient->setClientCallbacks(new MyClientCallback());
 
   // Connect to the remove BLE Server.
   pClient->connect(myDevice);  // if you pass BLEAdvertisedDevice instead of address, it will be recognized type of peer device address (public or private)
-
+#ifdef BT_DEBUG
+  Serial.println(" - Connected to server");
+#endif
   // Obtain a reference to the service we are after in the remote BLE server.
   BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
   if (pRemoteService == nullptr) {
-
+#ifdef BT_DEBUG
+    Serial.print("Failed to find our service UUID: ");
+    Serial.println(serviceUUID.toString().c_str());
+#endif
     pClient->disconnect();
     return "";
   }
+  Serial.println(" - Found our service");
 
 
   // Obtain a reference to the characteristic in the service of the remote BLE server.
   pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
   if (pRemoteCharacteristic == nullptr) {
+    Serial.print("Failed to find our characteristic UUID: ");
+    Serial.println(charUUID.toString().c_str());
     pClient->disconnect();
     return "";
   }
+  Serial.println(" - Found our characteristic");
+
   //aquire a full 2048 bytes of data from the BLE device
   int byteCount = 0;
 
@@ -69,13 +87,15 @@ String connectToServer(int timeout) {
     touchDetected = false;
     while (byteCount < 2048 && !touchDetected && startTime + timeout > millis()) {
       std::string value = pRemoteCharacteristic->readValue();
-#ifdef DEBUG
       Serial.print(value.c_str());
-#endif
       ret += value.c_str();
       byteCount += 16;
     }
+    Serial.println();
   }
+
+  //  if (pRemoteCharacteristic->canNotify())
+  //    pRemoteCharacteristic->registerForNotify(notifyCallback);
 
   connected = true;
   return ret;
@@ -88,6 +108,8 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         Called for each advertising BLE server.
     */
     void onResult(BLEAdvertisedDevice advertisedDevice) {
+      Serial.print("BLE Advertised Device found: ");
+      Serial.println(advertisedDevice.toString().c_str());
 
       // We have found a device, let us now see if it contains the service we are looking for.
       if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
@@ -125,9 +147,7 @@ void getPhoneNotifications(int timeout) {
       notificationData[a] = rdata[a];
     }
   } else {
-#ifdef DEBUG
     Serial.println("Data not complete");
-#endif
   }
 
 }
