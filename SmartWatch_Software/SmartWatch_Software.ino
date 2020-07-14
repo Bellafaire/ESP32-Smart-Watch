@@ -1,7 +1,7 @@
 #include "Declarations.h"
 
 #define uS_TO_S_FACTOR 1000000ULL /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP 120         /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP 60         /* Time ESP32 will go to sleep (in seconds) */
 
 RTC_DATA_ATTR int bootCount = 0;
 
