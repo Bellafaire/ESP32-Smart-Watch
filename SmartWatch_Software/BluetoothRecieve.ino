@@ -40,9 +40,9 @@ class MyClientCallback : public BLEClientCallbacks {
 #endif
       //screen is off so go back to sleep since we can't obtain notifications
       if (!deviceActive) {
-        #ifdef DEBUG
-          Serial.println("device disconnected going to sleep");
-        #endif
+#ifdef DEBUG
+        Serial.println("device disconnected going to sleep");
+#endif
         esp_deep_sleep_start();
       } else {
         //otherwise if the device disconnects go back to the home screen
@@ -127,6 +127,9 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     */
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       if (bluetoothStart + bluetooth_timeout < millis()) {
+#ifdef DEBUG
+        Serial.println("Search timeout reached, ending bluetooth scan");
+#endif
         BLEDevice::getScan()->stop();
       }
 
@@ -135,7 +138,8 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
       Serial.println(advertisedDevice.toString().c_str());
 #endif
       // We have found a device, let us now see if it contains the service we are looking for.
-      if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
+      //      if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
+      if (advertisedDevice.isAdvertisingService(serviceUUID)) {
 
         BLEDevice::getScan()->stop();
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
@@ -158,13 +162,13 @@ String getPhoneNotifications(int timeout) {
 
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
-  // scan to run for 5 seconds.
+  // scan to run for 8 seconds.
   BLEScan* pBLEScan = BLEDevice::getScan();
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  pBLEScan->setInterval(1349);
-  pBLEScan->setWindow(449);
+  pBLEScan->setInterval(1000);
+  pBLEScan->setWindow(1000);
   pBLEScan->setActiveScan(true);
-  pBLEScan->start(5, false);
+  pBLEScan->start(8);
 
 
 #ifdef DEBUG
@@ -172,7 +176,7 @@ String getPhoneNotifications(int timeout) {
 #endif
 
   volatileOperation = false;
-  
+
   String rdata = connectToServer(timeout);
 
   //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
