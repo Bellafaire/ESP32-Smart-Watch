@@ -31,7 +31,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name=".SerialService" />
+        <service android:name="com.example.smartwatchcompanionapp.BLEServer" />
     </application>
 
 </manifest>
