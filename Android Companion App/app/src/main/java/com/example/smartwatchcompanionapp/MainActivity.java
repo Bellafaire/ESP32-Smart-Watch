@@ -5,32 +5,12 @@ package com.example.smartwatchcompanionapp;
 //https://riptutorial.com/android/example/30768/using-a-gatt-server
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattServer;
-import android.bluetooth.BluetoothGattServerCallback;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseData;
-import android.bluetooth.le.AdvertiseSettings;
-import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.ParcelUuid;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -38,21 +18,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 public class MainActivity extends Activity {
 
+    public static boolean bleServiceRunning = false;
 
     public static TextView txtView;
     public static TextView status;
-    private Button settings, forceSend;
+    private Button settings, toggleBT;
     private Button btn;
     private NotificationReceiver nReceiver;
     public static TextView messages;
@@ -80,7 +57,7 @@ public class MainActivity extends Activity {
         txtView = (TextView) findViewById(R.id.txt);
         btn = (Button) findViewById(R.id.button);
         settings = (Button) findViewById(R.id.settings);
-        settings = (Button) findViewById(R.id.sendButton);
+        toggleBT = (Button) findViewById(R.id.sendButton);
         messages = (TextView) findViewById(R.id.messages);
         messages.append("\n");
 
@@ -93,10 +70,7 @@ public class MainActivity extends Activity {
         i.putExtra("command", "list");
         sendBroadcast(i);
 
-
-        Intent p = new Intent(getApplicationContext(), BLEServer.class);
-        getApplicationContext().startService(p);
-
+        startService(new Intent(MainActivity.this, BLEServer.class));
     }
 
     //only used by the force BT send button
@@ -110,9 +84,25 @@ public class MainActivity extends Activity {
         messages.append(str + "\n");
     }
 
+    public static void updateBLEStatus() {
+        reference.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (bleServiceRunning) {
+                    reference.toggleBT.setText("Disable BLE Service");
+                } else {
+                    reference.toggleBT.setText("Enable BLE Service");
+                }
+            }
+        });
+    }
 
-    public void forceSend(View view) {
-        sendBluetoothData();
+    public void toggleService(View view) {
+        if (bleServiceRunning) {
+            stopService(new Intent(MainActivity.this, BLEServer.class));
+        } else {
+            startService(new Intent(MainActivity.this, BLEServer.class));
+        }
     }
 
 

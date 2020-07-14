@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -131,9 +132,20 @@ public class BLEServer extends Service {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this, "BLE Service Has Stopped", Toast.LENGTH_SHORT).show();
+        MainActivity.bleServiceRunning = false;
+        MainActivity.updateBLEStatus();
+    }
+
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "BLEServer Object Created");
         createBLEServer();
+        Toast.makeText(this, "BLE Service Has Started", Toast.LENGTH_SHORT).show();
+        MainActivity.bleServiceRunning = true;
+        MainActivity.updateBLEStatus();
         return Service.START_STICKY;
     }
 
