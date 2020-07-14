@@ -35,7 +35,15 @@ class MyClientCallback : public BLEClientCallbacks {
 
     void onDisconnect(BLEClient* pclient) {
       connected = false;
+#ifdef DEBUG
       Serial.println("onDisconnect");
+#endif
+      //screen is off so go back to sleep since we can't obtain notifications
+      if (!deviceActive) {
+        esp_deep_sleep_start();
+      } else {
+        switchToHome();
+      }
     }
 };
 

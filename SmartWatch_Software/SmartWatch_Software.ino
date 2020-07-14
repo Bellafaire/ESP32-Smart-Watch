@@ -73,6 +73,7 @@ void setup()
     switch (wakeup_reason)
     {
       case ESP_SLEEP_WAKEUP_EXT0:
+      deviceActive = true;
         //if woken up by user touching screen
 #ifdef DEBUG
         Serial.println("current notification data in memory");
