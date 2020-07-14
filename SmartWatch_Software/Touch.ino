@@ -11,14 +11,35 @@ void initTouch()
   attachInterrupt(TOUCH_IRQ, TOUCH_ISR, FALLING);
 }
 
+int rapidTouchCount = 0;
+
 void IRAM_ATTR TOUCH_ISR()
 {
 #ifdef DEBUG
   Serial.println("Touch detected from interrupt");
 #endif
+  if (millis() - lastTouchTime < 200) {
+    rapidTouchCount++;
+    #ifdef DEBUG
+      Serial.println("rapidTouchCount: " + String(rapidTouchCount));
+    #endif
+    if (rapidTouchCount > 50) {
+      #ifdef DEBUG
+        Serial.println("**** Rapid Touch shutdown registered ****");
+        Serial.flush();
+      #endif
+      esp_deep_sleep_start();
+    }
+  } else {
+    rapidTouchCount = 0;
+  }
   // readTouch();
   lastTouchTime = millis();
   touchDetected = true;
+
+
+
+
   // handleTouch();
 }
 
