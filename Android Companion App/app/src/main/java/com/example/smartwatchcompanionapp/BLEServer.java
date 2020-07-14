@@ -134,8 +134,7 @@ public class BLEServer extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "BLEServer Object Created");
         createBLEServer();
-
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
 
 }
