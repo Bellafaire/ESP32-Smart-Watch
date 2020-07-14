@@ -55,7 +55,7 @@ void setup()
       getPhoneNotifications(10000);
       tft.println("phone notifications obtained");
       getInternetTime();
-      tft.println("obtained time"); 
+      tft.println("obtained time");
 #ifdef DEBUG
       Serial.println("Battery Monitor initialized");
 #endif

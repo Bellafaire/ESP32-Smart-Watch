@@ -18,6 +18,10 @@ void Window::focus()
   }
 }
 
+//blank constructor (you'll know when you need it)
+Window::Window()
+{}
+
 //constructor, the width and height should be less than the actual screen. since the exiting method is to
 //tap outside of the window
 Window::Window(int x, int y, int width, int height, boolean scroll)

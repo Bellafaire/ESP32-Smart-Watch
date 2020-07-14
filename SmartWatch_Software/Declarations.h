@@ -25,12 +25,13 @@ int ERROR_COLOR = ST77XX_BLUE;
 #define screenOnTime 10000 //time before watch screen times out without user input
 
 //variables used globally
+boolean deviceActive = false; //indicates that the device is being actively used (showing home and other UI elements with screen active)
 boolean touchDetected = false;
 int currentPage = HOME;
 unsigned long lastTouchTime = 0;
 
 //prints debug information to the serial terminal when declared
-//#define DEBUG
+#define DEBUG
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //touch screen driver interrupt request
@@ -132,6 +133,7 @@ class Window
 
   public:
     Window(int x, int y, int width, int height, boolean scroll);
+    Window();
     void print(String Text);
     void println(String Text);
     void touch();
@@ -249,7 +251,7 @@ void switchToSettings();
 void settingsLoop();
 
 //BluetoothRecieve.ino
-void getPhoneNotifications(int timeout);
+String getPhoneNotifications(int timeout);
 
 //CircularAnimation.ino
 void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int arcLength,  int color);

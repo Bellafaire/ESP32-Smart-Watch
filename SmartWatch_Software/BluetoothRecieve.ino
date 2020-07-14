@@ -2,6 +2,14 @@
 
 //Most of this is taken from the BLE_client example provided in Examples > ESP32 BLE Arduino > BLE_client
 
+
+
+//  w.println("Getting phone notifications");
+
+//timer variable used to force exit the bluetooth recieve functions if data can't be obtained
+static unsigned long bluetoothStart = 0;
+static unsigned long bluetooth_timeout = 10000; //default 10 second time out
+
 //UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
 static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
 static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
@@ -32,6 +40,8 @@ class MyClientCallback : public BLEClientCallbacks {
 };
 
 String connectToServer(int timeout) {
+  //manually clear the touchDetected flag. otherwise this function will exit (flag doesn't always clear)
+  touchDetected = false;
   unsigned long startTime = millis();
   BLEClient*  pClient  = BLEDevice::createClient();
 
@@ -45,7 +55,7 @@ String connectToServer(int timeout) {
   if (pRemoteService == nullptr) {
 
     pClient->disconnect();
-    return "";
+    return "connection error";
   }
 
 
@@ -53,19 +63,19 @@ String connectToServer(int timeout) {
   pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
   if (pRemoteCharacteristic == nullptr) {
     pClient->disconnect();
-    return "";
+    return "could not obtain characteristic";
   }
   //aquire a full 2048 bytes of data from the BLE device
   int byteCount = 0;
 
   pRemoteCharacteristic->writeValue('a', 1);
 
-for(int a = 0; a < 100; a++){
-  delay(10); 
-  if(touchDetected){
-    return ""; 
+  for (int a = 0; a < 100; a++) {
+    delay(10);
+    if (touchDetected) {
+      return "touch detected";
+    }
   }
-}
 
   String ret = "";
 
@@ -93,7 +103,14 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         Called for each advertising BLE server.
     */
     void onResult(BLEAdvertisedDevice advertisedDevice) {
+      if (bluetoothStart + bluetooth_timeout < millis()) {
+        BLEDevice::getScan()->stop();
+      }
 
+#ifdef DEBUG
+      Serial.print("BLE Advertised Device found: ");
+      Serial.println(advertisedDevice.toString().c_str());
+#endif
       // We have found a device, let us now see if it contains the service we are looking for.
       if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
 
@@ -107,7 +124,9 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 }; // MyAdvertisedDeviceCallbacks
 
 
-void getPhoneNotifications(int timeout) {
+String getPhoneNotifications(int timeout) {
+  bluetoothStart = millis();
+  bluetooth_timeout = timeout;
 
   int currentPosition = 0;
 
@@ -123,17 +142,25 @@ void getPhoneNotifications(int timeout) {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(5, false);
 
+
+#ifdef DEBUG
+  Serial.println("Scanning Complete");
+#endif
+
   String rdata = connectToServer(timeout);
+
 
   //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
   if (rdata[rdata.length() - 1] == '*' && rdata[rdata.length() - 2] == '*' && rdata[rdata.length() - 3] == '*') {
     for (int a = 0; a < 2048; a++) {
       notificationData[a] = rdata[a];
     }
+    return "Success";
   } else {
 #ifdef DEBUG
-    Serial.println("Data not complete");
+    Serial.println("Data not complete: " + rdata);
 #endif
+    return "Data not complete: " + rdata;
   }
 
 }
