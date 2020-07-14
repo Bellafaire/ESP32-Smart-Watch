@@ -40,8 +40,12 @@ class MyClientCallback : public BLEClientCallbacks {
 #endif
       //screen is off so go back to sleep since we can't obtain notifications
       if (!deviceActive) {
+        #ifdef DEBUG
+          Serial.println("device disconnected going to sleep");
+        #endif
         esp_deep_sleep_start();
       } else {
+        //otherwise if the device disconnects go back to the home screen
         switchToHome();
       }
     }
@@ -56,8 +60,11 @@ String connectToServer(int timeout) {
   pClient->setClientCallbacks(new MyClientCallback());
 
   // Connect to the remove BLE Server.
-  pClient->connect(myDevice);  // if you pass BLEAdvertisedDevice instead of address, it will be recognized type of peer device address (public or private)
-
+  if (myDevice != NULL) {
+    pClient->connect(myDevice);  // if you pass BLEAdvertisedDevice instead of address, it will be recognized type of peer device address (public or private)
+  } else {
+    return "device not found";
+  }
   // Obtain a reference to the service we are after in the remote BLE server.
   BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
   if (pRemoteService == nullptr) {
@@ -76,8 +83,12 @@ String connectToServer(int timeout) {
   //aquire a full 2048 bytes of data from the BLE device
   int byteCount = 0;
 
+  //the android app requires a write to reset the cursor position of the notification feed.
+  //this also causes the app to get the most current notifications available
   pRemoteCharacteristic->writeValue('a', 1);
 
+  //we then have to wait until the app has obtained the current notifications. if the user
+  //touches the screen exit the process right away since this is meant to happen in the background
   for (int a = 0; a < 100; a++) {
     delay(10);
     if (touchDetected) {
@@ -97,6 +108,10 @@ String connectToServer(int timeout) {
 #endif
       ret += value.c_str();
       byteCount += 16;
+      //if we detect "***" then we know that the end of the data has been reached. no need in getting anything else
+      if (ret[ret.length() - 1] == '*' && ret[ret.length() - 2] == '*' && ret[ret.length() - 3] == '*') {
+        break;
+      }
     }
   }
 
@@ -155,8 +170,8 @@ String getPhoneNotifications(int timeout) {
   Serial.println("Scanning Complete");
 #endif
 
-  String rdata = connectToServer(timeout);
 
+  String rdata = connectToServer(timeout);
 
   //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
   if (rdata[rdata.length() - 1] == '*' && rdata[rdata.length() - 2] == '*' && rdata[rdata.length() - 3] == '*') {
