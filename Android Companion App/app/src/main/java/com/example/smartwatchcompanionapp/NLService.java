@@ -13,6 +13,8 @@ import android.util.Log;
 
 public class NLService extends NotificationListenerService {
 
+    final static int maxBigTextLength = 180;
+
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
 
@@ -22,7 +24,7 @@ public class NLService extends NotificationListenerService {
         nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-        registerReceiver(nlservicereciver,filter);
+        registerReceiver(nlservicereciver, filter);
     }
 
     @Override
@@ -72,12 +74,12 @@ public class NLService extends NotificationListenerService {
                     try {
                         i2.putExtra("notification_event",
                                 ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)) + ","
-                                        + convToString(sbn.getNotification().extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)) +
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)).replace("\n", "").replace(";", ",") + ";"
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "") .replace(";", ",")+ ";"
+                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "") .replace(";", ",")+ ";"
+                                        + shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "") .replace(";", ",")+
                                         "\n"); //this line formats our outputs
                         sendBroadcast(i2);
                     } catch (Exception e) {
@@ -90,6 +92,15 @@ public class NLService extends NotificationListenerService {
             }
         }
     }
+
+    public static String shortenString(CharSequence s){
+        if(s.length() > maxBigTextLength){
+            return s.toString().substring(0, maxBigTextLength) + "...";
+        }else{
+            return s.toString();
+        }
+    }
+
 
     public static String convToString(CharSequence[] c) {
         String ret = "";
