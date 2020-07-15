@@ -20,18 +20,25 @@ void IRAM_ATTR TOUCH_ISR()
 #endif
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
-    #ifdef DEBUG
-      Serial.println("rapidTouchCount: " + String(rapidTouchCount));
-    #endif
+#ifdef DEBUG
+    Serial.println("rapidTouchCount: " + String(rapidTouchCount));
+#endif
     if (rapidTouchCount > 50) {
-      #ifdef DEBUG
-        Serial.println("**** Rapid Touch shutdown registered ****");
-        Serial.flush();
-      #endif
+#ifdef DEBUG
+      Serial.println("**** Rapid Touch shutdown registered ****");
+      Serial.flush();
+#endif
       esp_deep_sleep_start();
     }
   } else {
     rapidTouchCount = 0;
+  }
+
+  //something's happening and if the user touches the screen we should just 
+  //reset the device because they want to use the smartwatch
+  if (nonCriticalOperation) {
+    esp_sleep_enable_timer_wakeup(10);
+    esp_deep_sleep_start();
   }
   // readTouch();
   lastTouchTime = millis();

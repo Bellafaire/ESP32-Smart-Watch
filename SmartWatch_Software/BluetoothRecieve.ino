@@ -152,7 +152,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 
 String getPhoneNotifications(int timeout) {
-  volatileOperation = true;
+  
   bluetoothStart = millis();
   bluetooth_timeout = timeout;
 
@@ -175,7 +175,7 @@ String getPhoneNotifications(int timeout) {
   Serial.println("Scanning Complete");
 #endif
 
-  volatileOperation = false;
+ 
 
   String rdata = connectToServer(timeout);
 

@@ -100,7 +100,9 @@ void setup()
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
         //if woken up by 5 minute timer
+        nonCriticalOperation = true;
         getPhoneNotifications(30000);
+        nonCriticalOperation = false;
 #ifdef DEBUG
         Serial.println("Woken up by timer");
 #endif

@@ -26,7 +26,7 @@ int ERROR_COLOR = ST77XX_BLUE;
 
 //variables used globally
 boolean deviceActive = false; //indicates that the device is being actively used (showing home and other UI elements with screen active)
-boolean volatileOperation = false; //indicates that current operation can potentially lock up the device (touch interrupt will shut device down if detected)
+boolean nonCriticalOperation = false; //indicates that the code running may take some time and can be interrupted if needed
 boolean touchDetected = false;
 int currentPage = HOME;
 unsigned long lastTouchTime = 0;
