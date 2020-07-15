@@ -79,13 +79,15 @@ public class NLService extends NotificationListenerService {
                                 + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "").replace(";", ",") + ";"
                                 + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "").replace(";", ",") + ";";
 
-
-                        if (sbn.getNotification().category.equals(Notification.CATEGORY_EMAIL)) {
-                            data += shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "").replace(";", ",");
-                        } else if (sbn.getNotification().category.equals(Notification.CATEGORY_MESSAGE)) {
-                            data += ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_MESSAGES));
+                        try {
+                            if (sbn.getNotification().category.equals(Notification.CATEGORY_EMAIL)) {
+                                data += shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "").replace(";", ",");
+                            } else if (sbn.getNotification().category.equals(Notification.CATEGORY_MESSAGE)) {
+                                data += ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_MESSAGES));
+                            }
+                        } catch (Exception e) {
+    
                         }
-
                         i2.putExtra("notification_event", data + "\n");
                         sendBroadcast(i2);
                     } catch (Exception e) {
