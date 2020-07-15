@@ -40,38 +40,38 @@ void openNotification(int sel) {
   w.println(parseFromNotifications(sel, 0)); //app name
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 1).length() > 0 && !parseFromNotifications(sel, 1).equals(",")) {
+  if (parseFromNotifications(sel, 1).length() > 0 && !parseFromNotifications(sel, 1).equals("" + FIELD_SEPARATOR)) {
     w.println("_Title_");
     w.println(parseFromNotifications(sel, 1));
   }
 
   //EXTRA_TEXT
-  if (parseFromNotifications(sel, 2).length() > 0 && !parseFromNotifications(sel, 2).equals(",")) {
+  if (parseFromNotifications(sel, 2).length() > 0 && !parseFromNotifications(sel, 2).equals("" + FIELD_SEPARATOR)) {
     w.println("_Text_");
     w.println( parseFromNotifications(sel, 2));
 
   }
 
   //EXTRA_INFO_TEXT
-  if (parseFromNotifications(sel, 3).length() > 0 && !parseFromNotifications(sel, 3).equals(",")) {
+  if (parseFromNotifications(sel, 3).length() > 0 && !parseFromNotifications(sel, 3).equals("" + FIELD_SEPARATOR)) {
     w.println("_Info_");
     w.println(parseFromNotifications(sel, 3));
   }
 
   //EXTRA_SUB_TEXT
-  if (parseFromNotifications(sel, 4).length() > 0 && !parseFromNotifications(sel, 4).equals(",")) {
+  if (parseFromNotifications(sel, 4).length() > 0 && !parseFromNotifications(sel, 4).equals("" + FIELD_SEPARATOR)) {
     w.println("_Subtext_");
     w.println(parseFromNotifications(sel, 4));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 5).length() > 0 && !parseFromNotifications(sel, 5).equals(",")) {
+  if (parseFromNotifications(sel, 5).length() > 0 && !parseFromNotifications(sel, 5).equals("" + FIELD_SEPARATOR)) {
     w.println("_extratitle_");
     w.println(parseFromNotifications(sel, 5));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 6).length() > 0 && !parseFromNotifications(sel, 6).equals(",")) {
+  if (parseFromNotifications(sel, 6).length() > 0 && !parseFromNotifications(sel, 6).equals("" + FIELD_SEPARATOR)) {
     w.println("_other_");
     w.println(parseFromNotifications(sel, 6));
   }
@@ -162,7 +162,7 @@ int getNotificationLines() {
 //find the information contained in a given line and given position in a comma seperated value
 String parseFromNotifications(int line, int field) {
   String lineData = getValue(String(notificationData), '\n', line);
-  return getValue(lineData,FIELD_SEPARATOR, field);
+  return getValue(lineData, FIELD_SEPARATOR, field);
 }
 
 //duplicated in settings.ino
