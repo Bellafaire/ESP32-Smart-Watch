@@ -115,7 +115,7 @@ void drawNotifications() {
   if (numberOfNotifications > 0) {
     frameBuffer->setTextWrap(false);
     //for whatever reason line 1 is a blank line and the last line contains the time
-    for (int a = 1; a < numberOfNotifications - 1; a++) {
+    for (int a = 0; a < numberOfNotifications - 1; a++) {
       if (selectedNotification == a) {
         frameBuffer->fillRect(0, y_pos - 1, SCREEN_WIDTH, 8, INTERFACE_COLOR);
         frameBuffer->setTextColor(BACKGROUND_COLOR);

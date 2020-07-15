@@ -35,7 +35,7 @@ void writeNotifications() {
   frameBuffer->println("Notifications");
 
   if (lines > 1) {
-    for (int a = 1; a < lines - 1; a++) {
+    for (int a = 0; a < lines - 1; a++) {
       frameBuffer->println(parseFromNotifications(a, 0) + "-" + parseFromNotifications(a, 1));
     }
   } else {
