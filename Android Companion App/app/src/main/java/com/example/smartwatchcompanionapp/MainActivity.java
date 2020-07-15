@@ -168,8 +168,13 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onRecieve method callback received " + intent.getStringExtra("notification_event"));
-            String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
-            txtView.setText(temp.replace("\n\n", "\n"));
+            String temp = intent.getStringExtra("notification_event");
+            if (!txtView.getText().toString().contains(temp)) {
+                temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
+                txtView.setText(temp.replace("\n\n", "\n"));
+            }
+//            String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
+
         }
     }
 
