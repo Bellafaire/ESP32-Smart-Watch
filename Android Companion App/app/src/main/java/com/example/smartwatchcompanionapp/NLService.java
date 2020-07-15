@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class NLService extends NotificationListenerService {
 
-    final static int maxBigTextLength = 180;
+    final static int maxBigTextLength = 240;
 
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
@@ -72,15 +72,21 @@ public class NLService extends NotificationListenerService {
                     Intent i2 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
                     //reference for pulling information out of notification objects http://gmariotti.blogspot.com/2013/11/notificationlistenerservice-and-kitkat.html
                     try {
-                        i2.putExtra("notification_event",
-                                ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + ","
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)).replace("\n", "").replace(";", ",") + ";"
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)).replace("\n", "").replace(";", ",") + ";"
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)).replace("\n", "").replace(";", ",") + ";"
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "") .replace(";", ",")+ ";"
-                                        + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "") .replace(";", ",")+ ";"
-                                        + shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "") .replace(";", ",")+
-                                        "\n"); //this line formats our outputs
+                        String data = ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + "," //this comma is a feature
+                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)).replace("\n", "").replace(";", ",") + ";"
+                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "").replace(";", ",") + ";";
+
+
+                        if (sbn.getNotification().category.equals(Notification.CATEGORY_EMAIL)) {
+                            data += shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "").replace(";", ",");
+                        } else if (sbn.getNotification().category.equals(Notification.CATEGORY_MESSAGE)) {
+                            data += ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_MESSAGES));
+                        }
+
+                        i2.putExtra("notification_event", data + "\n");
                         sendBroadcast(i2);
                     } catch (Exception e) {
                         Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
@@ -91,12 +97,13 @@ public class NLService extends NotificationListenerService {
                 sendBroadcast(i3);
             }
         }
+
     }
 
-    public static String shortenString(CharSequence s){
-        if(s.length() > maxBigTextLength){
+    public static String shortenString(CharSequence s) {
+        if (s.length() > maxBigTextLength) {
             return s.toString().substring(0, maxBigTextLength) + "...";
-        }else{
+        } else {
             return s.toString();
         }
     }
