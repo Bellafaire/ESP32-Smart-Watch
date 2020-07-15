@@ -2,6 +2,7 @@ int numberOfNotifications;
 int selectedNotification = 0;
 
 #define FIELD_SEPARATOR ';'
+#define FIELD_SEPARATOR_STRING ";"
 
 void NotificationsTouchHandler(struct point p) {
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
@@ -40,38 +41,38 @@ void openNotification(int sel) {
   w.println(parseFromNotifications(sel, 0)); //app name
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 1).length() > 0 && !parseFromNotifications(sel, 1).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 1).length() > 0 && !parseFromNotifications(sel, 1).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_Title_");
     w.println(parseFromNotifications(sel, 1));
   }
 
   //EXTRA_TEXT
-  if (parseFromNotifications(sel, 2).length() > 0 && !parseFromNotifications(sel, 2).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 2).length() > 0 && !parseFromNotifications(sel, 2).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_Text_");
     w.println( parseFromNotifications(sel, 2));
 
   }
 
   //EXTRA_INFO_TEXT
-  if (parseFromNotifications(sel, 3).length() > 0 && !parseFromNotifications(sel, 3).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 3).length() > 0 && !parseFromNotifications(sel, 3).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_Info_");
     w.println(parseFromNotifications(sel, 3));
   }
 
   //EXTRA_SUB_TEXT
-  if (parseFromNotifications(sel, 4).length() > 0 && !parseFromNotifications(sel, 4).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 4).length() > 0 && !parseFromNotifications(sel, 4).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_Subtext_");
     w.println(parseFromNotifications(sel, 4));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 5).length() > 0 && !parseFromNotifications(sel, 5).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 5).length() > 0 && !parseFromNotifications(sel, 5).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_extratitle_");
     w.println(parseFromNotifications(sel, 5));
   }
 
   //EXTRA_TITLE
-  if (parseFromNotifications(sel, 6).length() > 0 && !parseFromNotifications(sel, 6).equals("" + FIELD_SEPARATOR)) {
+  if (parseFromNotifications(sel, 6).length() > 0 && !parseFromNotifications(sel, 6).equals(FIELD_SEPARATOR_STRING)) {
     w.println("_other_");
     w.println(parseFromNotifications(sel, 6));
   }
