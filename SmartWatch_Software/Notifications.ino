@@ -100,7 +100,7 @@ void switchToNotifications()
   Serial.println("Switched to Notifications");
 #endif
   numberOfNotifications = getNotificationLines();
-  selectedNotification = 0;
+  selectedNotification = 1;
   drawNotifications();
   currentPage = NOTIFICATIONS;
   notificationsLoop();
