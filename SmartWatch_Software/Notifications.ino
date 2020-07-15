@@ -1,6 +1,8 @@
 int numberOfNotifications;
 int selectedNotification = 0;
 
+#define FIELD_SEPARATOR ';'
+
 void NotificationsTouchHandler(struct point p) {
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
   {
@@ -160,7 +162,7 @@ int getNotificationLines() {
 //find the information contained in a given line and given position in a comma seperated value
 String parseFromNotifications(int line, int field) {
   String lineData = getValue(String(notificationData), '\n', line);
-  return getValue(lineData, ',', field);
+  return getValue(lineData,FIELD_SEPARATOR, field);
 }
 
 //duplicated in settings.ino
