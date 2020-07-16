@@ -216,38 +216,31 @@ void Window::drawTextToWindow(boolean clr) {
       int startPos = 0;
       int endPos = maxCharactersPerRow;
 
-#ifdef DEBUG
-      Serial.print("Splitting line (length:" + String(line.length()) + ") " + line + " in window ");
-      int cnt = 0;
-#endif
 
       do {
         tft.print(line.substring(startPos, endPos));
-#ifdef DEBUG
-        Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
-#endif
+
         if (endPos + maxCharactersPerRow > line.length()) {
           endPos = line.length();
           startPos += maxCharactersPerRow;
           ypos += 8;
+          if (ypos > _y + _height - 8) {
+            return;
+          }
           tft.setCursor(_x + 2, ypos);
           tft.print(line.substring(startPos, endPos));
-#ifdef DEBUG
-          Serial.print("    " + String(cnt++) + ". " + line.substring(startPos, endPos));
-#endif
         } else {
           endPos += maxCharactersPerRow;
           startPos += maxCharactersPerRow;
         }
       }
       while (endPos < line.length());
-
-#ifdef DEBUG
-      Serial.println("");
-#endif
     }
     ypos += 8;
     tft.setCursor(_x + 2, ypos);
+    if (ypos > _y + _height - 8) {
+      return;
+    }
   }
 }
 
