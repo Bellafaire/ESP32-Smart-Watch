@@ -83,11 +83,11 @@ public class BLEServer extends Service {
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             try {
-                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, txtView.getText().toString().substring(currentIndex, currentIndex + 16).getBytes());
-                Log.v("btout", "BT_OUT:" + txtView.getText().toString().substring(currentIndex, currentIndex + 16).getBytes());
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.notificationData.substring(currentIndex, currentIndex + 16).getBytes());
+                Log.v("btout", "BT_OUT:" +  MainActivity.notificationData.substring(currentIndex, currentIndex + 16).getBytes());
             } catch (IndexOutOfBoundsException e) {
-                if (currentIndex < txtView.getText().toString().length()) {
-                    String res = txtView.getText().toString().substring(currentIndex);
+                if (currentIndex < MainActivity.notificationData.length()) {
+                    String res = MainActivity.notificationData.substring(currentIndex);
                     while (res.length() < 16) {
                         res += "*";
                     }

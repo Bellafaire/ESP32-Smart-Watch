@@ -26,6 +26,8 @@ import java.util.Date;
 public class MainActivity extends Activity {
 
     public static boolean bleServiceRunning = false;
+    public static String notificationData = "";
+    public static String logData = "Messages\n";
 
     public static TextView txtView;
     public static TextView status;
@@ -114,12 +116,15 @@ public class MainActivity extends Activity {
     public void updateText() {
         Log.d("inform", "update text function has been called");
 
+        notificationData = getDateAndTime() + "\n***";
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
         sendBroadcast(i);
 
-        messages.append("BLE Advertisements Established - " + getDateAndTime() + "\n");
+//        messages.append("BLE Data Sent - " + getDateAndTime() + "\n");
+        logData += "BLE Data Sent - " + getDateAndTime() + "\n";
+        messages.setText(logData);
     }
 
 
@@ -128,18 +133,30 @@ public class MainActivity extends Activity {
         reference.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                notificationData = getDateAndTime() + "\n***";
                 txtView.setText(getDateAndTime() + "\n***");
                 Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
                 i.putExtra("command", "list");
                 context.sendBroadcast(i);
-                messages.append("BLE Advertisements Established - " + getDateAndTime() + "\n");
+//                messages.setText("BLE Data Sent - " + getDateAndTime() + "\n");
+                logData += "BLE Data Sent - " + getDateAndTime() + "\n";
+                messages.setText(logData);
             }
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        messages.setText(logData);
+    }
+
     public void updateText(View view) {
         Log.i(TAG, "update text button has been pressed");
-        messages.append("Manually updated: " + getDateAndTime() + "\n");
+//        messages.append("Manually updated: " + getDateAndTime() + "\n");
+        logData += "Manually updated: " + getDateAndTime() + "\n";
+        messages.setText(logData);
+        notificationData = getDateAndTime() + "\n***";
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
@@ -169,6 +186,10 @@ public class MainActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onRecieve method callback received " + intent.getStringExtra("notification_event"));
             String temp = intent.getStringExtra("notification_event");
+            if (!notificationData.contains(temp)) {
+                temp = intent.getStringExtra("notification_event") + "\n" + notificationData;
+                notificationData = temp.replace("\n\n", "\n");
+            }
             if (!txtView.getText().toString().contains(temp)) {
                 temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
                 txtView.setText(temp.replace("\n\n", "\n"));
