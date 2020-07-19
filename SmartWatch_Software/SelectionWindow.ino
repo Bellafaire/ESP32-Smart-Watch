@@ -36,6 +36,7 @@ int SelectionWindow::focus() {
     touch();
     delay(5);
   }
+  delay(200);
   return selection;
 }
 
