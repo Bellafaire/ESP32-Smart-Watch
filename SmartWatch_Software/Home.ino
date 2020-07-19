@@ -61,8 +61,6 @@ int circlePosition = 0;
 void drawHome()
 {
 
-  frameBuffer -> fillScreen(BACKGROUND_COLOR);
-
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
   //it's here if you want it
