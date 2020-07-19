@@ -95,8 +95,8 @@ void switchToSettings()
 
 void drawSettings()
 {
-  frameBuffer -> fillScreen(BACKGROUND_COLOR);
-
+//  frameBuffer -> fillScreen(BACKGROUND_COLOR);
+  frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
   //configuring buttons
   if (SETTING_OPTIONS > MAX_ON_SCREEN_SETTINGS_BUTTONS)
   {
@@ -116,8 +116,8 @@ void drawSettings()
       paintButton(settingButtons[a]);
     }
   }
-  paintButton(upArrowButton);
-  paintButton(downArrowButton);
+  paintButtonFull(upArrowButton);
+  paintButtonFull(downArrowButton);
 
   paintButton(homeButton);
 
