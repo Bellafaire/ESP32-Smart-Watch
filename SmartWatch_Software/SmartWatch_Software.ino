@@ -60,7 +60,8 @@ void setup()
       testScreen();
       getPhoneNotifications(10000);
       tft.println("phone notifications obtained");
-      getInternetTime();
+      //      getInternetTime();
+      updateTimeFromNotificationData();
       tft.println("obtained time");
 #ifdef DEBUG
       Serial.println("Battery Monitor initialized");
@@ -85,6 +86,7 @@ void setup()
             if (notificationData[a] == '*' &&
                 notificationData[a - 1] == '*' &&
                 notificationData[a - 2] == '*') {
+
               break;
             }
           }
@@ -102,6 +104,7 @@ void setup()
         //if woken up by 5 minute timer
         nonCriticalOperation = true;
         getPhoneNotifications(30000);
+        updateTimeFromNotificationData();
         nonCriticalOperation = false;
 #ifdef DEBUG
         Serial.println("Woken up by timer");

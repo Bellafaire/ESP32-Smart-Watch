@@ -194,7 +194,11 @@ void getNotifications() {
   //  }
 
   w.println(getPhoneNotifications(30000));
+
+  updateTimeFromNotificationData();
+  w.println("Updated Time"); 
   w.focus();
+
 
   //  SweepClear();
   drawSettings();
