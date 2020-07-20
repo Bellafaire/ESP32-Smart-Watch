@@ -86,7 +86,7 @@ void setup()
             if (notificationData[a] == '*' &&
                 notificationData[a - 1] == '*' &&
                 notificationData[a - 2] == '*') {
-
+              //                  updateTimeFromNotificationData();
               break;
             }
           }
@@ -103,8 +103,9 @@ void setup()
       case ESP_SLEEP_WAKEUP_TIMER:
         //if woken up by 5 minute timer
         nonCriticalOperation = true;
-        getPhoneNotifications(30000);
-        updateTimeFromNotificationData();
+        if(getPhoneNotifications(30000).equals("Success")){
+          updateTimeFromNotificationData();
+        }
         nonCriticalOperation = false;
 #ifdef DEBUG
         Serial.println("Woken up by timer");

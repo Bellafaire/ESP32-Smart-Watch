@@ -95,7 +95,7 @@ void switchToSettings()
 
 void drawSettings()
 {
-//  frameBuffer -> fillScreen(BACKGROUND_COLOR);
+  //  frameBuffer -> fillScreen(BACKGROUND_COLOR);
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
   //configuring buttons
   if (SETTING_OPTIONS > MAX_ON_SCREEN_SETTINGS_BUTTONS)
@@ -193,10 +193,14 @@ void getNotifications() {
   //    w.print(String(notificationData[a]));
   //  }
 
-  w.println(getPhoneNotifications(30000));
+  String result = getPhoneNotifications(30000);
+  w.println(result);
 
+  if (result.equals("Success")) {
+    updateTimeFromNotificationData();
+  }
   updateTimeFromNotificationData();
-  w.println("Updated Time"); 
+  w.println("Updated Time");
   w.focus();
 
 
