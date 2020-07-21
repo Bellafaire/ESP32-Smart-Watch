@@ -198,9 +198,11 @@ void getNotifications() {
 
   if (result.equals("Success")) {
     updateTimeFromNotificationData();
+    w.println("Updated Time");
+  }else{
+    w.println("Notification Data is old, could not update time");
   }
-  updateTimeFromNotificationData();
-  w.println("Updated Time");
+
   w.focus();
 
 
