@@ -76,7 +76,6 @@ void SelectionWindow::touch()
 
       selection--;
       drawOptionsWindow();
-      delay(80);
     }
     if (checkButtonPress(okButton, p.xPos, p.yPos))
     {
@@ -86,7 +85,6 @@ void SelectionWindow::touch()
     {
       selection++;
       drawOptionsWindow();
-      delay(80);
     }
     drawOptionsWindow();
   }
