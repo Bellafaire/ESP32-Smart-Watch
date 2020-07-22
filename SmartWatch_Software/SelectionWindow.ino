@@ -16,19 +16,19 @@ void SelectionWindow::drawOptionsWindow()
   frameBuffer->setTextSize(1);
   frameBuffer->setTextColor(INTERFACE_COLOR);
 
-  for (int a = scrollPosition; a < maxOptions; a++)
+  for (int a = scrollPosition*maxOptions; a < (scrollPosition + 1)*maxOptions; a++)
   {
-    frameBuffer->setCursor(_x + 1, _y + a * 8 + 1);
+    frameBuffer->setCursor(_x + 1, _y + (a - scrollPosition*maxOptions) * 8 + 1);
 
     if (a == selection)
     {
       frameBuffer->setTextColor(BACKGROUND_COLOR);
-      frameBuffer->fillRect(_x + 1, _y + a * 8, _width - 16, 8, INTERFACE_COLOR);
+      frameBuffer->fillRect(_x + 1, _y + (a - scrollPosition*maxOptions) * 8, _width - 16, 8, INTERFACE_COLOR);
     }
     else
     {
       frameBuffer->setTextColor(INTERFACE_COLOR);
-      frameBuffer->fillRect(_x + 1, _y + a * 8, _width - 16, 8, BACKGROUND_COLOR);
+      frameBuffer->fillRect(_x + 1, _y + (a - scrollPosition*maxOptions) * 8, _width - 16, 8, BACKGROUND_COLOR);
     }
     frameBuffer->print(getValue(options, optionDivider, a));
   }
