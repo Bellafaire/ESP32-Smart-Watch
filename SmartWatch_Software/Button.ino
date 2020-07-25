@@ -83,6 +83,16 @@ void pressButton(button b) {
   frameBuffer->fillRect(b._x, b._y, b._width, b._height, b._color);
 }
 
+bool checkButtonPress(button b) {
+  struct point p = readTouch();
+  return checkButtonPress(b, p.xPos, p.yPos);
+}
+
+bool checkButtonPress(iconButton b) {
+  struct point p = readTouch();
+  return checkButtonPress(b, p.xPos, p.yPos);
+}
+
 bool checkButtonPress(iconButton b, int x, int y) {
   if (x > b._x && x < b._x + b._width && y > b._y && y < b._y + b._height) {
     return true;

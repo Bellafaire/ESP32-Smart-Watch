@@ -2,8 +2,6 @@
 
 //Most of this is taken from the BLE_client example provided in Examples > ESP32 BLE Arduino > BLE_client
 
-
-
 //  w.println("Getting phone notifications");
 
 //timer variable used to force exit the bluetooth recieve functions if data can't be obtained

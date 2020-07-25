@@ -1,13 +1,17 @@
 /*  Primary Area for selecting apps from within the watch. Apps take full control of the device while active.
      SelectionWindow is used to select between apps/app groups
-*/
 
+     apps are intended to be single function calls that essentially take control of the device for the duration of their use
+*/
 
 #define APP_NUMBER 2
 
+#define MEDIA_CONTROLLER "Media Controller"
+#define BLUETOOTH_SERIAL_RECEIVIER "BT Serial"
+
 String appNames[APP_NUMBER] {
-  "App 1",
-  "App 2"
+  MEDIA_CONTROLLER,
+  BLUETOOTH_SERIAL_RECEIVIER
 };
 
 
@@ -22,8 +26,15 @@ void openApps() {
   }
   int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
 
-  Window e = Window(30, 40, SCREEN_WIDTH - 60, SCREEN_HEIGHT - 80, false);
-  e.print("Selected Option: " + String(selectedOption)); 
-  e.focus();
-  return;
+  //so that we can re-order apps at will without changing any constants we'll search the
+  //string array and determine the string value selected
+
+  if (appNames[selectedOption].equals(MEDIA_CONTROLLER)) {
+    //things to do for the media controller
+    mediaController();
+  } else if (appNames[selectedOption].equals(BLUETOOTH_SERIAL_RECEIVIER)) {
+    //things to do for the bluetooth serial receivier
+  }
+
+
 }
