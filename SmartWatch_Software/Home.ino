@@ -101,6 +101,9 @@ void HomeTouchHandler(struct point p)
     pressButton(homeNotificationsButton);
     switchToNotifications();
   }
+  if(checkButtonPress(homeAppsButton, p.xPos, p.yPos)){
+    openApps();
+  }
   if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {
     pressButton(homeSettingsButton);
