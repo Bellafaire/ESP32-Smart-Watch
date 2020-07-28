@@ -1,5 +1,63 @@
 bool firstHomeSwitch = true;
 
+bool songCheckLaunched = false;
+bool checkedIsPlaying = false;
+
+
+void updateSong(void * pvParameters ) {
+  boolean complete = false;
+  String xSongName = "";
+
+#ifdef DEBUG
+  Serial.println("updating song");
+#endif
+  while (!complete) {
+    String rdata;
+
+    rdata =  connectToServer(2000, "/isPlaying", true, true);
+#ifdef DEBUG
+    Serial.println(rdata);
+#endif
+    if (rdata.substring(0, 4).equals("true")) {
+
+      rdata = connectToServer(2000, "/currentSong", true, true);
+#ifdef DEBUG
+      Serial.println(rdata);
+#endif
+      xSongName = rdata;
+      checkedIsPlaying = true;
+      isPlaying = true;
+      complete = true;
+    } else {
+      if (rdata.substring(0, 5).equals("false")) {
+        isPlaying = false;
+        checkedIsPlaying = true;
+        complete = true;
+      } else {
+        complete = false;
+#ifdef DEBUG
+        Serial.println("Could not determine song, retrying");
+#endif
+      }
+    }
+  }
+
+  for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+    if (xSongName[a] == '*') {
+      songName[a] = ' ';
+    } else {
+      songName[a] = xSongName[a];
+    }
+  }
+
+#ifdef DEBUG
+  Serial.println("finished updating song");
+#endif
+  vTaskDelete(xSong);
+}
+
+
+
 void switchToHome()
 {
 
@@ -63,6 +121,11 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+  if (!checkedIsPlaying && connected && !songCheckLaunched) {
+    xTaskCreate( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong );
+    songCheckLaunched = true;
+    configASSERT( xSong );
+  }
 
   //it's here if you want it
   //    drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
@@ -85,14 +148,11 @@ void drawHome()
 
   writeNotifications() ;
 
-  //since we use the framebuffer now we don't really need to fill in the background
-  //  frameBuffer->fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
-
   if (isPlaying) {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
-    for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
-      frameBuffer->print(songName[a]);
-    }
+    frameBuffer->setTextWrap(false);
+    frameBuffer->println(String(songName));
+    frameBuffer->setTextWrap(true);
   } else {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
     frameBuffer->print("Battery ");

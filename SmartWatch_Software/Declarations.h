@@ -91,9 +91,8 @@ RTC_DATA_ATTR uint64_t Mics = 0;
 RTC_DATA_ATTR struct tm *timeinfo;
 
 #define SONG_NAME_BUFFER_SIZE 64
-RTC_DATA_ATTR unsigned char songName[SONG_NAME_BUFFER_SIZE] = "";
-RTC_DATA_ATTR boolean isPlaying = false;
-
+RTC_DATA_ATTR bool isPlaying = false;
+RTC_DATA_ATTR char songName[SONG_NAME_BUFFER_SIZE];
 
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
@@ -223,8 +222,7 @@ void drawHome();
 void HomeTouchHandler(int x, int y);
 void homeLoop();
 void writeNotifications();
-void getSongData();
-void getSongDataThreaded(void * pvParameters );
+
 
 //notifications.ino
 int getNotificationLines();

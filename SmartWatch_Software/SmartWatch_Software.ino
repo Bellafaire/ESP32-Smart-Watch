@@ -59,7 +59,6 @@ void setup()
       initBatMonitor();
       testScreen();
       getPhoneNotifications(15000);
-      getSongData();
       tft.println("phone notifications obtained");
       //      getInternetTime();
       updateTimeFromNotificationData();
@@ -93,10 +92,10 @@ void setup()
           }
         }
 #endif
-
+        initBatMonitor();
         initTouch();
-        initLCD();
         initBluetooth();
+        initLCD();
         MainLoop();
 
         break;
@@ -108,7 +107,6 @@ void setup()
         if (getPhoneNotifications(30000).equals("Success")) {
           updateTimeFromNotificationData();
         }
-        getSongData();
         nonCriticalOperation = false;
 #ifdef DEBUG
         Serial.println("Woken up by timer");
