@@ -6,7 +6,7 @@
 #include "BluetoothSerial.h"
 
 //prints debug information to the serial terminal when declared
-//#define DEBUG
+#define DEBUG
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //just to avoid putting my wifi credentials on the public repo
@@ -254,6 +254,8 @@ void settingsLoop();
 
 //BluetoothRecieve.ino
 String getPhoneNotifications(int timeout);
+String connectToServer(int timeout, String command, boolean readDataBack);
+String writeBLE(int timeout, String command, boolean readDataBack);
 
 //CircularAnimation.ino
 void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int arcLength,  int color);

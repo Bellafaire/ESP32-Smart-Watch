@@ -58,7 +58,7 @@ void setup()
       initLCD();
       initBatMonitor();
       testScreen();
-      getPhoneNotifications(10000);
+      getPhoneNotifications(15000);
       tft.println("phone notifications obtained");
       //      getInternetTime();
       updateTimeFromNotificationData();

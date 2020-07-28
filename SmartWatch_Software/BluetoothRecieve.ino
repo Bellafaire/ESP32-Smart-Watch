@@ -49,7 +49,7 @@ class MyClientCallback : public BLEClientCallbacks {
     }
 };
 
-String connectToServer(int timeout) {
+String connectToServer(int timeout, String command, boolean readDataBack) {
   //manually clear the touchDetected flag. otherwise this function will exit (flag doesn't always clear)
   touchDetected = false;
   unsigned long startTime = millis();
@@ -83,16 +83,21 @@ String connectToServer(int timeout) {
 
   //the android app requires a write to reset the cursor position of the notification feed.
   //this also causes the app to get the most current notifications available
-  pRemoteCharacteristic->writeValue('a', 1);
+  pRemoteCharacteristic->writeValue(command.c_str(), command.length());
 
-  //we then have to wait until the app has obtained the current notifications. if the user
-  //touches the screen exit the process right away since this is meant to happen in the background
-  for (int a = 0; a < 100; a++) {
-    delay(10);
-    if (touchDetected) {
-      return "touch detected";
-    }
+#ifdef DEBUG
+  Serial.println("Wrote Characteristic: " + command);
+#endif
+
+  //if we don't actually need to read any data then we're done here
+  if (!readDataBack) {
+#ifdef DEBUG
+    Serial.println("No Data Read Required");
+#endif
+    return "";
   }
+
+  unsigned long dataReceiveStart = millis();
 
   String ret = "";
 
@@ -104,16 +109,22 @@ String connectToServer(int timeout) {
 #ifdef DEBUG
       Serial.print(value.c_str());
 #endif
-      ret += value.c_str();
-      byteCount += 16;
-      //if we detect "***" then we know that the end of the data has been reached. no need in getting anything else
-      if (ret[ret.length() - 1] == '*' && ret[ret.length() - 2] == '*' && ret[ret.length() - 3] == '*') {
-        break;
+      String strVal = value.c_str();
+      if (strVal.equals("null")) {
+        //do nothing while
+        delay(10);
+      } else {
+        ret += value.c_str();
+        byteCount += 16;
+        //if we detect "***" then we know that the end of the data has been reached. no need in getting anything else
+        if (ret[ret.length() - 1] == '*' && ret[ret.length() - 2] == '*' && ret[ret.length() - 3] == '*') {
+          break;
+        }
       }
     }
   }
 
-  connected = true;
+
   return ret;
 }
 /**
@@ -143,19 +154,13 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
         doConnect = true;
         doScan = true;
-
+        connected = true;
       } // Found our server
     } // onResult
 }; // MyAdvertisedDeviceCallbacks
 
 
-String getPhoneNotifications(int timeout) {
-  
-  bluetoothStart = millis();
-  bluetooth_timeout = timeout;
-
-  int currentPosition = 0;
-
+void findDevice() {
   BLEDevice::init("");
 
   // Retrieve a Scanner and set the callback we want to use to be informed when we
@@ -167,15 +172,46 @@ String getPhoneNotifications(int timeout) {
   pBLEScan->setWindow(1000);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
+}
+
+
+String writeBLE(int timeout, String command, boolean readDataBack) {
+
+  bluetoothStart = millis();
+  bluetooth_timeout = timeout;
+
+  int currentPosition = 0;
+
+  if (!connected) {
+    findDevice();
+  }
 
 
 #ifdef DEBUG
   Serial.println("Scanning Complete");
 #endif
 
- 
+  String rdata = connectToServer(timeout, command, readDataBack);
+  return rdata;
+}
 
-  String rdata = connectToServer(timeout);
+String getPhoneNotifications(int timeout) {
+
+  bluetoothStart = millis();
+  bluetooth_timeout = timeout;
+
+  int currentPosition = 0;
+
+  if (!connected) {
+    findDevice();
+  }
+
+
+#ifdef DEBUG
+  Serial.println("Scanning Complete");
+#endif
+
+  String rdata = connectToServer(timeout, "/notifications", true);
 
   //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
   if (rdata[rdata.length() - 1] == '*' && rdata[rdata.length() - 2] == '*' && rdata[rdata.length() - 3] == '*') {
