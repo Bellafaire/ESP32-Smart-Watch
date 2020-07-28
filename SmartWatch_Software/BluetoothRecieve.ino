@@ -54,6 +54,11 @@ class MyClientCallback : public BLEClientCallbacks {
     }
 };
 
+
+/*Please avoid using this function at all costs. it is required to start the BLE server
+ * But other than that it is only effective in obtaining notification data 
+ */
+
 String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable) {
   //manually clear the touchDetected flag. otherwise this function will exit (flag doesn't always clear)
   touchDetected = false;
@@ -180,7 +185,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 void initBluetooth() {
   //attempt to connect to the device on startup
 
-  xTaskCreatePinnedToCore( findDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 1 );
+  xTaskCreate( findDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
   configASSERT( xConnect );
 
 }

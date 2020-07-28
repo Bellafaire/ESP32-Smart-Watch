@@ -216,21 +216,33 @@ void HomeTouchHandler(struct point p)
 #ifdef DEBUG
     Serial.println("Last Song Button Pressed");
 #endif
+    if (connected) {
+      pRemoteCharacteristic->writeValue("/lastSong", 9);
+    }
   }
   if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Next Song Button Pressed");
 #endif
+    if (connected) {
+      pRemoteCharacteristic->writeValue("/nextSong", 9);
+    }
   }
   if (checkButtonPress(playButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Play Button Pressed");
 #endif
+    if (connected) {
+      pRemoteCharacteristic->writeValue("/play", 5);
+    }
   }
   if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Pause Button Pressed");
 #endif
+    if (connected) {
+      pRemoteCharacteristic->writeValue("/pause", 6);
+    }
   }
 }
 
