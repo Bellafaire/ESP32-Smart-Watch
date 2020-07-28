@@ -27,6 +27,10 @@ static BLEAdvertisedDevice* myDevice;
 //  Serial.println((char*)pData);
 //}
 
+
+
+
+
 class MyClientCallback : public BLEClientCallbacks {
     void onConnect(BLEClient* pclient) {
     }
@@ -159,6 +163,14 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     } // onResult
 }; // MyAdvertisedDeviceCallbacks
 
+void initBluetooth() {
+  //attempt to connect to the device on startup
+  
+  xTaskCreate( findDevice, "FIND_DEVICE", 2048, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
+  configASSERT( xConnect );
+  
+}
+
 
 void findDevice() {
   BLEDevice::init("");
@@ -172,6 +184,21 @@ void findDevice() {
   pBLEScan->setWindow(1000);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
+}
+
+void findDevice(void * pvParameters ) {
+  BLEDevice::init("");
+
+  // Retrieve a Scanner and set the callback we want to use to be informed when we
+  // have detected a new device.  Specify that we want active scanning and start the
+  // scan to run for 8 seconds.
+  BLEScan* pBLEScan = BLEDevice::getScan();
+  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
+  pBLEScan->setInterval(1000);
+  pBLEScan->setWindow(1000);
+  pBLEScan->setActiveScan(true);
+  pBLEScan->start(8);
+  vTaskDelete(xConnect);
 }
 
 

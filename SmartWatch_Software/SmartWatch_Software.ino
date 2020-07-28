@@ -95,6 +95,7 @@ void setup()
 
         initTouch();
         initLCD();
+        initBluetooth();
         MainLoop();
 
         break;
@@ -103,7 +104,7 @@ void setup()
       case ESP_SLEEP_WAKEUP_TIMER:
         //if woken up by 5 minute timer
         nonCriticalOperation = true;
-        if(getPhoneNotifications(30000).equals("Success")){
+        if (getPhoneNotifications(30000).equals("Success")) {
           updateTimeFromNotificationData();
         }
         nonCriticalOperation = false;
