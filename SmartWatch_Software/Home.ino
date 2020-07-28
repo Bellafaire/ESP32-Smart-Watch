@@ -63,14 +63,9 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  if(connected){
-    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3,3, 0b00111111 << 5); //if connected draw a green square in the corner
-  }else{
-    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3,3, 0b00011111 ); //else draw red square
-  }
 
   //it's here if you want it
-//    drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
+  //    drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
   //  drawArc(80, 60, 50, 10, circlePosition++, 30,  0x0011);
 
   frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
@@ -81,16 +76,31 @@ void drawHome()
   frameBuffer->setTextSize(1);
   frameBuffer->setCursor(0, 40);
 
+  if (connected) {
+    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
+  } else {
+    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
+  }
+
+
   writeNotifications() ;
 
   //since we use the framebuffer now we don't really need to fill in the background
   //  frameBuffer->fillRect(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 33, 10, BACKGROUND_COLOR);
-  frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
-  frameBuffer->print("Battery ");
-  frameBuffer->print(String(getBatteryPercentage()));
-  frameBuffer->print("%");
-  if (getBatteryCurrent() > 0.0) {
-    frameBuffer->print(" Charging");
+
+  if (isPlaying) {
+    frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
+    for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+      frameBuffer->print(songName[a]);
+    }
+  } else {
+    frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
+    frameBuffer->print("Battery ");
+    frameBuffer->print(String(getBatteryPercentage()));
+    frameBuffer->print("%");
+    if (getBatteryCurrent() > 0.0) {
+      frameBuffer->print(" Charging");
+    }
   }
 
   paintButton(homeNotificationsButton);
@@ -107,7 +117,7 @@ void HomeTouchHandler(struct point p)
     pressButton(homeNotificationsButton);
     switchToNotifications();
   }
-  if(checkButtonPress(homeAppsButton, p.xPos, p.yPos)){
+  if (checkButtonPress(homeAppsButton, p.xPos, p.yPos)) {
     openApps();
   }
   if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))

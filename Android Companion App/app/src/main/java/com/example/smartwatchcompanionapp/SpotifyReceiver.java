@@ -25,6 +25,14 @@ public class SpotifyReceiver extends BroadcastReceiver {
         return songData;
     }
 
+    public String isPlaying(){
+        if(isPlaying){
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         // This is sent with all broadcasts, regardless of type. The value is taken from

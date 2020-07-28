@@ -90,6 +90,11 @@ RTC_DATA_ATTR time_t now;
 RTC_DATA_ATTR uint64_t Mics = 0;
 RTC_DATA_ATTR struct tm *timeinfo;
 
+#define SONG_NAME_BUFFER_SIZE 64
+RTC_DATA_ATTR unsigned char songName[SONG_NAME_BUFFER_SIZE] = "";
+RTC_DATA_ATTR boolean isPlaying = false;
+
+
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
@@ -104,6 +109,7 @@ typedef struct iconButton iconButton;
 
 //FREERTOS THINGS
 TaskHandle_t xConnect = NULL;
+TaskHandle_t xSong = NULL;
 
 struct onscreenButton
 {
@@ -217,6 +223,8 @@ void drawHome();
 void HomeTouchHandler(int x, int y);
 void homeLoop();
 void writeNotifications();
+void getSongData();
+void getSongDataThreaded(void * pvParameters );
 
 //notifications.ino
 int getNotificationLines();
@@ -258,7 +266,7 @@ void settingsLoop();
 
 //BluetoothRecieve.ino
 String getPhoneNotifications(int timeout);
-String connectToServer(int timeout, String command, boolean readDataBack);
+String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable);
 String writeBLE(int timeout, String command, boolean readDataBack);
 void initBluetooth() ;
 

@@ -14,6 +14,7 @@ static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
 
 static boolean doConnect = false;
 static boolean connected = false;
+static boolean scanComplete = false;
 static boolean doScan = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
@@ -53,7 +54,7 @@ class MyClientCallback : public BLEClientCallbacks {
     }
 };
 
-String connectToServer(int timeout, String command, boolean readDataBack) {
+String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable) {
   //manually clear the touchDetected flag. otherwise this function will exit (flag doesn't always clear)
   touchDetected = false;
   unsigned long startTime = millis();
@@ -108,17 +109,17 @@ String connectToServer(int timeout, String command, boolean readDataBack) {
   // Read the value of the characteristic.
   if (pRemoteCharacteristic->canRead()) {
     touchDetected = false;
-    while (byteCount < 2048 && !touchDetected && startTime + timeout > millis()) {
+    while (byteCount < 2048 && (!touchDetected && touchInterruptable) && startTime + timeout > millis()) {
       std::string value = pRemoteCharacteristic->readValue();
 #ifdef DEBUG
       Serial.print(value.c_str());
 #endif
       String strVal = value.c_str();
-      if (strVal.equals("null")) {
+      if (strVal.substring(0,4).equals("null")) {
         //do nothing while
         delay(10);
       } else {
-        ret += value.c_str();
+        ret += strVal;
         byteCount += 16;
         //if we detect "***" then we know that the end of the data has been reached. no need in getting anything else
         if (ret[ret.length() - 1] == '*' && ret[ret.length() - 2] == '*' && ret[ret.length() - 3] == '*') {
@@ -165,10 +166,10 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void initBluetooth() {
   //attempt to connect to the device on startup
-  
-  xTaskCreate( findDevice, "FIND_DEVICE", 2048, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
+
+  xTaskCreate( findDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
   configASSERT( xConnect );
-  
+
 }
 
 
@@ -184,6 +185,7 @@ void findDevice() {
   pBLEScan->setWindow(1000);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
+  scanComplete = true;
 }
 
 void findDevice(void * pvParameters ) {
@@ -199,6 +201,7 @@ void findDevice(void * pvParameters ) {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
   vTaskDelete(xConnect);
+  scanComplete = true;
 }
 
 
@@ -213,12 +216,7 @@ String writeBLE(int timeout, String command, boolean readDataBack) {
     findDevice();
   }
 
-
-#ifdef DEBUG
-  Serial.println("Scanning Complete");
-#endif
-
-  String rdata = connectToServer(timeout, command, readDataBack);
+  String rdata = connectToServer(timeout, command, readDataBack, false);
   return rdata;
 }
 
@@ -238,7 +236,7 @@ String getPhoneNotifications(int timeout) {
   Serial.println("Scanning Complete");
 #endif
 
-  String rdata = connectToServer(timeout, "/notifications", true);
+  String rdata = connectToServer(timeout, "/notifications", true, true);
 
   //check that the message ends with *** otherwise we assume there was a timeout or something else went wrong
   if (rdata[rdata.length() - 1] == '*' && rdata[rdata.length() - 2] == '*' && rdata[rdata.length() - 3] == '*') {
