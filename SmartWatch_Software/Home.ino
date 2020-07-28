@@ -11,34 +11,33 @@ void updateSong(void * pvParameters ) {
 #ifdef DEBUG
   Serial.println("updating song");
 #endif
-  while (!complete) {
-    String rdata;
 
-    rdata =  connectToServer(2000, "/isPlaying", true, true);
+  String rdata;
+
+  rdata =  connectToServer(2000, "/currentSong", true, false);
+#ifdef DEBUG
+  Serial.println(rdata);
+#endif
+  if (rdata.length() > 3) {
 #ifdef DEBUG
     Serial.println(rdata);
 #endif
-    if (rdata.substring(0, 4).equals("true")) {
-
-      rdata = connectToServer(2000, "/currentSong", true, true);
-#ifdef DEBUG
-      Serial.println(rdata);
-#endif
-      xSongName = rdata;
+    xSongName = rdata;
+    checkedIsPlaying = true;
+    isPlaying = true;
+    complete = true;
+  } else {
+    if (rdata.substring(0, 3).equals("***")) {
+      isPlaying = false;
       checkedIsPlaying = true;
-      isPlaying = true;
       complete = true;
     } else {
-      if (rdata.substring(0, 5).equals("false")) {
-        isPlaying = false;
-        checkedIsPlaying = true;
-        complete = true;
-      } else {
-        complete = false;
+      complete = false;
 #ifdef DEBUG
-        Serial.println("Could not determine song, retrying");
+      Serial.println("Could not determine song, retrying");
 #endif
-      }
+      songCheckLaunched = false;
+      vTaskDelete(xSong);
     }
   }
 

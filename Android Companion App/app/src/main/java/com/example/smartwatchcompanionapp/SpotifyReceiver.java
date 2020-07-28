@@ -19,7 +19,7 @@ public class SpotifyReceiver extends BroadcastReceiver {
     }
 
     private String songData = "";
-    private Boolean isPlaying = false;
+    public Boolean isPlaying = false;
 
     public String getSongData() {
         return songData;

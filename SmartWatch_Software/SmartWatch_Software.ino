@@ -92,10 +92,10 @@ void setup()
           }
         }
 #endif
-        initBatMonitor();
+
         initTouch();
-        initBluetooth();
         initLCD();
+        initBluetooth();
         MainLoop();
 
         break;

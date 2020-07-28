@@ -68,9 +68,18 @@ String connectToServer(int timeout, String command, boolean readDataBack, boolea
   } else {
     return "device not found";
   }
+
+#ifdef DEBUG
+  Serial.println("Device found, connecting to BLE Server");
+#endif
+
   // Obtain a reference to the service we are after in the remote BLE server.
   BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
   if (pRemoteService == nullptr) {
+
+#ifdef DEBUG
+    Serial.println("Null device found, exiting connectToServer()");
+#endif
 
     pClient->disconnect();
     return "connection error";
@@ -80,6 +89,10 @@ String connectToServer(int timeout, String command, boolean readDataBack, boolea
   // Obtain a reference to the characteristic in the service of the remote BLE server.
   pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
   if (pRemoteCharacteristic == nullptr) {
+#ifdef DEBUG
+    Serial.println("Null Characteristic, exiting connectToServer()");
+#endif
+
     pClient->disconnect();
     return "could not obtain characteristic";
   }
@@ -109,13 +122,13 @@ String connectToServer(int timeout, String command, boolean readDataBack, boolea
   // Read the value of the characteristic.
   if (pRemoteCharacteristic->canRead()) {
     touchDetected = false;
-    while (byteCount < 2048 && (!touchDetected && touchInterruptable) && startTime + timeout > millis()) {
+    while (byteCount < 2048 && startTime + timeout > millis()) {
       std::string value = pRemoteCharacteristic->readValue();
 #ifdef DEBUG
       Serial.print(value.c_str());
 #endif
       String strVal = value.c_str();
-      if (strVal.substring(0,4).equals("null")) {
+      if (strVal.substring(0, 4).equals("null")) {
         //do nothing while
         delay(10);
       } else {
