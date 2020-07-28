@@ -1,12 +1,10 @@
 package com.example.smartwatchcompanionapp;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
@@ -28,9 +26,6 @@ import androidx.annotation.Nullable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
-import static com.example.smartwatchcompanionapp.MainActivity.messages;
-import static com.example.smartwatchcompanionapp.MainActivity.txtView;
 
 public class BLEServer extends Service {
     private String TAG = "BLEServer";
@@ -89,17 +84,17 @@ public class BLEServer extends Service {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
 
             //if the notification data is not ready then we need to inform the other device
-            if (!MainActivity.notificationData.contains("***")) {
+            if (!MainActivity.outData.contains("***")) {
                 //send the word "null" until the notification data is available
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "null".getBytes());
                 Log.v(TAG, "BT_OUT: Data Not Ready");
             } else {
                 try {
-                    bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.notificationData.substring(currentIndex, currentIndex + 16).getBytes());
-                    Log.v("btout", "BT_OUT:" + MainActivity.notificationData.substring(currentIndex, currentIndex + 16).getBytes(StandardCharsets.UTF_8));
+                    bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.outData.substring(currentIndex, currentIndex + 16).getBytes());
+                    Log.v("btout", "BT_OUT:" + MainActivity.outData.substring(currentIndex, currentIndex + 16).getBytes(StandardCharsets.UTF_8));
                 } catch (IndexOutOfBoundsException e) {
-                    if (currentIndex < MainActivity.notificationData.length()) {
-                        String res = MainActivity.notificationData.substring(currentIndex);
+                    if (currentIndex < MainActivity.outData.length()) {
+                        String res = MainActivity.outData.substring(currentIndex);
                         while (res.length() < 16) {
                             res += "*";
                         }
@@ -118,15 +113,20 @@ public class BLEServer extends Service {
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-            MainActivity.updateText(getApplicationContext());
             String data = new String(value, StandardCharsets.UTF_8);
             Log.d(TAG, "BLE triggered notification update via write request, Device Wrote: " + data);
             if (data.equals("/notifications")) {
                 Log.v(TAG, "BT_OUT: /notifications command received");
+                MainActivity.updateText(getApplicationContext());
                 currentIndex = 0;
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "****".getBytes());
+            } else if (data.equals("/currentSong")) {
+                Log.v(TAG, "BT_OUT: /currentSong command received");
+                currentIndex = 0;
+                MainActivity.outData = MainActivity.reference.sReceiver.getSongData() + "***";
+                MainActivity.reference.setUIText(MainActivity.reference.getApplicationContext(), MainActivity.reference.sReceiver.getSongData());
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "****".getBytes());
             } else if (data.equals("/nextSong")) {
-
                 //referenced from https://stackoverflow.com/questions/5129027/android-application-to-pause-resume-the-music-of-another-music-player-app
                 AudioManager mAudioManager = (AudioManager) MainActivity.reference.getSystemService(Context.AUDIO_SERVICE);
                 KeyEvent event = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT);

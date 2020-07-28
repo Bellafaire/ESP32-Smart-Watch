@@ -26,7 +26,7 @@ import java.util.Date;
 public class MainActivity extends Activity {
 
     public static boolean bleServiceRunning = false;
-    public static String notificationData = "";
+    public static String outData = "";
     public static String logData = "Messages\n";
 
     public static TextView txtView;
@@ -34,6 +34,8 @@ public class MainActivity extends Activity {
     private Button settings, toggleBT;
     private Button btn;
     private NotificationReceiver nReceiver;
+    public static SpotifyReceiver sReceiver;
+
     public static TextView messages;
     public static MainActivity reference;
 
@@ -62,6 +64,14 @@ public class MainActivity extends Activity {
         toggleBT = (Button) findViewById(R.id.sendButton);
         messages = (TextView) findViewById(R.id.messages);
         messages.append("\n");
+
+        sReceiver = new SpotifyReceiver();
+        IntentFilter sfilter = new IntentFilter();
+        sfilter.addAction("com.spotify.music.playbackstatechanged");
+        sfilter.addAction("com.spotify.music.metadatachanged");
+        sfilter.addAction("com.spotify.music.queuechanged");
+        registerReceiver(sReceiver, sfilter);
+
 
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
@@ -116,7 +126,7 @@ public class MainActivity extends Activity {
     public void updateText() {
         Log.d("inform", "update text function has been called");
 
-        notificationData = getDateAndTime() + "\n***";
+        outData = getDateAndTime() + "\n***";
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
@@ -133,7 +143,7 @@ public class MainActivity extends Activity {
         reference.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                notificationData = getDateAndTime() + "\n***";
+                outData = getDateAndTime() + "\n***";
                 txtView.setText(getDateAndTime() + "\n***");
                 Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
                 i.putExtra("command", "list");
@@ -144,6 +154,19 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    public static void setUIText(Context context, String data) {
+        Log.d("inform", "update text function has been called");
+        reference.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                txtView.setText(data + "***");
+                messages.setText(logData);
+            }
+        });
+    }
+
 
     @Override
     protected void onResume() {
@@ -156,7 +179,7 @@ public class MainActivity extends Activity {
 //        messages.append("Manually updated: " + getDateAndTime() + "\n");
         logData += "Manually updated: " + getDateAndTime() + "\n";
         messages.setText(logData);
-        notificationData = getDateAndTime() + "\n***";
+        outData = getDateAndTime() + "\n***";
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "list");
@@ -186,9 +209,9 @@ public class MainActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onRecieve method callback received " + intent.getStringExtra("notification_event"));
             String temp = intent.getStringExtra("notification_event");
-            if (!notificationData.contains(temp)) {
-                temp = intent.getStringExtra("notification_event") + "\n" + notificationData;
-                notificationData = temp.replace("\n\n", "\n");
+            if (!outData.contains(temp)) {
+                temp = intent.getStringExtra("notification_event") + "\n" + outData;
+                outData = temp.replace("\n\n", "\n");
             }
             if (!txtView.getText().toString().contains(temp)) {
                 temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
