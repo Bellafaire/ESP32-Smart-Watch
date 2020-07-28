@@ -148,6 +148,38 @@ void drawHome()
     frameBuffer->setTextWrap(false);
     frameBuffer->println(String(songName));
     frameBuffer->setTextWrap(true);
+    int buttonWidth = (SCREEN_WIDTH - 32) / 4;
+
+    //    lastSongButton = {0 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) || 0b00000000,    (0b00000010 << 8) || 0b00000010,    (0b00000110 << 8) || 0b00000110,    (0b00001110 << 8) || 0b00001110,    (0b00011110 << 8) || 0b00011110,    (0b00111110 << 8) || 0b00111110,    (0b01111110 << 8) || 0b01111110,    (0b11111110 << 8) || 0b11111110,    (0b11111110 << 8) || 0b11111110,    (0b01111110 << 8) || 0b01111110,    (0b00111110 << 8) || 0b00111110,    (0b00011110 << 8) || 0b00011110,    (0b00001110 << 8) || 0b00001110,    (0b00000110 << 8) || 0b00000110,    (0b00000010 << 8) || 0b00000010,    (0b00000000 << 8) || 0b00000000  }};
+    //    pauseButton = {1 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b00000000 << 8) | 0b00000000 }};
+    //    playButton = {2 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01100000 << 8) | 0b00000000,    (0b01111000 << 8) | 0b00000000,    (0b01111110 << 8) | 0b00000000,    (0b01111111 << 8) | 0b10000000,    (0b01111111 << 8) | 0b11100000,    (0b01111111 << 8) | 0b11111000,    (0b01111111 << 8) | 0b11111110,    (0b01111111 << 8) | 0b11111110,    (0b01111111 << 8) | 0b11111000,    (0b01111111 << 8) | 0b11100000,    (0b01111111 << 8) | 0b10000000,    (0b01111110 << 8) | 0b00000000,    (0b01111000 << 8) | 0b00000000,    (0b01100000 << 8) | 0b00000000,    (0b00000000 << 8) | 0b00000000  }};
+    //    nextSongButton = {3 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01000000 << 8) | 0b01000000,    (0b01100000 << 8) | 0b01100000,    (0b01110000 << 8) | 0b01110000    (0b01111000 << 8) | 0b01111000,    (0b01111100 << 8) | 0b01111100,    (0b01111110 << 8) | 0b01111110,    (0b01111111 << 8) | 0b01111111,    (0b01111111 << 8) | 0b01111111,    (0b01111110 << 8) | 0b01111110,    (0b01111100 << 8) | 0b01111100,    (0b01111000 << 8) | 0b01111000,    (0b01110000 << 8) | 0b01110000    (0b01100000 << 8) | 0b01100000,    (0b01000000 << 8) | 0b01000000,    (0b00000000 << 8) | 0b00000000  }};
+
+    lastSongButton._x = 0 * buttonWidth;
+    lastSongButton._y = SCREEN_HEIGHT - 42;
+    lastSongButton._width = buttonWidth;
+    lastSongButton._height = 32;
+
+    pauseButton._x = 1 * buttonWidth;
+    pauseButton._y = SCREEN_HEIGHT - 42;
+    pauseButton._width = buttonWidth;
+    pauseButton._height = 32;
+
+    playButton._x = 2 * buttonWidth;
+    playButton._y = SCREEN_HEIGHT - 42;
+    playButton._width = buttonWidth;
+    playButton._height = 32;
+
+    nextSongButton._x = 3 * buttonWidth;
+    nextSongButton._y = SCREEN_HEIGHT - 42;
+    nextSongButton._width = buttonWidth;
+    nextSongButton._height = 32;
+
+    paintButtonFull(lastSongButton);
+    paintButtonFull(pauseButton);
+    paintButtonFull(playButton);
+    paintButtonFull(nextSongButton);
+
   } else {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
     frameBuffer->print("Battery ");
@@ -179,6 +211,26 @@ void HomeTouchHandler(struct point p)
   {
     pressButton(homeSettingsButton);
     switchToSettings();
+  }
+  if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
+#ifdef DEBUG
+    Serial.println("Last Song Button Pressed");
+#endif
+  }
+  if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
+#ifdef DEBUG
+    Serial.println("Next Song Button Pressed");
+#endif
+  }
+  if (checkButtonPress(playButton, p.xPos, p.yPos)) {
+#ifdef DEBUG
+    Serial.println("Play Button Pressed");
+#endif
+  }
+  if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
+#ifdef DEBUG
+    Serial.println("Pause Button Pressed");
+#endif
   }
 }
 
