@@ -107,10 +107,6 @@ void writeNotifications() {
   frameBuffer->setTextColor(INTERFACE_COLOR);
 #endif
 
-  paintButtonFull(homeNotificationsButton);
-  paintButtonFull(homeAppsButton);
-  paintButtonFull(homeSettingsButton);
-
 }
 
 int circlePosition = 0;
@@ -162,9 +158,9 @@ void drawHome()
     }
   }
 
-  paintButton(homeNotificationsButton);
-  paintButton(homeAppsButton);
-  paintButton(homeSettingsButton);
+  paintButtonFull(homeNotificationsButton);
+  paintButtonFull(homeAppsButton);
+  paintButtonFull(homeSettingsButton);
 
   tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
 }

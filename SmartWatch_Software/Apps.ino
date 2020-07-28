@@ -31,8 +31,10 @@ void openApps() {
 
   if (appNames[selectedOption].equals(MEDIA_CONTROLLER)) {
     //things to do for the media controller
+    return;
   } else if (appNames[selectedOption].equals(BLUETOOTH_SERIAL_RECEIVIER)) {
     //things to do for the bluetooth serial receivier
+    return;
   }
 
 
