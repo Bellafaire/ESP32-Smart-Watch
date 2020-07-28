@@ -71,27 +71,29 @@ public class NLService extends NotificationListenerService {
                 for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
                     Intent i2 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
                     //reference for pulling information out of notification objects http://gmariotti.blogspot.com/2013/11/notificationlistenerservice-and-kitkat.html
-                    try {
-                        String data = ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + "," //this comma is a feature
-                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)).replace("\n", "").replace(";", ",") + ";"
-                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)).replace("\n", "").replace(";", ",") + ";"
-                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)).replace("\n", "").replace(";", ",") + ";"
-                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "").replace(";", ",") + ";"
-                                + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "").replace(";", ",") + ";";
-
+                    if (!getAppNameFromPkgName(context, sbn.getPackageName()).equals("Spotify")) {
                         try {
-                            if (sbn.getNotification().category.equals(Notification.CATEGORY_EMAIL)) {
-                                data += shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "").replace(";", ",");
-                            } else if (sbn.getNotification().category.equals(Notification.CATEGORY_MESSAGE)) {
-                                data += ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_MESSAGES));
+                            String data = ifNotNull(getAppNameFromPkgName(context, sbn.getPackageName())) + "," //this comma is a feature
+                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE)).replace("\n", "").replace(";", ",") + ";"
+                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_INFO_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_SUB_TEXT)).replace("\n", "").replace(";", ",") + ";"
+                                    + ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_TITLE_BIG)).replace("\n", "").replace(";", ",") + ";";
+
+                            try {
+                                if (sbn.getNotification().category.equals(Notification.CATEGORY_EMAIL)) {
+                                    data += shortenString(sbn.getNotification().extras.getCharSequence("android.bigText")).replace("\n", "").replace(";", ",");
+                                } else if (sbn.getNotification().category.equals(Notification.CATEGORY_MESSAGE)) {
+                                    data += ifNotNull(sbn.getNotification().extras.getString(Notification.EXTRA_MESSAGES));
+                                }
+                            } catch (Exception e) {
+
                             }
+                            i2.putExtra("notification_event", data + "\n");
+                            sendBroadcast(i2);
                         } catch (Exception e) {
-    
+                            Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
                         }
-                        i2.putExtra("notification_event", data + "\n");
-                        sendBroadcast(i2);
-                    } catch (Exception e) {
-                        Log.e("inform", "Could not parse data for: " + getAppNameFromPkgName(context, sbn.getPackageName()) + " due to " + e.getMessage());
                     }
                 }
                 Intent i3 = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
