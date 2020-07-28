@@ -29,13 +29,13 @@ void openApps() {
   //so that we can re-order apps at will without changing any constants we'll search the
   //string array and determine the string value selected
 
-  if (appNames[selectedOption].equals(MEDIA_CONTROLLER)) {
-    //things to do for the media controller
-    return;
-  } else if (appNames[selectedOption].equals(BLUETOOTH_SERIAL_RECEIVIER)) {
-    //things to do for the bluetooth serial receivier
-    return;
-  }
+//  if (appNames[selectedOption].equals(MEDIA_CONTROLLER)) {
+//    //things to do for the media controller
+//    return;
+//  } else if (appNames[selectedOption].equals(BLUETOOTH_SERIAL_RECEIVIER)) {
+//    //things to do for the bluetooth serial receivier
+//    return;
+//  }
 
 
 }

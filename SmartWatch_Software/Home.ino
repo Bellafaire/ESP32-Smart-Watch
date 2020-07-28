@@ -117,7 +117,7 @@ void drawHome()
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
   if (!checkedIsPlaying && connected && !songCheckLaunched) {
-    xTaskCreate( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong );
+    xTaskCreatePinnedToCore( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong, 1);
     songCheckLaunched = true;
     configASSERT( xSong );
   }
