@@ -51,6 +51,11 @@ class MyClientCallback : public BLEClientCallbacks {
         //otherwise if the device disconnects go back to the home screen
         switchToHome();
       }
+        if(xConnect){
+    //if the device disconnects we need to end the connect Task
+    //otherwise this creates an error 
+    vTaskDelete(xConnect);
+  }
     }
 };
 
@@ -90,6 +95,7 @@ bool connectToServer() {
     pClient->disconnect();
     return false;
   }
+
 #ifdef DEBUG
   Serial.println(" - Found our service");
 #endif
