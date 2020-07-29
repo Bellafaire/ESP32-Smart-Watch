@@ -3,7 +3,8 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <SPI.h>
-#include "BluetoothSerial.h"
+// #include "BluetoothSerial.h"
+#include "BLEDevice.h"
 
 //prints debug information to the serial terminal when declared
 #define DEBUG
@@ -98,8 +99,18 @@ const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
 
-//bluetooth serial object used in BluetoothRecieve
-BluetoothSerial SerialBT;
+//BLE related variables
+//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
+static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
+static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
+
+static boolean doConnect = false;
+static boolean connected = false;
+static boolean scanComplete = false;
+static boolean doScan = false;
+static BLERemoteCharacteristic* pRemoteCharacteristic;
+static BLEAdvertisedDevice* myDevice;
+ BLEClient*  pClient;
 
 //structures
 typedef struct onscreenButton button;
