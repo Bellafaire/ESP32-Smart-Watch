@@ -124,6 +124,10 @@ void setup()
   Serial.flush();
 #endif;
 
+  if(connected){
+        pClient->disconnect();
+  }
+
   esp_deep_sleep_start();
 }
 
