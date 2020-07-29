@@ -128,7 +128,7 @@ void drawHome()
     } while (!completeString);
   }
 
-  if (!connected && scanComplete){
+  if (!connected && doConnect){
     connectToServer();
   }
 
