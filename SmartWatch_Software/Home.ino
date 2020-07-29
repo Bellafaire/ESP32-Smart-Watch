@@ -72,7 +72,7 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  //read the current song from the android device
+  //read th9e current song from the android device
   if (connected) {
 
     if (nextButtonPressed) {
@@ -126,6 +126,10 @@ void drawHome()
         }
       }
     } while (!completeString);
+  }
+
+  if (!connected && scanComplete){
+    connectToServer();
   }
 
   //it's here if you want it
