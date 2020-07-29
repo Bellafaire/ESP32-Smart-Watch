@@ -26,7 +26,7 @@
 #define GRAYED 0xBDF7
 int ERROR_COLOR = ST77XX_BLUE;
 
-#define screenOnTime 10000 //time before watch screen times out without user input
+#define screenOnTime 15000 //time before watch screen times out without user input
 
 //variables used globally
 boolean deviceActive = false; //indicates that the device is being actively used (showing home and other UI elements with screen active)
