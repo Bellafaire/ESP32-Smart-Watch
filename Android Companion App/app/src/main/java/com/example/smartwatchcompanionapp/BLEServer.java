@@ -27,6 +27,9 @@ import androidx.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import static android.bluetooth.le.AdvertiseSettings.ADVERTISE_MODE_BALANCED;
+import static android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH;
+
 public class BLEServer extends Service {
     private String TAG = "BLEServer";
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -49,6 +52,8 @@ public class BLEServer extends Service {
         Log.i(TAG, "BLE Server Starting....");
         AdvertiseSettings settings = new AdvertiseSettings.Builder()
                 .setConnectable(true)
+                .setAdvertiseMode(ADVERTISE_MODE_BALANCED)
+                .setTxPowerLevel(ADVERTISE_TX_POWER_HIGH)
                 .build();
 
         AdvertiseData advertiseData = new AdvertiseData.Builder()
