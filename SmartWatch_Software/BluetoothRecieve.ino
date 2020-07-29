@@ -1,4 +1,4 @@
-#include "BLEDevice.h"
+
 
 //Most of this is taken from the BLE_client example provided in Examples > ESP32 BLE Arduino > BLE_client
 
@@ -8,16 +8,7 @@
 static unsigned long bluetoothStart = 0;
 static unsigned long bluetooth_timeout = 10000; //default 10 second time out
 
-//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
-static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
-static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
 
-static boolean doConnect = false;
-static boolean connected = false;
-static boolean scanComplete = false;
-static boolean doScan = false;
-static BLERemoteCharacteristic* pRemoteCharacteristic;
-static BLEAdvertisedDevice* myDevice;
 
 //static void notifyCallback(  BLERemoteCharacteristic* pBLERemoteCharacteristic,  uint8_t* pData,  size_t length,  bool isNotify) {
 //  Serial.print("Notify callback for characteristic ");
@@ -69,7 +60,7 @@ bool connectToServer() {
   }
 #endif
 
-  BLEClient*  pClient  = BLEDevice::createClient();
+  pClient  = BLEDevice::createClient();
 
 #ifdef DEBUG
   Serial.println(" - Created client");
@@ -259,12 +250,16 @@ void initBluetooth() {
   // xTaskCreate( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY + 2, &xConnect );
     xTaskCreatePinnedToCore( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
   configASSERT( xConnect );
+
+  // findDevice();
 }
 
 
 void findDevice() {
-  BLEDevice::init("");
-
+   BLEDevice::init("");
+#ifdef DEBUG
+  Serial.println("%%% Find Device Task Launched %%%");
+#endif
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
   // scan to run for 8 seconds.
@@ -275,6 +270,13 @@ void findDevice() {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
   scanComplete = true;
+  connectToServer();
+
+#ifdef DEBUG
+if(connected){Serial.println("%%% Fully connected to BLE GATT Server %%%");}else{
+  Serial.println("%%%% Could not Connect To Device %%%");
+}
+#endif
 }
 
 void xFindDevice(void * pvParameters ) {
@@ -292,10 +294,12 @@ void xFindDevice(void * pvParameters ) {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
   scanComplete = true;
-  connectToServer();
+  // connectToServer();
 
 #ifdef DEBUG
-  Serial.println("%%% Fully connected to BLE GATT Server %%%");
+if(connected){Serial.println("%%% Device Found %%%");}else{
+  Serial.println("%%%% Device Not Found %%%");
+}
 #endif
 
   vTaskDelete(NULL);
