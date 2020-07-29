@@ -4,6 +4,13 @@ bool songCheckLaunched = false;
 bool checkedIsPlaying = false;
 
 
+//record user input before the BLE connection is established so that when the connection is
+//made we can send the required commands
+bool nextButtonPressed = false;
+bool lastButtonPressed = false;
+bool playButtonPressed = false;
+bool pauseButtonPressed = false;
+
 
 void switchToHome()
 {
@@ -66,6 +73,27 @@ void drawHome()
 
   //read the current song from the android device
   if (connected) {
+
+    if (nextButtonPressed) {
+      pRemoteCharacteristic->writeValue("/nextSong", 9);
+      nextButtonPressed = false;
+    }
+
+    if (lastButtonPressed) {
+      pRemoteCharacteristic->writeValue("/lastSong", 9);
+      lastButtonPressed = false;
+    }
+
+    if (playButtonPressed) {
+      pRemoteCharacteristic->writeValue("/play", 5);
+      playButtonPressed = false;
+    }
+    if (pauseButtonPressed) {
+      pRemoteCharacteristic->writeValue("/pause", 6);
+      pauseButtonPressed = false;
+    }
+
+
     String command = "/currentSong";
     pRemoteCharacteristic->writeValue(command.c_str(), command.length());
     bool completeString = false;
@@ -74,10 +102,10 @@ void drawHome()
       //get characteristic read string
       songData += pRemoteCharacteristic->readValue().c_str();
 
-//use when needed, spams way too much data to the serial terminal
-//#ifdef DEBUG
-//      Serial.println("Current Song Data: " + songData);
-//#endif
+      //use when needed, spams way too much data to the serial terminal
+      //#ifdef DEBUG
+      //      Serial.println("Current Song Data: " + songData);
+      //#endif
 
       if (songData[songData.length() - 1 ] == '*') {
         completeString = true;
@@ -190,6 +218,8 @@ void HomeTouchHandler(struct point p)
 #endif
     if (connected) {
       pRemoteCharacteristic->writeValue("/lastSong", 9);
+    } else {
+      lastButtonPressed = true;
     }
   }
   if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
@@ -198,6 +228,8 @@ void HomeTouchHandler(struct point p)
 #endif
     if (connected) {
       pRemoteCharacteristic->writeValue("/nextSong", 9);
+    } else {
+      nextButtonPressed = true;
     }
   }
   if (checkButtonPress(playButton, p.xPos, p.yPos)) {
@@ -206,6 +238,8 @@ void HomeTouchHandler(struct point p)
 #endif
     if (connected) {
       pRemoteCharacteristic->writeValue("/play", 5);
+    } else {
+      playButtonPressed = true;
     }
   }
   if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
@@ -214,6 +248,8 @@ void HomeTouchHandler(struct point p)
 #endif
     if (connected) {
       pRemoteCharacteristic->writeValue("/pause", 6);
+    } else {
+      pauseButtonPressed = true;
     }
   }
 }

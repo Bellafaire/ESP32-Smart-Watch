@@ -58,8 +58,10 @@ class MyClientCallback : public BLEClientCallbacks {
 bool connectToServer() {
 
 #ifdef DEBUG
-  Serial.print("Forming a connection to ");
-  Serial.println(myDevice->getAddress().toString().c_str());
+  if (myDevice != NULL) {
+    Serial.print("Forming a connection to ");
+    Serial.println(myDevice->getAddress().toString().c_str());
+  }
 #endif
 
   BLEClient*  pClient  = BLEDevice::createClient();
@@ -241,7 +243,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
         doConnect = true;
         doScan = true;
-//        connected = true;
+        //        connected = true;
       } // Found our server
     } // onResult
 }; // MyAdvertisedDeviceCallbacks
@@ -271,7 +273,7 @@ void findDevice() {
 void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
 #ifdef DEBUG
-      Serial.println("%%% Find Device Task Launched %%%");
+  Serial.println("%%% Find Device Task Launched %%%");
 #endif
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
@@ -286,10 +288,10 @@ void xFindDevice(void * pvParameters ) {
   connectToServer();
 
 #ifdef DEBUG
-      Serial.println("%%% Fully connected to BLE GATT Server %%%");
+  Serial.println("%%% Fully connected to BLE GATT Server %%%");
 #endif
 
-    vTaskDelete(NULL);
+  vTaskDelete(NULL);
 }
 
 
