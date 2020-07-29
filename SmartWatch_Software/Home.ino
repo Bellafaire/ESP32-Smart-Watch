@@ -4,56 +4,56 @@ bool songCheckLaunched = false;
 bool checkedIsPlaying = false;
 
 
-void updateSong(void * pvParameters ) {
-  boolean complete = false;
-  String xSongName = "";
-
-#ifdef DEBUG
-  Serial.println("updating song");
-#endif
-
-  String rdata;
-
-  rdata =  connectToServer(2000, "/currentSong", true, false);
-#ifdef DEBUG
-  Serial.println(rdata);
-#endif
-  if (rdata.length() > 3) {
-#ifdef DEBUG
-    Serial.println(rdata);
-#endif
-    xSongName = rdata;
-    checkedIsPlaying = true;
-    isPlaying = true;
-    complete = true;
-  } else {
-    if (rdata.substring(0, 3).equals("***")) {
-      isPlaying = false;
-      checkedIsPlaying = true;
-      complete = true;
-    } else {
-      complete = false;
-#ifdef DEBUG
-      Serial.println("Could not determine song, retrying");
-#endif
-      songCheckLaunched = false;
-      vTaskDelete(xSong);
-    }
-  }
-
-  for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
-    if (xSongName[a] == '*') {
-      songName[a] = ' ';
-    } else {
-      songName[a] = xSongName[a];
-    }
-  }
-
-#ifdef DEBUG
-  Serial.println("finished updating song");
-#endif
-  vTaskDelete(xSong);
-}
+//void updateSong(void * pvParameters ) {
+//  boolean complete = false;
+//  String xSongName = "";
+//
+//#ifdef DEBUG
+//  Serial.println("updating song");
+//#endif
+//
+//  String rdata;
+//
+//  rdata =  connectToServer(2000, "/currentSong", true, false);
+//#ifdef DEBUG
+//  Serial.println(rdata);
+//#endif
+//  if (rdata.length() > 3) {
+//#ifdef DEBUG
+//    Serial.println(rdata);
+//#endif
+//    xSongName = rdata;
+//    checkedIsPlaying = true;
+//    isPlaying = true;
+//    complete = true;
+//  } else {
+//    if (rdata.substring(0, 3).equals("***")) {
+//      isPlaying = false;
+//      checkedIsPlaying = true;
+//      complete = true;
+//    } else {
+//      complete = false;
+//#ifdef DEBUG
+//      Serial.println("Could not determine song, retrying");
+//#endif
+//      songCheckLaunched = false;
+//      vTaskDelete(xSong);
+//    }
+//  }
+//
+//  for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+//    if (xSongName[a] == '*') {
+//      songName[a] = ' ';
+//    } else {
+//      songName[a] = xSongName[a];
+//    }
+//  }
+//
+//#ifdef DEBUG
+//  Serial.println("finished updating song");
+//#endif
+//  vTaskDelete(xSong);
+//}
 
 
 
@@ -116,10 +116,45 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  if (!checkedIsPlaying && connected && !songCheckLaunched) {
-    xTaskCreatePinnedToCore( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong, 1);
-    songCheckLaunched = true;
-    configASSERT( xSong );
+  //  if (!checkedIsPlaying && connected && !songCheckLaunched) {
+  //    xTaskCreatePinnedToCore( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong, 1);
+  //    songCheckLaunched = true;
+  //    configASSERT( xSong );
+  //  }
+
+  //read the current song from the android device
+  if (connected) {
+    String command = "/currentSong";
+    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
+    bool completeString = false;
+    String songData = "";
+    do {
+      //get characteristic read string
+      songData += pRemoteCharacteristic->readValue().c_str();
+
+//use when needed, spams way too much data to the serial terminal
+//#ifdef DEBUG
+//      Serial.println("Current Song Data: " + songData);
+//#endif
+
+      if (songData[songData.length() - 1 ] == '*') {
+        completeString = true;
+
+        //kind of an arbitrary choice for the expected length of a song + artist name but should be sufficent
+        if (songData.length() > 10) {
+          isPlaying = true;
+          for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+            if (songData[a] == '*') {
+              songName[a] = ' ';
+            } else {
+              songName[a] = songData[a];
+            }
+          }
+        } else {
+          isPlaying = false;
+        }
+      }
+    } while (!completeString);
   }
 
   //it's here if you want it

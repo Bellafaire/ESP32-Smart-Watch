@@ -267,6 +267,7 @@ String getPhoneNotifications(int timeout);
 String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable);
 String writeBLE(int timeout, String command, boolean readDataBack);
 void initBluetooth() ;
+void xFindDevice(void * pvParameters );
 
 //CircularAnimation.ino
 void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int arcLength,  int color);

@@ -55,10 +55,74 @@ class MyClientCallback : public BLEClientCallbacks {
 };
 
 
-/*Please avoid using this function at all costs. it is required to start the BLE server
- * But other than that it is only effective in obtaining notification data 
- */
+bool connectToServer() {
 
+#ifdef DEBUG
+  Serial.print("Forming a connection to ");
+  Serial.println(myDevice->getAddress().toString().c_str());
+#endif
+
+  BLEClient*  pClient  = BLEDevice::createClient();
+
+#ifdef DEBUG
+  Serial.println(" - Created client");
+#endif
+  pClient->setClientCallbacks(new MyClientCallback());
+
+  // Connect to the remove BLE Server.
+  if (myDevice != NULL) {
+    pClient->connect(myDevice);  // if you pass BLEAdvertisedDevice instead of address, it will be recognized type of peer device address (public or private)
+  } else {
+    return false;
+  }
+#ifdef DEBUG
+  Serial.println(" - Connected to server");
+#endif
+  // Obtain a reference to the service we are after in the remote BLE server.
+  BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
+  if (pRemoteService == nullptr) {
+#ifdef DEBUG
+    Serial.print("Failed to find our service UUID: ");
+    Serial.println(serviceUUID.toString().c_str());
+#endif
+    pClient->disconnect();
+    return false;
+  }
+#ifdef DEBUG
+  Serial.println(" - Found our service");
+#endif
+
+  // Obtain a reference to the characteristic in the service of the remote BLE server.
+  pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
+  if (pRemoteCharacteristic == nullptr) {
+#ifdef DEBUG
+    Serial.print("Failed to find our characteristic UUID: ");
+    Serial.println(charUUID.toString().c_str());
+#endif
+    pClient->disconnect();
+    return false;
+  }
+
+#ifdef DEBUG
+  Serial.println(" - Found our characteristic");
+#endif
+  // Read the value of the characteristic.
+  if (pRemoteCharacteristic->canRead()) {
+    std::string value = pRemoteCharacteristic->readValue();
+#ifdef DEBUG
+    Serial.print("The characteristic value was: ");
+    Serial.println(value.c_str());
+#endif
+  }
+
+  connected = true;
+  return true;
+}
+
+
+/*Please avoid using this function at all costs. it is required to start the BLE server
+   But other than that it is only effective in obtaining notification data, under normal conditions use connectToServer()
+*/
 String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable) {
   //manually clear the touchDetected flag. otherwise this function will exit (flag doesn't always clear)
   touchDetected = false;
@@ -177,17 +241,15 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
         doConnect = true;
         doScan = true;
-        connected = true;
+//        connected = true;
       } // Found our server
     } // onResult
 }; // MyAdvertisedDeviceCallbacks
 
 void initBluetooth() {
   //attempt to connect to the device on startup
-
-  xTaskCreate( findDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
+  xTaskCreate( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
   configASSERT( xConnect );
-
 }
 
 
@@ -206,9 +268,11 @@ void findDevice() {
   scanComplete = true;
 }
 
-void findDevice(void * pvParameters ) {
+void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
-
+#ifdef DEBUG
+      Serial.println("%%% Find Device Task Launched %%%");
+#endif
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
   // scan to run for 8 seconds.
@@ -218,8 +282,14 @@ void findDevice(void * pvParameters ) {
   pBLEScan->setWindow(1000);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
-  vTaskDelete(xConnect);
   scanComplete = true;
+  connectToServer();
+
+#ifdef DEBUG
+      Serial.println("%%% Fully connected to BLE GATT Server %%%");
+#endif
+
+    vTaskDelete(NULL);
 }
 
 

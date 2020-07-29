@@ -135,7 +135,7 @@ public class BLEServer extends Service {
                     MainActivity.outData = "***";
                     MainActivity.reference.setUIText(MainActivity.reference.getApplicationContext(),"***");
                 }
-                currentIndex = -32;
+                currentIndex = 0;
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "1".getBytes());
             } else if (data.equals("/isPlaying")) {
                 Log.v(TAG, "BT_OUT: /isPlaying command received");
