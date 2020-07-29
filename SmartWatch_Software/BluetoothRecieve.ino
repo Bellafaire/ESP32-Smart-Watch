@@ -250,7 +250,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void initBluetooth() {
   //attempt to connect to the device on startup
-  xTaskCreate( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect );
+  xTaskCreate( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY + 2, &xConnect );
   configASSERT( xConnect );
 }
 

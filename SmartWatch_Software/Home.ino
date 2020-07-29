@@ -3,6 +3,7 @@ bool firstHomeSwitch = true;
 bool songCheckLaunched = false;
 bool checkedIsPlaying = false;
 
+double songNameScrollPosition = 0; 
 
 //record user input before the BLE connection is established so that when the connection is
 //made we can send the required commands
@@ -150,8 +151,16 @@ void drawHome()
 
   if (isPlaying) {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
+    if(songNameScrollPosition + 24 < String(songName).length()){
+      songNameScrollPosition += 0.3; 
+    }else{
+      songNameScrollPosition = 0; 
+    }
+    if(!connected){
+      delay(80); 
+    }
     frameBuffer->setTextWrap(false);
-    frameBuffer->println(String(songName));
+    frameBuffer->println(String(songName).substring(round(songNameScrollPosition)));
     frameBuffer->setTextWrap(true);
     int buttonWidth = (SCREEN_WIDTH - 32) / 4;
 
