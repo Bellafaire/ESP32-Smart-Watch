@@ -4,58 +4,6 @@ bool songCheckLaunched = false;
 bool checkedIsPlaying = false;
 
 
-//void updateSong(void * pvParameters ) {
-//  boolean complete = false;
-//  String xSongName = "";
-//
-//#ifdef DEBUG
-//  Serial.println("updating song");
-//#endif
-//
-//  String rdata;
-//
-//  rdata =  connectToServer(2000, "/currentSong", true, false);
-//#ifdef DEBUG
-//  Serial.println(rdata);
-//#endif
-//  if (rdata.length() > 3) {
-//#ifdef DEBUG
-//    Serial.println(rdata);
-//#endif
-//    xSongName = rdata;
-//    checkedIsPlaying = true;
-//    isPlaying = true;
-//    complete = true;
-//  } else {
-//    if (rdata.substring(0, 3).equals("***")) {
-//      isPlaying = false;
-//      checkedIsPlaying = true;
-//      complete = true;
-//    } else {
-//      complete = false;
-//#ifdef DEBUG
-//      Serial.println("Could not determine song, retrying");
-//#endif
-//      songCheckLaunched = false;
-//      vTaskDelete(xSong);
-//    }
-//  }
-//
-//  for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
-//    if (xSongName[a] == '*') {
-//      songName[a] = ' ';
-//    } else {
-//      songName[a] = xSongName[a];
-//    }
-//  }
-//
-//#ifdef DEBUG
-//  Serial.println("finished updating song");
-//#endif
-//  vTaskDelete(xSong);
-//}
-
-
 
 void switchToHome()
 {
@@ -115,12 +63,6 @@ void drawHome()
 {
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-  //  if (!checkedIsPlaying && connected && !songCheckLaunched) {
-  //    xTaskCreatePinnedToCore( updateSong, "BLE_SONG_UPDATE", 8192, (void *) 1 , tskIDLE_PRIORITY + 1, &xSong, 1);
-  //    songCheckLaunched = true;
-  //    configASSERT( xSong );
-  //  }
 
   //read the current song from the android device
   if (connected) {
@@ -184,11 +126,6 @@ void drawHome()
     frameBuffer->println(String(songName));
     frameBuffer->setTextWrap(true);
     int buttonWidth = (SCREEN_WIDTH - 32) / 4;
-
-    //    lastSongButton = {0 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) || 0b00000000,    (0b00000010 << 8) || 0b00000010,    (0b00000110 << 8) || 0b00000110,    (0b00001110 << 8) || 0b00001110,    (0b00011110 << 8) || 0b00011110,    (0b00111110 << 8) || 0b00111110,    (0b01111110 << 8) || 0b01111110,    (0b11111110 << 8) || 0b11111110,    (0b11111110 << 8) || 0b11111110,    (0b01111110 << 8) || 0b01111110,    (0b00111110 << 8) || 0b00111110,    (0b00011110 << 8) || 0b00011110,    (0b00001110 << 8) || 0b00001110,    (0b00000110 << 8) || 0b00000110,    (0b00000010 << 8) || 0b00000010,    (0b00000000 << 8) || 0b00000000  }};
-    //    pauseButton = {1 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b01111110 << 8) | 0b01111110,    (0b00000000 << 8) | 0b00000000 }};
-    //    playButton = {2 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01100000 << 8) | 0b00000000,    (0b01111000 << 8) | 0b00000000,    (0b01111110 << 8) | 0b00000000,    (0b01111111 << 8) | 0b10000000,    (0b01111111 << 8) | 0b11100000,    (0b01111111 << 8) | 0b11111000,    (0b01111111 << 8) | 0b11111110,    (0b01111111 << 8) | 0b11111110,    (0b01111111 << 8) | 0b11111000,    (0b01111111 << 8) | 0b11100000,    (0b01111111 << 8) | 0b10000000,    (0b01111110 << 8) | 0b00000000,    (0b01111000 << 8) | 0b00000000,    (0b01100000 << 8) | 0b00000000,    (0b00000000 << 8) | 0b00000000  }};
-    //    nextSongButton = {3 * buttonWidth, SCREEN_HEIGHT - 42, buttonWidth, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {    (0b00000000 << 8) | 0b00000000,    (0b01000000 << 8) | 0b01000000,    (0b01100000 << 8) | 0b01100000,    (0b01110000 << 8) | 0b01110000    (0b01111000 << 8) | 0b01111000,    (0b01111100 << 8) | 0b01111100,    (0b01111110 << 8) | 0b01111110,    (0b01111111 << 8) | 0b01111111,    (0b01111111 << 8) | 0b01111111,    (0b01111110 << 8) | 0b01111110,    (0b01111100 << 8) | 0b01111100,    (0b01111000 << 8) | 0b01111000,    (0b01110000 << 8) | 0b01110000    (0b01100000 << 8) | 0b01100000,    (0b01000000 << 8) | 0b01000000,    (0b00000000 << 8) | 0b00000000  }};
 
     lastSongButton._x = 0 * buttonWidth;
     lastSongButton._y = SCREEN_HEIGHT - 42;
