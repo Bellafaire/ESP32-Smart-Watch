@@ -9,29 +9,23 @@ static unsigned long bluetoothStart = 0;
 static unsigned long bluetooth_timeout = 10000; //default 10 second time out
 
 
-
-//static void notifyCallback(  BLERemoteCharacteristic* pBLERemoteCharacteristic,  uint8_t* pData,  size_t length,  bool isNotify) {
-//  Serial.print("Notify callback for characteristic ");
-//  Serial.print(pBLERemoteCharacteristic->getUUID().toString().c_str());
-//  Serial.print(" of data length ");
-//  Serial.println(length);
-//  Serial.print("data: ");
-//  Serial.println((char*)pData);
-//}
-
-
-
-
-
 class MyClientCallback : public BLEClientCallbacks {
     void onConnect(BLEClient* pclient) {
     }
 
     void onDisconnect(BLEClient* pclient) {
       connected = false;
+      doConnect = false;
 #ifdef DEBUG
       Serial.println("onDisconnect");
 #endif
+      if(currentPage == HOME){
+        //we have failed to connect to the device so lets go back to the home screen
+        #ifdef DEBUG
+        Serial.println("*****************************************\n CRITICAL FAILURE: Device Disconnected before client was formed \n*****************************************\n ");
+        #endif
+        switchToHome();
+      }
       //screen is off so go back to sleep since we can't obtain notifications
       if (!deviceActive) {
 #ifdef DEBUG
@@ -60,14 +54,31 @@ bool connectToServer() {
   }
 #endif
 
+if(!doConnect){
+  return false;
+}
   pClient  = BLEDevice::createClient();
+
+
+if(!doConnect){
+  return false;
+}
 
 #ifdef DEBUG
   Serial.println(" - Created client");
 #endif
+
+
+if(!doConnect){
+  return false;
+}
   pClient->setClientCallbacks(new MyClientCallback());
 
   // Connect to the remove BLE Server.
+  
+if(!doConnect){
+  return false;
+}
   if (myDevice != NULL) {
     pClient->connect(myDevice);  // if you pass BLEAdvertisedDevice instead of address, it will be recognized type of peer device address (public or private)
   } else {
@@ -76,6 +87,10 @@ bool connectToServer() {
 #ifdef DEBUG
   Serial.println(" - Connected to server");
 #endif
+
+if(!doConnect){
+  return false;
+}
   // Obtain a reference to the service we are after in the remote BLE server.
   BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
   if (pRemoteService == nullptr) {

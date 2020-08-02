@@ -90,7 +90,7 @@ public class BLEServer extends Service {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             Log.v("reads", "Read Request Received");
             //if the notification data is not ready then we need to inform the other device
-            if (!MainActivity.outData.contains("***") || currentIndex < 0 ) {
+            if (!MainActivity.outData.contains("***")) {
                 //send the word "null" until the notification data is available
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "null".getBytes());
                 Log.v(TAG, "btout: Data Not Ready");
