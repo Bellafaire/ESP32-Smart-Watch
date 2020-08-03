@@ -1041,8 +1041,6 @@ Wire Bus Line
 Text Label 4650 2550 2    50   ~ 0
 CHG_STAT
 Wire Wire Line
-	4300 2550 4650 2550
-Wire Wire Line
 	3300 2900 3300 2850
 $Comp
 L power:GND #PWR0139
@@ -1712,8 +1710,6 @@ Connection ~ 3650 4050
 Wire Wire Line
 	3650 4050 3700 4050
 Wire Wire Line
-	3250 4050 3650 4050
-Wire Wire Line
 	4000 3850 4000 3800
 Wire Wire Line
 	3450 3800 4000 3800
@@ -1739,7 +1735,6 @@ NoConn ~ 4050 6600
 NoConn ~ 4050 6700
 NoConn ~ 4050 6800
 NoConn ~ 7950 1950
-NoConn ~ 7950 2550
 NoConn ~ 7950 2750
 $Comp
 L Device:Thermistor TH1
@@ -2034,4 +2029,12 @@ Wire Wire Line
 	4750 5000 5750 5000
 Wire Wire Line
 	4750 5200 5750 5200
+Wire Wire Line
+	3250 4050 3650 4050
+Wire Wire Line
+	4300 2550 4650 2550
+Text Label 8400 2550 2    50   ~ 0
+ACCEL_EN
+Wire Wire Line
+	7950 2550 8400 2550
 $EndSCHEMATC
