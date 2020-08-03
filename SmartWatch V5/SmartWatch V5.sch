@@ -297,38 +297,6 @@ NoConn ~ 6750 2850
 NoConn ~ 6750 2950
 NoConn ~ 6750 3050
 NoConn ~ 6750 3150
-$Comp
-L Device:R R11
-U 1 1 5E6E7602
-P 5250 5000
-F 0 "R11" V 5043 5000 50  0000 C CNN
-F 1 "0" V 5134 5000 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 5180 5000 50  0001 C CNN
-F 3 "~" H 5250 5000 50  0001 C CNN
-F 4 "RMCF0805ZT0R00CT-ND" V 5250 5000 50  0001 C CNN "digikey"
-	1    5250 5000
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R12
-U 1 1 5E6E7B1F
-P 5250 5200
-F 0 "R12" V 5350 5200 50  0000 C CNN
-F 1 "0" V 5450 5200 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 5180 5200 50  0001 C CNN
-F 3 "~" H 5250 5200 50  0001 C CNN
-F 4 "RMCF0805ZT0R00CT-ND" V 5250 5200 50  0001 C CNN "digikey"
-	1    5250 5200
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4750 5000 5100 5000
-Wire Wire Line
-	4750 5200 5100 5200
-Wire Wire Line
-	5400 5200 5750 5200
-Wire Wire Line
-	5400 5000 5750 5000
 Text Label 4750 5000 0    50   ~ 0
 RXD
 Text Label 4750 5200 0    50   ~ 0
@@ -2061,5 +2029,9 @@ Wire Wire Line
 NoConn ~ 6750 1750
 NoConn ~ -1200 1350
 Text Notes 600  350  0    50   ~ 0
-Selected Battery - https://www.digikey.com/product-detail/en/adafruit-industries-llc/3898/1528-2731-ND/9685336 (digikey part number: 1528-2731-ND)
+Selected Battery - 1832-1032-ND (digikey number)
+Wire Wire Line
+	4750 5000 5750 5000
+Wire Wire Line
+	4750 5200 5750 5200
 $EndSCHEMATC
