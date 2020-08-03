@@ -16,43 +16,43 @@ $EndDescr
 $Comp
 L RF_Module:ESP32-WROOM-32 U6
 U 1 1 5E6BFC95
-P 7000 2750
-F 0 "U6" H 6250 4350 50  0000 C CNN
-F 1 "ESP32-WROOM-32" H 6550 4250 50  0000 C CNN
-F 2 "RF_Module:ESP32-WROOM-32" H 7000 1250 50  0001 C CNN
-F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 6700 2800 50  0001 C CNN
-F 4 "1904-1010-1-ND" H 7000 2750 50  0001 C CNN "digikey"
-	1    7000 2750
+P 7350 2650
+F 0 "U6" H 6600 4250 50  0000 C CNN
+F 1 "ESP32-WROOM-32" H 6900 4150 50  0000 C CNN
+F 2 "RF_Module:ESP32-WROOM-32" H 7350 1150 50  0001 C CNN
+F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 7050 2700 50  0001 C CNN
+F 4 "1904-1010-1-ND" H 7350 2650 50  0001 C CNN "digikey"
+	1    7350 2650
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3.3V #PWR0101
 U 1 1 5E6C26FC
-P 7000 1350
-F 0 "#PWR0101" H 7000 1200 50  0001 C CNN
-F 1 "+3.3V" H 7015 1523 50  0000 C CNN
-F 2 "" H 7000 1350 50  0001 C CNN
-F 3 "" H 7000 1350 50  0001 C CNN
-	1    7000 1350
+P 7350 1250
+F 0 "#PWR0101" H 7350 1100 50  0001 C CNN
+F 1 "+3.3V" H 7365 1423 50  0000 C CNN
+F 2 "" H 7350 1250 50  0001 C CNN
+F 3 "" H 7350 1250 50  0001 C CNN
+	1    7350 1250
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR0102
 U 1 1 5E6C3404
-P 7000 4150
-F 0 "#PWR0102" H 7000 3900 50  0001 C CNN
-F 1 "GND" H 7005 3977 50  0000 C CNN
-F 2 "" H 7000 4150 50  0001 C CNN
-F 3 "" H 7000 4150 50  0001 C CNN
-	1    7000 4150
+P 7350 4050
+F 0 "#PWR0102" H 7350 3800 50  0001 C CNN
+F 1 "GND" H 7355 3877 50  0000 C CNN
+F 2 "" H 7350 4050 50  0001 C CNN
+F 3 "" H 7350 4050 50  0001 C CNN
+	1    7350 4050
 	1    0    0    -1  
 $EndComp
-Text Label 8000 1550 2    50   ~ 0
+Text Label 8350 1450 2    50   ~ 0
 IO0
-Text Label 6200 1550 0    50   ~ 0
+Text Label 6550 1450 0    50   ~ 0
 EN
 Wire Wire Line
-	6400 1550 6200 1550
+	6750 1450 6550 1450
 $Comp
 L Device:R R15
 U 1 1 5E6C1594
@@ -304,12 +304,12 @@ NoConn ~ 3800 5900
 NoConn ~ 3800 6100
 NoConn ~ 3800 6200
 NoConn ~ 3800 6300
-NoConn ~ 6400 2750
-NoConn ~ 6400 2850
-NoConn ~ 6400 2950
-NoConn ~ 6400 3050
-NoConn ~ 6400 3150
-NoConn ~ 6400 3250
+NoConn ~ 6750 2650
+NoConn ~ 6750 2750
+NoConn ~ 6750 2850
+NoConn ~ 6750 2950
+NoConn ~ 6750 3050
+NoConn ~ 6750 3150
 $Comp
 L Device:R R11
 U 1 1 5E6E7602
@@ -350,17 +350,17 @@ Text Label 5750 5000 2    50   ~ 0
 TXD0
 Text Label 5750 5200 2    50   ~ 0
 RXD0
-Text Label 8000 1850 2    50   ~ 0
+Text Label 8350 1750 2    50   ~ 0
 RXD0
-Text Label 8000 1650 2    50   ~ 0
+Text Label 8350 1550 2    50   ~ 0
 TXD0
 Wire Wire Line
-	7600 1550 8000 1550
+	7950 1450 8350 1450
 Wire Wire Line
-	7600 1650 8000 1650
+	7950 1550 8350 1550
 Wire Wire Line
-	7600 1850 8000 1850
-Text Label 8150 2150 2    50   ~ 0
+	7950 1750 8350 1750
+Text Label 8500 2050 2    50   ~ 0
 IO12
 NoConn ~ 1100 6100
 $Comp
@@ -564,18 +564,18 @@ Wire Wire Line
 	8000 5450 8000 5800
 Wire Wire Line
 	7700 5450 7700 5800
-Text Label 8000 3850 2    50   ~ 0
+Text Label 8350 3750 2    50   ~ 0
 CHG_STAT
-Text Label 8000 3750 2    50   ~ 0
+Text Label 8350 3650 2    50   ~ 0
 BAT_ALRT
 Wire Wire Line
-	7600 3750 8000 3750
+	7950 3650 8350 3650
 Wire Wire Line
-	7600 3850 8000 3850
-Text Label 6000 1750 0    50   ~ 0
+	7950 3750 8350 3750
+Text Label 6350 1650 0    50   ~ 0
 REG_PG
 Wire Wire Line
-	6400 1750 6000 1750
+	6750 1650 6350 1650
 $Comp
 L Device:Q_PMOS_GSD Q1
 U 1 1 5E7D2126
@@ -907,10 +907,10 @@ Wire Wire Line
 	3650 1400 4050 1400
 Text Label 3650 1400 0    50   ~ 0
 LDO_EN
-Text Label 6000 1850 0    50   ~ 0
+Text Label 6350 1750 0    50   ~ 0
 LCD_PG
 Wire Wire Line
-	6000 1850 6400 1850
+	6350 1750 6750 1750
 Wire Wire Line
 	4400 1750 4400 1700
 Wire Wire Line
@@ -989,7 +989,7 @@ Wire Bus Line
 	6000 6700 4500 6700
 Text Notes 4550 6800 0    50   ~ 0
 Reset/BOOT Switches
-Text Notes 6000 650  0    50   ~ 0
+Text Notes 6100 650  0    50   ~ 0
 ESP32
 Wire Wire Line
 	10450 5550 10850 5550
@@ -1055,23 +1055,18 @@ Wire Wire Line
 Wire Wire Line
 	9400 5250 9300 5250
 Wire Wire Line
-	9300 5250 9300 5050
-Wire Wire Line
-	9300 5050 9150 5050
-Wire Wire Line
-	9300 5250 9300 5350
+	9300 5250 9300 5300
 Wire Wire Line
 	9300 5350 9400 5350
-Connection ~ 9300 5250
 $Comp
 L power:GND #PWR0138
 U 1 1 5F027247
-P 9150 5150
-F 0 "#PWR0138" H 9150 4900 50  0001 C CNN
-F 1 "GND" H 9155 4977 50  0000 C CNN
-F 2 "" H 9150 5150 50  0001 C CNN
-F 3 "" H 9150 5150 50  0001 C CNN
-	1    9150 5150
+P 9050 5400
+F 0 "#PWR0138" H 9050 5150 50  0001 C CNN
+F 1 "GND" H 9055 5227 50  0000 C CNN
+F 2 "" H 9050 5400 50  0001 C CNN
+F 3 "" H 9050 5400 50  0001 C CNN
+	1    9050 5400
 	1    0    0    -1  
 $EndComp
 Text Label 9200 5450 0    50   ~ 0
@@ -1094,7 +1089,7 @@ Text Notes 9000 650  0    50   ~ 0
 Touchscreen 
 Connection ~ 2100 5600
 Wire Bus Line
-	5950 4650 5950 550 
+	6050 4650 6050 550 
 Text Label 4850 2650 2    50   ~ 0
 CHG_STAT
 Wire Wire Line
@@ -1221,10 +1216,10 @@ Wire Wire Line
 	11200 5200 10600 5200
 Connection ~ 10600 5200
 Wire Wire Line
-	7600 1950 8150 1950
-Text Label 8150 1950 2    50   ~ 0
+	7950 1850 8500 1850
+Text Label 8500 1850 2    50   ~ 0
 TOUCH_IRQ
-Text Label 8000 1750 2    50   ~ 0
+Text Label 8350 1650 2    50   ~ 0
 IO2
 $Comp
 L Device:R R19
@@ -1256,7 +1251,7 @@ $EndComp
 Wire Wire Line
 	8300 5600 8300 5450
 Wire Wire Line
-	7600 1750 8000 1750
+	7950 1650 8350 1650
 Wire Bus Line
 	8900 4650 8900 550 
 Wire Wire Line
@@ -1276,9 +1271,7 @@ Wire Wire Line
 	7700 6350 8000 6350
 Wire Bus Line
 	11200 550  11200 6500
-Wire Wire Line
-	9150 5050 9150 5150
-Text Label 8150 2450 2    50   ~ 0
+Text Label 8500 2350 2    50   ~ 0
 IO15
 $Comp
 L CustomParts:TSC2003IPWR U10
@@ -1352,7 +1345,7 @@ Connection ~ 1250 6400
 Wire Bus Line
 	550  4700 550  7600
 Wire Wire Line
-	7600 2450 8150 2450
+	7950 2350 8500 2350
 Text Label 2900 800  0    50   ~ 0
 BAT+
 Text Label 10100 2150 0    50   ~ 0
@@ -1372,43 +1365,43 @@ X-
 Wire Wire Line
 	10100 2450 10300 2450
 Wire Wire Line
-	8050 2550 7600 2550
+	8400 2450 7950 2450
 Wire Wire Line
-	8050 2750 7600 2750
+	8400 2650 7950 2650
 Wire Wire Line
-	8050 2950 7600 2950
+	8400 2850 7950 2850
 Wire Wire Line
-	8050 3150 7600 3150
+	8400 3050 7950 3050
 Wire Wire Line
-	8050 2350 7600 2350
-Text Label 8050 2550 2    50   ~ 0
+	8400 2250 7950 2250
+Text Label 8400 2450 2    50   ~ 0
 LCD_CS
-Text Label 8050 2750 2    50   ~ 0
+Text Label 8400 2650 2    50   ~ 0
 LCD_SCK
-Text Label 8050 2950 2    50   ~ 0
+Text Label 8400 2850 2    50   ~ 0
 LCD_A0
-Text Label 8050 3150 2    50   ~ 0
+Text Label 8400 3050 2    50   ~ 0
 LCD_MOSI
-Text Label 8050 2350 2    50   ~ 0
+Text Label 8400 2250 2    50   ~ 0
 LCD_LED
-Text Label 8050 3050 2    50   ~ 0
+Text Label 8400 2950 2    50   ~ 0
 LCD_RST
 Wire Wire Line
-	8050 3050 7600 3050
-Text Label 8000 3550 2    50   ~ 0
+	8400 2950 7950 2950
+Text Label 8350 3450 2    50   ~ 0
 I2C_SCL
-Text Label 8000 3650 2    50   ~ 0
+Text Label 8350 3550 2    50   ~ 0
 I2C_SDA
 Wire Wire Line
-	7600 3550 8000 3550
+	7950 3450 8350 3450
 Wire Wire Line
-	7600 3650 8000 3650
+	7950 3550 8350 3550
 Wire Wire Line
-	7600 2150 8150 2150
-Text Label 8050 2250 2    50   ~ 0
+	7950 2050 8500 2050
+Text Label 8400 2150 2    50   ~ 0
 LCD_EN
 Wire Wire Line
-	7600 2250 8050 2250
+	7950 2150 8400 2150
 NoConn ~ 10350 1050
 Wire Wire Line
 	10500 2850 10500 3450
@@ -1435,15 +1428,13 @@ Wire Wire Line
 Text Label 9850 1700 0    50   ~ 0
 LCD_CS
 Wire Wire Line
-	7600 3250 8100 3250
+	7950 3150 8450 3150
 Wire Wire Line
-	7600 3350 8100 3350
+	7950 3250 8450 3250
 Wire Wire Line
-	7600 3450 8100 3450
+	7950 3350 8450 3350
 Wire Bus Line
 	8950 6500 11200 6500
-Wire Bus Line
-	8950 500  8950 550 
 Wire Bus Line
 	8950 550  11200 550 
 Wire Bus Line
@@ -1454,12 +1445,6 @@ Wire Bus Line
 	8900 6500 8900 5950
 Wire Bus Line
 	6050 4700 8900 4700
-Wire Bus Line
-	5950 550  8900 550 
-Wire Bus Line
-	5950 4650 8900 4650
-Wire Bus Line
-	550  550  5900 550 
 Wire Wire Line
 	3100 2650 3200 2650
 Text Label 2600 3600 0    50   ~ 0
@@ -1588,13 +1573,10 @@ F 4 "175-MAX17260SEWL+TCT-ND" H 1000 4400 50  0001 C CNN "digikey"
 	1    1950 3350
 	1    0    0    -1  
 $EndComp
-Connection ~ 8950 550 
 Wire Bus Line
 	8950 550  8950 6450
 Text Label 9850 1300 0    50   ~ 0
 LCD_RST
-Wire Bus Line
-	5900 550  5900 3250
 $Comp
 L power:+3.3V #PWR0133
 U 1 1 5F663FDD
@@ -1661,13 +1643,11 @@ F 4 "ADXL337BCPZ-RLCT-ND" H 5000 3950 50  0001 C CNN "digikey"
 	1    5000 3950
 	1    0    0    -1  
 $EndComp
-Wire Bus Line
-	5900 4650 5900 3300
-Text Label 8100 3250 2    50   ~ 0
+Text Label 8450 3150 2    50   ~ 0
 Z_ACCEL
-Text Label 8100 3350 2    50   ~ 0
+Text Label 8450 3250 2    50   ~ 0
 X_ACCEL
-Text Label 8100 3450 2    50   ~ 0
+Text Label 8450 3350 2    50   ~ 0
 Y_ACCEL
 Text Label 5050 2450 2    50   ~ 0
 BAT_SENSE
@@ -1886,15 +1866,9 @@ ACCEL_PWR
 Wire Bus Line
 	3200 3300 3200 4650
 Wire Bus Line
-	3200 4650 5900 4650
-Wire Bus Line
-	3200 3300 5900 3300
-Wire Bus Line
 	3150 3250 3150 4650
 Wire Bus Line
 	3150 4650 550  4650
-Wire Bus Line
-	3150 3250 5900 3250
 Text Notes 4250 3100 0    50   ~ 0
 Charging Current of 100mA\n
 Wire Bus Line
@@ -1907,9 +1881,9 @@ NoConn ~ 3800 6500
 NoConn ~ 3800 6600
 NoConn ~ 3800 6700
 NoConn ~ 3800 6800
-NoConn ~ 7600 2050
-NoConn ~ 7600 2650
-NoConn ~ 7600 2850
+NoConn ~ 7950 1950
+NoConn ~ 7950 2550
+NoConn ~ 7950 2750
 $Comp
 L Device:Thermistor TH1
 U 1 1 5F720AAB
@@ -1964,4 +1938,27 @@ Wire Wire Line
 	1150 3300 1550 3300
 Text Notes 600  4600 0    50   ~ 0
 Note: R8 should only be populated if thermistor is not populated
+Wire Wire Line
+	9300 5300 9050 5300
+Wire Wire Line
+	9050 5300 9050 5400
+Connection ~ 9300 5300
+Wire Wire Line
+	9300 5300 9300 5350
+Wire Bus Line
+	8900 550  6050 550 
+Wire Bus Line
+	6050 4650 8900 4650
+Wire Bus Line
+	6000 550  6000 3250
+Wire Bus Line
+	550  550  6000 550 
+Wire Bus Line
+	3150 3250 6000 3250
+Wire Bus Line
+	6000 3300 6000 4650
+Wire Bus Line
+	3200 4650 6000 4650
+Wire Bus Line
+	3200 3300 6000 3300
 $EndSCHEMATC
