@@ -1,0 +1,36 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ADXL337
+F https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL337.pdf
+$ENDCMP
+#
+$CMP LP5912-3.3DRVT
+F http://www.ti.com/lit/ds/symlink/lp5912.pdf
+$ENDCMP
+#
+$CMP MAX17048
+F https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf
+$ENDCMP
+#
+$CMP MAX17260
+F https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf
+$ENDCMP
+#
+$CMP MAX17260_WLP
+F https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf
+$ENDCMP
+#
+$CMP NLSV4T244
+D Level Shifter
+F https://www.onsemi.com/pub/Collateral/NLSV4T244-D.PDF
+$ENDCMP
+#
+$CMP TSC2003IPWR
+F http://www.ti.com/lit/ds/symlink/tsc2003.pdf
+$ENDCMP
+#
+$CMP ZJY117
+F https://www.icbanq.com/icdownload/data/ICBShop/Board/ZJY117-1.8_18P%20TFT%20LCD%20With%20Touch%20Panel.pdf
+$ENDCMP
+#
+#End Doc Library
