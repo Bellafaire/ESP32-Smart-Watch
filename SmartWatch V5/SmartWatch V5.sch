@@ -892,10 +892,6 @@ Wire Wire Line
 	3650 1400 4050 1400
 Text Label 3650 1400 0    50   ~ 0
 LDO_EN
-Text Label 6350 1750 0    50   ~ 0
-LCD_PG
-Wire Wire Line
-	6350 1750 6750 1750
 Wire Wire Line
 	4400 1750 4400 1700
 Wire Wire Line
@@ -1183,8 +1179,6 @@ Wire Wire Line
 	7950 1850 8500 1850
 Text Label 8500 1850 2    50   ~ 0
 TOUCH_IRQ
-Text Label 8350 1650 2    50   ~ 0
-IO2
 $Comp
 L Device:R R19
 U 1 1 5E8CE472
@@ -1214,8 +1208,6 @@ F 3 "" H 8300 5600 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	8300 5600 8300 5450
-Wire Wire Line
-	7950 1650 8350 1650
 Wire Bus Line
 	8900 4650 8900 550 
 Wire Wire Line
@@ -1235,8 +1227,6 @@ Wire Wire Line
 	7700 6350 8000 6350
 Wire Bus Line
 	11200 550  11200 6500
-Text Label 8500 2350 2    50   ~ 0
-IO15
 $Comp
 L CustomParts:TSC2003IPWR U10
 U 1 1 5EF496EC
@@ -1304,26 +1294,8 @@ Wire Wire Line
 Connection ~ 1250 6400
 Wire Bus Line
 	550  4700 550  7600
-Wire Wire Line
-	7950 2350 8500 2350
 Text Label 2900 850  0    50   ~ 0
 BAT+
-Text Label 10100 2150 0    50   ~ 0
-Y+
-Wire Wire Line
-	10100 2150 10300 2150
-Text Label 10100 2250 0    50   ~ 0
-X+
-Wire Wire Line
-	10100 2250 10300 2250
-Text Label 10100 2350 0    50   ~ 0
-Y-
-Wire Wire Line
-	10100 2350 10300 2350
-Text Label 10100 2450 0    50   ~ 0
-X-
-Wire Wire Line
-	10100 2450 10300 2450
 Wire Wire Line
 	8400 2450 7950 2450
 Wire Wire Line
@@ -1362,7 +1334,6 @@ Text Label 8400 2150 2    50   ~ 0
 LCD_EN
 Wire Wire Line
 	7950 2150 8400 2150
-NoConn ~ 10350 1050
 Wire Wire Line
 	10500 2850 10500 3450
 Text Label 10500 3450 1    50   ~ 0
@@ -2047,4 +2018,48 @@ Wire Wire Line
 	1600 5900 1950 5900
 Wire Wire Line
 	1800 5800 2000 5800
+Wire Wire Line
+	10100 2450 10300 2450
+Text Label 10100 2450 0    50   ~ 0
+X-
+Wire Wire Line
+	10100 2350 10300 2350
+Text Label 10100 2350 0    50   ~ 0
+Y-
+Wire Wire Line
+	10100 2250 10300 2250
+Text Label 10100 2250 0    50   ~ 0
+X+
+Wire Wire Line
+	10100 2150 10300 2150
+Text Label 10100 2150 0    50   ~ 0
+Y+
+NoConn ~ 7950 2350
+NoConn ~ 7950 1650
+$Comp
+L power:+3.3V #PWR0128
+U 1 1 5FB2118B
+P 10650 800
+F 0 "#PWR0128" H 10650 650 50  0001 C CNN
+F 1 "+3.3V" H 10665 973 50  0000 C CNN
+F 2 "" H 10650 800 50  0001 C CNN
+F 3 "" H 10650 800 50  0001 C CNN
+	1    10650 800 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10550 900  10550 800 
+Wire Wire Line
+	10550 800  10650 800 
+Wire Wire Line
+	10750 800  10750 900 
+Connection ~ 10650 800 
+Wire Wire Line
+	10650 800  10750 800 
+Wire Wire Line
+	10650 900  10650 800 
+NoConn ~ 6750 1750
+NoConn ~ -1200 1350
+Text Notes 600  350  0    50   ~ 0
+Selected Battery - https://www.digikey.com/product-detail/en/adafruit-industries-llc/3898/1528-2731-ND/9685336 (digikey part number: 1528-2731-ND)
 $EndSCHEMATC
