@@ -166,23 +166,17 @@ Wire Wire Line
 $Comp
 L Device:R R2
 U 1 1 5E6E1024
-P 2000 5900
-F 0 "R2" V 2207 5900 50  0000 C CNN
-F 1 "27" V 2116 5900 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1930 5900 50  0001 C CNN
-F 3 "~" H 2000 5900 50  0001 C CNN
-F 4 "RMCF0603JT27R0CT-ND" V 2000 5900 50  0001 C CNN "digikey"
-	1    2000 5900
+P 2100 5900
+F 0 "R2" V 2307 5900 50  0000 C CNN
+F 1 "27" V 2216 5900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2030 5900 50  0001 C CNN
+F 3 "~" H 2100 5900 50  0001 C CNN
+F 4 "RMCF0603JT27R0CT-ND" V 2100 5900 50  0001 C CNN "digikey"
+	1    2100 5900
 	0    -1   -1   0   
 $EndComp
-Text Label 1400 5800 2    50   ~ 0
+Text Label 2000 5800 2    50   ~ 0
 VBUS
-Wire Wire Line
-	1100 5800 1400 5800
-Wire Wire Line
-	2150 5900 2650 5900
-Wire Wire Line
-	2150 6000 2650 6000
 $Comp
 L Device:Q_NPN_BEC Q2
 U 1 1 5E6C83C3
@@ -1272,13 +1266,13 @@ Wire Wire Line
 $Comp
 L Device:R R3
 U 1 1 5EAC0FC6
-P 2000 6000
-F 0 "R3" V 1800 6000 50  0000 C CNN
-F 1 "27" V 1900 6000 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1930 6000 50  0001 C CNN
-F 3 "~" H 2000 6000 50  0001 C CNN
-F 4 "RMCF0603JT27R0CT-ND" V 2000 6000 50  0001 C CNN "digikey"
-	1    2000 6000
+P 2100 6000
+F 0 "R3" V 1900 6000 50  0000 C CNN
+F 1 "27" V 2000 6000 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2030 6000 50  0001 C CNN
+F 3 "~" H 2100 6000 50  0001 C CNN
+F 4 "RMCF0603JT27R0CT-ND" V 2100 6000 50  0001 C CNN "digikey"
+	1    2100 6000
 	0    -1   -1   0   
 $EndComp
 Text Label 3200 1300 0    50   ~ 0
@@ -1943,8 +1937,8 @@ $Comp
 L Device:D_TVS D?
 U 1 1 5F8FA488
 P 1400 6550
-F 0 "D?" H 1500 6650 50  0000 L CNN
-F 1 "ESDZV5-1BF4" H 1100 6750 50  0000 L CNN
+F 0 "D?" H 1550 6650 50  0000 L CNN
+F 1 "ESDZV5-1BF4" H 950 6650 50  0000 L CNN
 F 2 "Diode_SMD:D_0201_0603Metric" H 1400 6550 50  0001 C CNN
 F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1400 6550 50  0001 C CNN
 F 4 "497-17318-1-ND" V 1400 6550 50  0001 C CNN "digikey"
@@ -1952,19 +1946,17 @@ F 4 "497-17318-1-ND" V 1400 6550 50  0001 C CNN "digikey"
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	1100 5900 1700 5900
-Wire Wire Line
 	1100 6000 1400 6000
 $Comp
 L Device:D_TVS D?
 U 1 1 5F945157
-P 1700 6550
-F 0 "D?" H 1800 6650 50  0000 L CNN
-F 1 "ESDZV5-1BF4" H 1400 6750 50  0000 L CNN
-F 2 "Diode_SMD:D_0201_0603Metric" H 1700 6550 50  0001 C CNN
-F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1700 6550 50  0001 C CNN
-F 4 "497-17318-1-ND" V 1700 6550 50  0001 C CNN "digikey"
-	1    1700 6550
+P 1600 6550
+F 0 "D?" H 1750 6650 50  0000 L CNN
+F 1 "ESDZV5-1BF4" H 1150 6650 50  0000 L CNN
+F 2 "Diode_SMD:D_0201_0603Metric" H 1600 6550 50  0001 C CNN
+F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1600 6550 50  0001 C CNN
+F 4 "497-17318-1-ND" V 1600 6550 50  0001 C CNN "digikey"
+	1    1600 6550
 	0    1    1    0   
 $EndComp
 $Comp
@@ -1981,28 +1973,21 @@ $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5F946231
-P 1700 6850
-F 0 "#PWR?" H 1700 6600 50  0001 C CNN
-F 1 "GND" H 1705 6677 50  0000 C CNN
-F 2 "" H 1700 6850 50  0001 C CNN
-F 3 "" H 1700 6850 50  0001 C CNN
-	1    1700 6850
+P 1600 6850
+F 0 "#PWR?" H 1600 6600 50  0001 C CNN
+F 1 "GND" H 1605 6677 50  0000 C CNN
+F 2 "" H 1600 6850 50  0001 C CNN
+F 3 "" H 1600 6850 50  0001 C CNN
+	1    1600 6850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	1400 6400 1400 6000
 Connection ~ 1400 6000
 Wire Wire Line
-	1400 6000 1850 6000
-Wire Wire Line
-	1700 6400 1700 5900
-Connection ~ 1700 5900
-Wire Wire Line
-	1700 5900 1850 5900
-Wire Wire Line
 	1400 6700 1400 6850
 Wire Wire Line
-	1700 6700 1700 6850
+	1600 6700 1600 6850
 Wire Wire Line
 	2450 6200 2650 6200
 Wire Wire Line
@@ -2017,4 +2002,49 @@ Wire Wire Line
 Connection ~ 2450 5600
 Wire Wire Line
 	2450 5600 2450 4900
+Wire Wire Line
+	2250 5900 2650 5900
+Wire Wire Line
+	2250 6000 2650 6000
+Wire Wire Line
+	1100 5900 1600 5900
+$Comp
+L Device:D_TVS D?
+U 1 1 5FA53832
+P 1800 6550
+F 0 "D?" H 1950 6650 50  0000 L CNN
+F 1 "ESDZV5-1BF4" H 1350 6650 50  0000 L CNN
+F 2 "Diode_SMD:D_0201_0603Metric" H 1800 6550 50  0001 C CNN
+F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1800 6550 50  0001 C CNN
+F 4 "497-17318-1-ND" V 1800 6550 50  0001 C CNN "digikey"
+	1    1800 6550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA53838
+P 1800 6850
+F 0 "#PWR?" H 1800 6600 50  0001 C CNN
+F 1 "GND" H 1805 6677 50  0000 C CNN
+F 2 "" H 1800 6850 50  0001 C CNN
+F 3 "" H 1800 6850 50  0001 C CNN
+	1    1800 6850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1800 6700 1800 6850
+Wire Wire Line
+	1100 5800 1800 5800
+Wire Wire Line
+	1800 6400 1800 5800
+Connection ~ 1800 5800
+Wire Wire Line
+	1400 6000 1950 6000
+Wire Wire Line
+	1600 6400 1600 5900
+Connection ~ 1600 5900
+Wire Wire Line
+	1600 5900 1950 5900
+Wire Wire Line
+	1800 5800 2000 5800
 $EndSCHEMATC
