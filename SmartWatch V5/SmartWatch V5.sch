@@ -1436,78 +1436,6 @@ Wire Wire Line
 	9850 1700 10300 1700
 Text Label 9850 1700 0    50   ~ 0
 LCD_CS
-$Comp
-L CustomParts:TestPad J15
-U 1 1 5F1F3B31
-P 8100 2050
-F 0 "J15" H 8350 2050 50  0000 L CNN
-F 1 "TestPad" H 8600 2050 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 2150 50  0001 C CNN
-F 3 "" H 8200 2150 50  0001 C CNN
-	1    8100 2050
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:TestPad J16
-U 1 1 5F1F47AF
-P 8100 2650
-F 0 "J16" H 8350 2650 50  0000 L CNN
-F 1 "TestPad" H 8600 2650 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 2750 50  0001 C CNN
-F 3 "" H 8200 2750 50  0001 C CNN
-	1    8100 2650
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:TestPad J17
-U 1 1 5F1F4D94
-P 8100 2850
-F 0 "J17" H 8350 2850 50  0000 L CNN
-F 1 "TestPad" H 8600 2850 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 2950 50  0001 C CNN
-F 3 "" H 8200 2950 50  0001 C CNN
-	1    8100 2850
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:TestPad J18
-U 1 1 5F1F51C0
-P 8100 3250
-F 0 "J18" H 8350 3250 50  0000 L CNN
-F 1 "TestPad" H 8600 3250 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 3350 50  0001 C CNN
-F 3 "" H 8200 3350 50  0001 C CNN
-	1    8100 3250
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:TestPad J19
-U 1 1 5F1F5439
-P 8100 3350
-F 0 "J19" H 8350 3350 50  0000 L CNN
-F 1 "TestPad" H 8600 3350 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 3450 50  0001 C CNN
-F 3 "" H 8200 3450 50  0001 C CNN
-	1    8100 3350
-	1    0    0    -1  
-$EndComp
-$Comp
-L CustomParts:TestPad J20
-U 1 1 5F1F569A
-P 8100 3450
-F 0 "J20" H 8350 3450 50  0000 L CNN
-F 1 "TestPad" H 8600 3450 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8200 3550 50  0001 C CNN
-F 3 "" H 8200 3550 50  0001 C CNN
-	1    8100 3450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7600 2050 8100 2050
-Wire Wire Line
-	7600 2650 8100 2650
-Wire Wire Line
-	7600 2850 8100 2850
 Wire Wire Line
 	7600 3250 8100 3250
 Wire Wire Line
@@ -1751,11 +1679,11 @@ F 4 "ADXL337BCPZ-RLCT-ND" H 5000 3950 50  0001 C CNN "digikey"
 $EndComp
 Wire Bus Line
 	5900 4650 5900 3300
-Text Label 8050 3250 2    50   ~ 0
+Text Label 8100 3250 2    50   ~ 0
 Z_ACCEL
-Text Label 8050 3350 2    50   ~ 0
+Text Label 8100 3350 2    50   ~ 0
 X_ACCEL
-Text Label 8050 3450 2    50   ~ 0
+Text Label 8100 3450 2    50   ~ 0
 Y_ACCEL
 Text Label 4200 2350 2    50   ~ 0
 BAT_SENSE
@@ -1995,4 +1923,7 @@ NoConn ~ 3800 6500
 NoConn ~ 3800 6600
 NoConn ~ 3800 6700
 NoConn ~ 3800 6800
+NoConn ~ 7600 2050
+NoConn ~ 7600 2650
+NoConn ~ 7600 2850
 $EndSCHEMATC
