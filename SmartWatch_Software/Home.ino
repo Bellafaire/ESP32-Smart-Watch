@@ -79,12 +79,10 @@ void drawHome()
       pRemoteCharacteristic->writeValue("/nextSong", 9);
       nextButtonPressed = false;
     }
-
     if (lastButtonPressed) {
       pRemoteCharacteristic->writeValue("/lastSong", 9);
       lastButtonPressed = false;
     }
-
     if (playButtonPressed) {
       pRemoteCharacteristic->writeValue("/play", 5);
       playButtonPressed = false;
@@ -146,7 +144,9 @@ void drawHome()
 
   if (connected) {
     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
-  } else {
+  } else if(doConnect){
+     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 << 11); //Show a blue square if we found the device
+    }else {
     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
   }
 

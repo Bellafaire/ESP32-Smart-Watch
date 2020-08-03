@@ -19,13 +19,14 @@ class MyClientCallback : public BLEClientCallbacks {
 #ifdef DEBUG
       Serial.println("onDisconnect");
 #endif
+  #ifdef DEBUG
       if(currentPage == HOME){
         //we have failed to connect to the device so lets go back to the home screen
-        #ifdef DEBUG
+      
         Serial.println("*****************************************\n CRITICAL FAILURE: Device Disconnected before client was formed \n*****************************************\n ");
-        #endif
-        switchToHome();
+
       }
+              #endif
       //screen is off so go back to sleep since we can't obtain notifications
       if (!deviceActive) {
 #ifdef DEBUG
@@ -39,7 +40,7 @@ class MyClientCallback : public BLEClientCallbacks {
         if(xConnect){
     //if the device disconnects we need to end the connect Task
     //otherwise this creates an error 
-    vTaskDelete(xConnect);
+    // vTaskDelete(xConnect);
   }
     }
 };
@@ -185,6 +186,8 @@ String connectToServer(int timeout, String command, boolean readDataBack, boolea
   //the android app requires a write to reset the cursor position of the notification feed.
   //this also causes the app to get the most current notifications available
   pRemoteCharacteristic->writeValue(command.c_str(), command.length());
+
+  delay(100);
 
 #ifdef DEBUG
   Serial.println("Wrote Characteristic: " + command);
