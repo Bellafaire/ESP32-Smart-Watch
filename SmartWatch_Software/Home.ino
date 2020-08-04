@@ -217,15 +217,15 @@ void HomeTouchHandler(struct point p)
     pressButton(homeNotificationsButton);
     switchToNotifications();
   }
-  if (checkButtonPress(homeAppsButton, p.xPos, p.yPos)) {
+  else if (checkButtonPress(homeAppsButton, p.xPos, p.yPos)) {
     openApps();
   }
-  if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
+ else if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {
     pressButton(homeSettingsButton);
     switchToSettings();
   }
-  if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
+  else if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Last Song Button Pressed");
 #endif
@@ -235,7 +235,7 @@ void HomeTouchHandler(struct point p)
       lastButtonPressed = true;
     }
   }
-  if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
+ else if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Next Song Button Pressed");
 #endif
@@ -245,7 +245,7 @@ void HomeTouchHandler(struct point p)
       nextButtonPressed = true;
     }
   }
-  if (checkButtonPress(playButton, p.xPos, p.yPos)) {
+ else if (checkButtonPress(playButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Play Button Pressed");
 #endif
@@ -255,7 +255,7 @@ void HomeTouchHandler(struct point p)
       playButtonPressed = true;
     }
   }
-  if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
+ else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
 #ifdef DEBUG
     Serial.println("Pause Button Pressed");
 #endif
