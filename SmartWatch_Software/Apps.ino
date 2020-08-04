@@ -4,16 +4,13 @@
      apps are intended to be single function calls that essentially take control of the device for the duration of their use
 */
 
-#define APP_NUMBER 2
+#define APP_NUMBER 1
 
-#define MEDIA_CONTROLLER "Media Controller"
-#define BLUETOOTH_SERIAL_RECEIVIER "BT Serial"
+#define MEDIA_CONTROLLER "Play Spotify"
 
 String appNames[APP_NUMBER] {
-  MEDIA_CONTROLLER,
-  BLUETOOTH_SERIAL_RECEIVIER
+  MEDIA_CONTROLLER
 };
-
 
 void openApps() {
   SelectionWindow w = SelectionWindow(0, 14, 160, 100);
@@ -22,20 +19,22 @@ void openApps() {
 
   for (int a = 0; a < APP_NUMBER; a++)
   {
-    w.addOption(appNames[a]);
+     w.addOption(appNames[a]);
   }
   int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
 
   //so that we can re-order apps at will without changing any constants we'll search the
   //string array and determine the string value selected
 
-//  if (appNames[selectedOption].equals(MEDIA_CONTROLLER)) {
-//    //things to do for the media controller
-//    return;
-//  } else if (appNames[selectedOption].equals(BLUETOOTH_SERIAL_RECEIVIER)) {
-//    //things to do for the bluetooth serial receivier
-//    return;
-//  }
+ if (selectedOption == 0) {
+   //things to do for the media controller
+   if(connected){
+         if (connected) {
+      pRemoteCharacteristic->writeValue("/play", 5);
+    }
+   }
+   return;
+ } 
 
 
 }
