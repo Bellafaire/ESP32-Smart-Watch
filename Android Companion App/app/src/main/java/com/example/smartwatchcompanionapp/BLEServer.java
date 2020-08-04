@@ -53,7 +53,7 @@ public class BLEServer extends Service {
         Log.i(TAG, "BLE Server Starting....");
         AdvertiseSettings settings = new AdvertiseSettings.Builder()
                 .setConnectable(true)
-                .setTxPowerLevel(ADVERTISE_TX_POWER_MEDIUM)
+                .setTxPowerLevel(ADVERTISE_TX_POWER_HIGH)
                 .setAdvertiseMode(ADVERTISE_MODE_BALANCED)
                 .build();
 
