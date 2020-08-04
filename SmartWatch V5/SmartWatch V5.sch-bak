@@ -760,36 +760,6 @@ F 4 "478-10766-1-ND" H 3200 1450 50  0001 C CNN "digikey"
 	1    3200 1450
 	-1   0    0    -1  
 $EndComp
-Text Label 2750 1000 0    50   ~ 0
-BAT_ALRT
-$Comp
-L Device:R R5
-U 1 1 5EA97DC3
-P 3300 1000
-F 0 "R5" H 3370 1046 50  0000 L CNN
-F 1 "0" H 3370 955 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3230 1000 50  0001 C CNN
-F 3 "~" H 3300 1000 50  0001 C CNN
-F 4 "311-0.0GRCT-ND" H 3300 1000 50  0001 C CNN "digikey"
-	1    3300 1000
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2750 1000 3150 1000
-$Comp
-L Device:R R4
-U 1 1 5EAB0896
-P 3300 850
-F 0 "R4" H 3150 900 50  0000 L CNN
-F 1 "0 (NC)" H 3000 800 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3230 850 50  0001 C CNN
-F 3 "~" H 3300 850 50  0001 C CNN
-F 4 "311-0.0GRCT-ND" H 3300 850 50  0001 C CNN "digikey"
-	1    3300 850 
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2900 850  3150 850 
 Text Notes 600  650  0    50   ~ 0
 Battery And Power Management
 Wire Bus Line
@@ -832,15 +802,6 @@ F 3 "" H 1100 1550 50  0001 C CNN
 	1    1100 1550
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3550 1000 3550 850 
-Wire Wire Line
-	3450 1000 3550 1000
-Wire Wire Line
-	3450 850  3550 850 
-Wire Wire Line
-	3550 850  3850 850 
-Connection ~ 3550 850 
 Text Label 3850 850  2    50   ~ 0
 LDO_EN
 Wire Wire Line
@@ -1245,8 +1206,6 @@ Wire Wire Line
 Connection ~ 1250 6400
 Wire Bus Line
 	550  4700 550  7600
-Text Label 2900 850  0    50   ~ 0
-BAT+
 Wire Wire Line
 	8400 2450 7950 2450
 Wire Wire Line
@@ -2022,4 +1981,8 @@ Text Label 8400 2550 2    50   ~ 0
 ACCEL_EN
 Wire Wire Line
 	7950 2550 8400 2550
+Wire Wire Line
+	2900 850  3850 850 
+Text Label 2900 850  0    50   ~ 0
+BAT_SENSE
 $EndSCHEMATC

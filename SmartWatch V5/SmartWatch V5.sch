@@ -802,12 +802,6 @@ F 3 "" H 1100 1550 50  0001 C CNN
 	1    1100 1550
 	1    0    0    -1  
 $EndComp
-Text Label 3850 850  2    50   ~ 0
-LDO_EN
-Wire Wire Line
-	3650 1400 4050 1400
-Text Label 3650 1400 0    50   ~ 0
-LDO_EN
 Wire Wire Line
 	4400 1750 4400 1700
 Wire Wire Line
@@ -1206,8 +1200,6 @@ Wire Wire Line
 Connection ~ 1250 6400
 Wire Bus Line
 	550  4700 550  7600
-Text Label 2900 850  0    50   ~ 0
-BAT+
 Wire Wire Line
 	8400 2450 7950 2450
 Wire Wire Line
@@ -1491,7 +1483,7 @@ Y_ACCEL
 Text Label 4850 2350 2    50   ~ 0
 BAT_SENSE
 Wire Wire Line
-	3200 1300 4050 1300
+	3200 1300 3550 1300
 $Comp
 L CustomParts:ZJY117 A1
 U 1 1 5ED9505C
@@ -1984,5 +1976,10 @@ ACCEL_EN
 Wire Wire Line
 	7950 2550 8400 2550
 Wire Wire Line
-	2900 850  3850 850 
+	3550 1300 3550 1400
+Wire Wire Line
+	3550 1400 4050 1400
+Connection ~ 3550 1300
+Wire Wire Line
+	3550 1300 4050 1300
 $EndSCHEMATC
