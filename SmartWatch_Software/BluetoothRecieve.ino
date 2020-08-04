@@ -307,8 +307,8 @@ void xFindDevice(void * pvParameters ) {
   // scan to run for 8 seconds.
   BLEScan* pBLEScan = BLEDevice::getScan();
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  pBLEScan->setInterval(1000);
-  pBLEScan->setWindow(1000);
+  pBLEScan->setInterval(40);
+  pBLEScan->setWindow(39);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
   scanComplete = true;
