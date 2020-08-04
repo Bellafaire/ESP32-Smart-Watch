@@ -400,17 +400,6 @@ F 3 "" H 8100 6450 50  0001 C CNN
 	1    8000 6350
 	1    0    0    -1  
 $EndComp
-$Comp
-L CustomParts:TestPad J7
-U 1 1 5E8B0641
-P 8000 6150
-F 0 "J7" H 8228 6201 50  0000 L CNN
-F 1 "TestPad" H 8228 6110 50  0000 L CNN
-F 2 "CustomFootprints:TESTPAD" H 8100 6250 50  0001 C CNN
-F 3 "" H 8100 6250 50  0001 C CNN
-	1    8000 6150
-	1    0    0    -1  
-$EndComp
 Text Label 7700 6350 0    50   ~ 0
 BAT+
 $Comp
@@ -450,8 +439,6 @@ Wire Wire Line
 	7050 6350 6600 6350
 Wire Wire Line
 	7050 6150 6600 6150
-Text Label 7700 6150 0    50   ~ 0
-VBUS
 $Comp
 L power:GND #PWR0112
 U 1 1 5E8C7D9E
@@ -1187,8 +1174,6 @@ Wire Bus Line
 	550  7600 6000 7600
 Wire Bus Line
 	6000 4700 6000 7600
-Wire Wire Line
-	7700 6150 8000 6150
 Wire Wire Line
 	7700 6350 8000 6350
 Wire Bus Line
