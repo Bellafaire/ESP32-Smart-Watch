@@ -1939,7 +1939,7 @@ Wire Wire Line
 NoConn ~ 6750 1750
 NoConn ~ -1200 1350
 Text Notes 600  350  0    50   ~ 0
-Selected Battery - 1832-1032-ND (digikey number)
+Selected Battery - 1908-1353-ND  (digikey number)
 Wire Wire Line
 	4750 5000 5750 5000
 Wire Wire Line
