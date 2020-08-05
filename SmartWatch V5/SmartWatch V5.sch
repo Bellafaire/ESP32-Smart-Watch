@@ -14,18 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L RF_Module:ESP32-WROOM-32 U6
-U 1 1 5E6BFC95
-P 7350 2650
-F 0 "U6" H 6600 4250 50  0000 C CNN
-F 1 "ESP32-WROOM-32" H 6900 4150 50  0000 C CNN
-F 2 "RF_Module:ESP32-WROOM-32" H 7350 1150 50  0001 C CNN
-F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 7050 2700 50  0001 C CNN
-F 4 "1904-1010-1-ND" H 7350 2650 50  0001 C CNN "digikey"
-	1    7350 2650
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:+3.3V #PWR0101
 U 1 1 5E6C26FC
 P 7350 1250
@@ -508,10 +496,8 @@ Wire Wire Line
 	7700 5450 7700 5800
 Text Label 8350 3750 2    50   ~ 0
 CHG_STAT
-Text Label 8350 3650 2    50   ~ 0
-BAT_ALRT
 Wire Wire Line
-	7950 3650 8350 3650
+	7950 2750 8350 2750
 Wire Wire Line
 	7950 3750 8350 3750
 Text Label 6350 1650 0    50   ~ 0
@@ -1673,7 +1659,6 @@ NoConn ~ 4050 6600
 NoConn ~ 4050 6700
 NoConn ~ 4050 6800
 NoConn ~ 7950 1950
-NoConn ~ 7950 2750
 $Comp
 L Device:Thermistor TH1
 U 1 1 5F720AAB
@@ -1982,4 +1967,18 @@ Wire Wire Line
 Connection ~ 3550 1300
 Wire Wire Line
 	3550 1300 4050 1300
+$Comp
+L RF_Module:ESP32-WROOM-32 U6
+U 1 1 5E6BFC95
+P 7350 2650
+F 0 "U6" H 6600 4250 50  0000 C CNN
+F 1 "ESP32-WROOM-32" H 6900 4150 50  0000 C CNN
+F 2 "RF_Module:ESP32-WROOM-32" H 7350 1150 50  0001 C CNN
+F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 7050 2700 50  0001 C CNN
+F 4 "1904-1010-1-ND" H 7350 2650 50  0001 C CNN "digikey"
+	1    7350 2650
+	1    0    0    -1  
+$EndComp
+Text Label 8350 2750 2    50   ~ 0
+BAT_ALRT
 $EndSCHEMATC
