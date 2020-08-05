@@ -2149,4 +2149,5 @@ Text Label 8400 3650 2    50   ~ 0
 ACCEL_EN
 Wire Wire Line
 	7950 3650 8400 3650
+NoConn ~ 7950 2550
 $EndSCHEMATC
