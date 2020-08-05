@@ -1243,8 +1243,6 @@ Wire Wire Line
 Text Label 9850 1700 0    50   ~ 0
 LCD_CS
 Wire Wire Line
-	7950 3150 8450 3150
-Wire Wire Line
 	7950 3250 8450 3250
 Wire Wire Line
 	7950 3350 8450 3350
@@ -1454,8 +1452,6 @@ F 4 "ADXL337BCPZ-RLCT-ND" H 5050 4000 50  0001 C CNN "digikey"
 	1    5050 4000
 	1    0    0    -1  
 $EndComp
-Text Label 8450 3150 2    50   ~ 0
-Z_ACCEL
 Text Label 8450 3250 2    50   ~ 0
 X_ACCEL
 Text Label 8450 3350 2    50   ~ 0
@@ -1948,10 +1944,6 @@ Wire Wire Line
 	3250 4050 3650 4050
 Wire Wire Line
 	4300 2550 4650 2550
-Text Label 8400 2550 2    50   ~ 0
-ACCEL_EN
-Wire Wire Line
-	7950 2550 8400 2550
 $Comp
 L RF_Module:ESP32-WROOM-32 U6
 U 1 1 5E6BFC95
@@ -1966,7 +1958,6 @@ F 4 "1904-1010-1-ND" H 7350 2650 50  0001 C CNN "digikey"
 $EndComp
 Text Label 8350 2750 2    50   ~ 0
 BAT_ALRT
-NoConn ~ 7950 3650
 $Comp
 L power:+3.3V #PWR0129
 U 1 1 5F52C376
@@ -2150,4 +2141,13 @@ Wire Wire Line
 Connection ~ 3150 1300
 Wire Wire Line
 	3150 1300 3600 1300
+Text Label 8450 3150 2    50   ~ 0
+Z_ACCEL
+Wire Wire Line
+	7950 3150 8450 3150
+Text Label 8400 3650 2    50   ~ 0
+ACCEL_EN
+Wire Wire Line
+	7950 3650 8400 3650
+NoConn ~ 7950 2550
 $EndSCHEMATC
