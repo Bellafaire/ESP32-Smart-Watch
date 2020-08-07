@@ -1,0 +1,27 @@
+Item,Qty,Reference(s),Value,LibPart,Footprint,Datasheet,Field4,Field5,Field6,Field7,Field8,digikey
+1,1,A1,ZJY117,CustomParts:ZJY117,CustomFootprints:ZJY117,https://www.icbanq.com/icdownload/data/ICBShop/Board/ZJY117-1.8_18P%20TFT%20LCD%20With%20Touch%20Panel.pdf,,,,,,
+2,11,"C1, C4, C5, C6, C7, C9, C10, C12, C13, C14, C15",10uF,Device:C,Capacitor_SMD:C_0603_1608Metric,~,,,,,,478-10766-1-ND
+3,4,"C2, C3, C8, C11",0.1uF,Device:C,Capacitor_SMD:C_0603_1608Metric,~,,,,,,1276-1006-1-ND
+4,1,D1,FSV340FP,Device:D_Schottky,Diode_SMD:D_SOD-123,https://www.onsemi.com/pub/Collateral/FSV360FP-D.PDF,,,,,,FSV340FPCT-ND
+5,3,"D2, D3, D4",ESDZV5-1BF4,Device:D_TVS,Diode_SMD:D_0201_0603Metric,https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf,,,,,,497-17318-1-ND
+6,1,J1,10118192-0001LF,CustomParts:10118192-0001LF,CustomFootprints:AMPHENOL_10118192-0001LF,Amphenol ICC,None,Single Port 5 Contact Horizontal Right Angle Shielded Micro B USB 2.0 Connector,609-4613-1-ND,10118192-0001LF,https://www.digikey.com/product-detail/en/amphenol-icc-fci/10118192-0001LF/609-4613-1-ND/2785378?utm_source=snapeda&utm_medium=aggregator&utm_campaign=symbol,609-4613-1-ND
+7,1,J2,,Connector:Conn_01x02_Female,CustomFootprints:BATTERY,~,,,,,,
+8,3,"J8, J9, J10",TestPad,CustomParts:TestPad,CustomFootprints:TESTPAD,,,,,,,
+9,1,Q1,FDN340P,Device:Q_PMOS_GSD,Package_TO_SOT_SMD:SOT-23,https://www.onsemi.com/pub/Collateral/FDN340P-D.PDF,,,,,,FDN340PCT-ND
+10,2,"Q2, Q3",MMBT3904,Device:Q_NPN_BEC,Package_TO_SOT_SMD:SOT-23,https://assets.nexperia.com/documents/data-sheet/MMBT3904.pdf,,,,,,1727-4044-1-ND
+11,3,"Q4, Q5, Q6",FDN028N20,Device:Q_NMOS_GSD,Package_TO_SOT_SMD:SOT-23,https://www.onsemi.com/pub/Collateral/FDN028N20-D.pdf,,,,,,FDN028N20OSCT-ND
+12,3,"R1, R7, R21",100k,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,CR0603-JW-104ELFCT-ND
+13,2,"R2, R3",27,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,RMCF0603JT27R0CT-ND
+14,13,"R6, R9, R10, R13, R14, R15, R16, R17, R18, R19, R20, R22, R24",10k,Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,311-10.0KCRCT-ND
+15,1,R8,0 (NC),Device:R,Resistor_SMD:R_0603_1608Metric,~,,,,,,311-0.0GRCT-ND
+16,1,R23,10m,Device:R,Resistor_SMD:R_0805_2012Metric,https://d1d2qsbl8m0m72.cloudfront.net/en/products/databook/datasheet/passive/resistor/chip_resistor/pmr-e.pdf,,,,,,RL12T.010JCT-ND
+17,2,"SW1, SW2",EVQ-P7J01P,CustomParts:EVQ-P7J01P,CustomFootprints:SW_EVQ-P7J01P,Panasonic,Manufacturer Recommendation,,,,,P16767CT-ND
+18,1,TH1,NXFT15XH103FA2B100,Device:Thermistor,Connector_PinHeader_1.00mm:PinHeader_1x02_P1.00mm_Vertical,https://www.murata.com/~/media/webrenewal/support/library/catalog/products/thermistor/ntc/r44e.ashx?la=en-us,,,,,,490-5630-ND
+19,1,U1,MAX17260,CustomParts:MAX17260,CustomFootprints:TDFN16-EP,https://datasheets.maximintegrated.com/en/ds/MAX17260.pdf,,,,,,175-MAX17260SEWL+TCT-ND
+20,1,U2,FT231XQ,Interface_USB:FT231XQ,Package_DFN_QFN:QFN-20-1EP_4x4mm_P0.5mm_EP2.5x2.5mm,https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT231X.pdf,,,,,,768-1128-1-ND
+21,1,U3,LP5912-3.3DRVT,CustomParts:LP5912-3.3DRVT,Package_SON:WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm_ThermalVias,http://www.ti.com/lit/ds/symlink/lp5912.pdf,,,,,,296-44153-1-ND
+22,1,U5,MCP73832-2-OT,Battery_Management:MCP73832-2-OT,Package_TO_SOT_SMD:SOT-23-5,http://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf,,,,,,MCP73832T-2ACI/OTCT-ND
+23,1,U6,ESP32-WROOM-32,RF_Module:ESP32-WROOM-32,RF_Module:ESP32-WROOM-32,https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf,,,,,,1904-1010-1-ND
+24,1,U8,ADXL337,CustomParts:ADXL337,CustomFootprints:ADXL337BCPZ-RL,https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL337.pdf,,,,,,ADXL337BCPZ-RLCT-ND
+25,1,U10,TSC2003IPWR,CustomParts:TSC2003IPWR,Package_SO:TSSOP-16_4.4x5mm_P0.65mm,http://www.ti.com/lit/ds/symlink/tsc2003.pdf,,,,,,296-14340-1-ND
+26,1,,LP502030JH ,,,https://www.jauch.com/downloadfile/5bf52a1a232e7aaef7e84c3116561e20c/250mah_-_lp502030jh_1s1p_2_wire_50mm.pdf,,,,,,1908-1353-ND

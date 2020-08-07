@@ -1778,18 +1778,6 @@ Wire Wire Line
 	5000 800  5000 850 
 Wire Bus Line
 	8950 550  8950 6500
-$Comp
-L Device:D_TVS D2
-U 1 1 5F8FA488
-P 1400 6550
-F 0 "D2" H 1550 6650 50  0000 L CNN
-F 1 "ESDZV5-1BF4" H 950 6650 50  0000 L CNN
-F 2 "Diode_SMD:D_0201_0603Metric" H 1400 6550 50  0001 C CNN
-F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1400 6550 50  0001 C CNN
-F 4 "497-17318-1-ND" V 1400 6550 50  0001 C CNN "digikey"
-	1    1400 6550
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	1100 6000 1400 6000
 $Comp
@@ -2150,4 +2138,16 @@ ACCEL_EN
 Wire Wire Line
 	7950 3650 8400 3650
 NoConn ~ 7950 2550
+$Comp
+L Device:D_TVS D2
+U 1 1 5F8FA488
+P 1400 6550
+F 0 "D2" H 1550 6650 50  0000 L CNN
+F 1 "ESDZV5-1BF4" H 950 6650 50  0000 L CNN
+F 2 "Diode_SMD:D_0201_0603Metric" H 1400 6550 50  0001 C CNN
+F 3 "https://www.st.com/content/ccc/resource/technical/document/datasheet/group3/3b/a1/d0/ee/47/bb/49/64/DM00344091/files/DM00344091.pdf/jcr:content/translations/en.DM00344091.pdf" H 1400 6550 50  0001 C CNN
+F 4 "497-17318-1-ND" V 1400 6550 50  0001 C CNN "digikey"
+	1    1400 6550
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
