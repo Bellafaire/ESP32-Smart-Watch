@@ -19,22 +19,20 @@ void openApps() {
 
   for (int a = 0; a < APP_NUMBER; a++)
   {
-     w.addOption(appNames[a]);
+    w.addOption(appNames[a]);
   }
   int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
 
   //so that we can re-order apps at will without changing any constants we'll search the
   //string array and determine the string value selected
 
- if (selectedOption == 0) {
-   //things to do for the media controller
-   if(connected){
-         if (connected) {
-      pRemoteCharacteristic->writeValue("/play", 5);
-    }
-   }
-   return;
- } 
-
-
+  if (selectedOption == 0) {
+    //things to do for the media controller
+//    if (connected) {
+//      if (connected) {
+//        pRemoteCharacteristic->writeValue("/play", 5);
+//      }
+//    }
+    return;
+  }
 }

@@ -8,6 +8,14 @@
 
 //prints debug information to the serial terminal when declared
 #define DEBUG
+
+//macro for printing information to the terminal (makes code look significantly cleaner)
+#ifdef DEBUG
+#define printDebug(a) Serial.println(a)
+#else
+#define printDebug(a)
+#endif
+
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //just to avoid putting my wifi credentials on the public repo
@@ -98,19 +106,6 @@ RTC_DATA_ATTR char songName[SONG_NAME_BUFFER_SIZE];
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
-
-//BLE related variables
-//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
-static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
-static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
-
-static boolean doConnect = false;
-static boolean connected = false;
-static boolean scanComplete = false;
-static boolean doScan = false;
-static BLERemoteCharacteristic* pRemoteCharacteristic;
-static BLEAdvertisedDevice* myDevice;
- BLEClient*  pClient;
 
 //structures
 typedef struct onscreenButton button;
@@ -272,13 +267,6 @@ void SettingsTouchHandler(struct point p);
 void drawSettings();
 void switchToSettings();
 void settingsLoop();
-
-//BluetoothRecieve.ino
-String getPhoneNotifications(int timeout);
-String connectToServer(int timeout, String command, boolean readDataBack, boolean touchInterruptable);
-String writeBLE(int timeout, String command, boolean readDataBack);
-void initBluetooth() ;
-void xFindDevice(void * pvParameters );
 
 //CircularAnimation.ino
 void drawArc(int x, int y, int outerRadius, int thickness, int thetaStart, int arcLength,  int color);

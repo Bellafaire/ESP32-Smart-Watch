@@ -58,7 +58,6 @@ void setup()
       initLCD();
       initBatMonitor();
       testScreen();
-      getPhoneNotifications(15000);
       tft.println("phone notifications obtained");
       //      getInternetTime();
       updateTimeFromNotificationData();
@@ -77,37 +76,16 @@ void setup()
       case ESP_SLEEP_WAKEUP_EXT0:
         deviceActive = true;
         //if woken up by user touching screen
-#ifdef DEBUG
-        Serial.println("current notification data in memory");
-        for (int a = 0; a < 2048; a++) {
-          Serial.print(notificationData[a]); //dump all RTC notification data to the serial terminal
-          if (a > 3)
-          {
-            if (notificationData[a] == '*' &&
-                notificationData[a - 1] == '*' &&
-                notificationData[a - 2] == '*') {
-              //                  updateTimeFromNotificationData();
-              break;
-            }
-          }
-        }
-#endif
 
         initTouch();
         initLCD();
-        initBluetooth();
         MainLoop();
 
         break;
       case ESP_SLEEP_WAKEUP_EXT1:
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
-        //if woken up by 5 minute timer
-        nonCriticalOperation = true;
-        if (getPhoneNotifications(30000).equals("Success")) {
-          updateTimeFromNotificationData();
-        }
-        nonCriticalOperation = false;
+
 #ifdef DEBUG
         Serial.println("Woken up by timer");
 #endif
@@ -124,9 +102,9 @@ void setup()
   Serial.flush();
 #endif;
 
-  if(connected){
-        pClient->disconnect();
-  }
+  //  if(connected){
+  //        pClient->disconnect();
+  //  }
 
   esp_deep_sleep_start();
 }

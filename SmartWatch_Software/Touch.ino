@@ -34,15 +34,15 @@ void IRAM_ATTR TOUCH_ISR()
     rapidTouchCount = 0;
   }
 
-  //something's happening and if the user touches the screen we should just 
+  //something's happening and if the user touches the screen we should just
   //reset the device because they want to use the smartwatch
-  if (nonCriticalOperation) {
-      if(connected){
-        pClient->disconnect();
-  }
-    esp_sleep_enable_timer_wakeup(10);
-    esp_deep_sleep_start();
-  }
+  //  if (nonCriticalOperation) {
+  //      if(connected){
+  //        pClient->disconnect();
+  //  }
+  //    esp_sleep_enable_timer_wakeup(10);
+  //    esp_deep_sleep_start();
+  //  }
   // readTouch();
   lastTouchTime = millis();
   touchDetected = true;

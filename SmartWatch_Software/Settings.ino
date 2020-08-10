@@ -182,31 +182,10 @@ void SettingsTouchHandler(struct point p)
 }
 
 void getNotifications() {
-
+  
   Window w = Window(0, 14, 160, 100, true);
-
   w.println("Getting phone notifications");
-
-  //  getPhoneNotifications(30000, true);
-
-  //  for (int a = 0; a < 2048; a++) {
-  //    w.print(String(notificationData[a]));
-  //  }
-
-  String result = getPhoneNotifications(30000);
-  w.println(result);
-
-  if (result.equals("Success")) {
-    updateTimeFromNotificationData();
-    w.println("Updated Time");
-  }else{
-    w.println("Notification Data is old, could not update time");
-  }
-
   w.focus();
-
-
-  //  SweepClear();
   drawSettings();
 }
 
