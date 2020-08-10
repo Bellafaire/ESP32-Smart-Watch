@@ -30,9 +30,9 @@ void NotificationsTouchHandler(struct point p) {
     openNotification(selectedNotification);
     switchToNotifications();
   }
-#ifdef DEBUG
-  Serial.println("notification selected index: " + String(selectedNotification));
-#endif
+
+  printDebug("notification selected index: " + String(selectedNotification));
+
 }
 
 void openNotification(int sel) {
@@ -96,9 +96,8 @@ void notificationsLoop()
 
 void switchToNotifications()
 {
-#ifdef DEBUG
-  Serial.println("Switched to Notifications");
-#endif
+  printDebug("Switched to Notifications");
+
   numberOfNotifications = getNotificationLines();
   selectedNotification = 1;
   drawNotifications();

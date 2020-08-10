@@ -10,9 +10,8 @@ void setup()
   unsigned long chrono = micros();
 #ifdef DEBUG
   Serial.begin(115200);
-  Serial.println("bootCount = " + String(bootCount));
-  Serial.flush();
 #endif
+  printDebug("bootCount = " + String(bootCount));
 
   //init I2C communication
   Wire.begin(I2C_SDA, I2C_SCL, 100000);
@@ -30,10 +29,8 @@ void setup()
   initTouch();
 
   if (getBatteryVoltage() < 3.2) {
-#ifdef DEBUG
-    Serial.println("Battery Voltage is too low to start device: " + String(getBatteryVoltage(), 3));
-    Serial.flush();
-#endif;
+
+    printDebug("Battery Voltage is too low to start device: " + String(getBatteryVoltage(), 3));
     pinMode(LCD_LED, OUTPUT);
     pinMode(LCD_EN, OUTPUT);
     digitalWrite(LCD_EN, HIGH);
@@ -62,9 +59,9 @@ void setup()
       //      getInternetTime();
       updateTimeFromNotificationData();
       tft.println("obtained time");
-#ifdef DEBUG
-      Serial.println("Battery Monitor initialized");
-#endif
+
+      printDebug("Battery Monitor initialized");
+
     }
 
     //Check if this is the first reboot and get ready to setup another sleep
@@ -86,22 +83,23 @@ void setup()
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
 
-#ifdef DEBUG
-        Serial.println("Woken up by timer");
-#endif
+
+        printDebug("Woken up by timer");
+
         break;
       default:
-#ifdef DEBUG
-        Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeup_reason);
-#endif
+
+        printDebug("Wakeup was not caused by deep sleep: " + wakeup_reason);
+
         break;
     }
   }
-#ifdef DEBUG
-  Serial.println("Going to sleep now");
-  Serial.flush();
-#endif;
 
+  printDebug("Going to sleep now");
+
+#ifdef DEBUG
+  Serial.flush();
+#endif
   //  if(connected){
   //        pClient->disconnect();
   //  }

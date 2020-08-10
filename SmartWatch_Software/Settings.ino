@@ -48,43 +48,33 @@ void changeNetwork()
 
   int networks[networkNumber];
 
-  for (int a = 0; a < networkNumber; a++)
-  {
+  for (int a = 0; a < networkNumber; a++)  {
     w.addOption(ssidList[a]);
   }
 
-#ifdef DEBUG
-  Serial.println("Focusing network selection window");
-#endif
+  printDebug("Focusing network selection window");
+
   delay(50); //in some cases the touch can get read twice and exit the selection screen right away, this delay prevents it
 
   int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
 
-#ifdef DEBUG
-  Serial.println("network selection window lost focus with selected option: " + String(selectedOption));
-#endif
+printDebug("network selection window lost focus with selected option: " + String(selectedOption));
 
-  if (selectedOption >= 0)
-  {
+  if (selectedOption >= 0)  {
     ssid = ssidList[selectedOption];
     password = passwordList[selectedOption];
     testWifi();
   }
-  else
-  {
+  else  {
     switchToSettings(); //normally the popup window would clear the screen but since we don't do anything that needs to happen on its own
     delay(100);
-#ifdef DEBUG
-    Serial.println("user exited selection window with cancel button");
-#endif
+    printDebug("user exited selection window with cancel button");
   }
 }
 
 void switchToSettings()
 {
-#ifdef DEBUG
-  Serial.println("Switched to Settings");
-#endif
+  printDebug("Switched to Settings");
   //  SweepClear();
   settingScrollPosition = 0;
   drawSettings();
@@ -182,7 +172,7 @@ void SettingsTouchHandler(struct point p)
 }
 
 void getNotifications() {
-  
+
   Window w = Window(0, 14, 160, 100, true);
   w.println("Getting phone notifications");
   w.focus();
@@ -203,16 +193,6 @@ void accelTest()
 
   while (w.isFocused())
   {
-    // boolean active = lastTouchTime + 5000 > millis(); //if the screen is off there's no sense in changing anything
-    // if (active)
-    // {
-    //     digitalWrite(LCD_LED, HIGH);
-    // }
-    // else
-    // {
-    //     digitalWrite(LCD_LED, LOW);
-    // }
-
     Window w = Window(0, 14, 160, 100, false);
     w.touch();
     w.println("X = " + String(analogRead(X_ACCEL)));
@@ -257,16 +237,6 @@ void batterySettings()
 
   while (w.isFocused())
   {
-    // boolean active = lastTouchTime + 10000 > millis(); //if the screen is off there's no sense in changing anything
-    // if (active)
-    // {
-    //     digitalWrite(LCD_LED, HIGH);
-    // }
-    // else
-    // {
-    //     digitalWrite(LCD_LED, LOW);
-    // }
-
     Window w = Window(0, 14, 160, 100, false);
     w.touch();
 

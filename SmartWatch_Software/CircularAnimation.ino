@@ -55,8 +55,5 @@ void drawCircularAnimation1(int x, int y) {
     drawArc(x, y, arc_radius[a], arc_thickness[a], round(arc_positions[a]), arc_length[a],  arc_colors[a]);
     arc_positions[a] += arc_velocities[a];
   }
-#ifdef DEBUG
-//  Serial.println("Required " + String(millis() - startAnimation) + "ms to draw circles animation");
-#endif
 
 }

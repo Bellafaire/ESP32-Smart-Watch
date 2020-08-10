@@ -24,20 +24,18 @@ void updateTimeFromNotificationData() {
       lastNotificationLine[2] == '*') {
 
     //get the last line of the notification string, that will contain the current time,
-    //note that this function should only be called directly after receiving a notification update 
+    //note that this function should only be called directly after receiving a notification update
     //otherwise the time will be inaccurate
     String timeString = parseFromNotifications(getNotificationLines() - 1, 0);
-#ifdef DEBUG
-    Serial.println("Parsed Time String - " + timeString);
-#endif
+    printDebug("Parsed Time String - " + timeString);
 
     //format "HH:mm:ss dd-MM-yyyy"
-    //simply parse out the data from the string, some adjustments need to be made for year and month. 
+    //simply parse out the data from the string, some adjustments need to be made for year and month.
     struct tm tim;
 
-    //time of year 
+    //time of year
     tim.tm_year = (String(timeString[15]) + String(timeString[16]) + String(timeString[17]) + String(timeString[18])).toInt() - 1900;
-    tim.tm_mon = (String(timeString[12]) + String(timeString[13])).toInt() - 1; //month is zero indexed... 
+    tim.tm_mon = (String(timeString[12]) + String(timeString[13])).toInt() - 1; //month is zero indexed...
     tim.tm_mday = (String(timeString[9]) + String(timeString[10])).toInt();
 
     //time of day
@@ -50,18 +48,17 @@ void updateTimeFromNotificationData() {
 
     //convert the time struct into time_t variable (essentially an integer representation of time)
     time_t t = mktime(&tim);
-#ifdef DEBUG
-    Serial.println("Setting time: " + String(asctime(&tim)));
-#endif
+
+    printDebug("Setting time: " + String(asctime(&tim)));
+
 
     //place the time_t variable into a timeval and update the RTC clock so that the time can be continued in deep sleep
     struct timeval tv = { .tv_sec = t };
     settimeofday(&tv, NULL);
 
   } else {
-#ifdef DEBUG
-    Serial.println("Notification data not complete, cannot parse time");
-#endif
+    printDebug("Notification data not complete, cannot parse time");
+
   }
 }
 
@@ -82,23 +79,20 @@ String getInternetTime()
   ssid.toCharArray(ssid0, ssid.length() + 1);
   password.toCharArray(password0, password.length() + 1);
 
-#ifdef DEBUG
-  Serial.println("Connecting to " + ssid);
-#endif
+  printDebug("Connecting to " + ssid);
+
 
   WiFi.begin(ssid0, password0);
 
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-#ifdef DEBUG
-    Serial.print(".");
-#endif
+    printDebug(".");
+
     if (++wifiCounter > 30)
     {
-#ifdef DEBUG
-      Serial.println("COULD NOT CONNECT TO WIFI ");
-#endif
+      printDebug("COULD NOT CONNECT TO WIFI ");
+
       break;
     }
   }
@@ -174,13 +168,6 @@ void drawDate(int x, int y, int textSize)
   frameBuffer->setTextColor(TEXT_COLOR);
   for (int a = 0; a < Date.length(); a++)
   {
-    //since we use the framebuffer now we don't really need to fill in the background
-    //    frameBuffer->fillRect(
-    //      x + a * 6 * textSize,
-    //      y,
-    //      6 * textSize,
-    //      7 * textSize,
-    //      BACKGROUND_COLOR);
     frameBuffer->setCursor(x + a * 6 * textSize, y);
     frameBuffer->print(Date[a]);
   }
@@ -231,13 +218,6 @@ void drawDateCentered(int y, int textSize)
   frameBuffer->setTextColor(TEXT_COLOR);
   for (int a = 0; a < Date.length(); a++)
   {
-    //since we use the framebuffer now we don't really need to fill in the background
-    //    frameBuffer->fillRect(
-    //      x + a * 6 * textSize,
-    //      y,
-    //      6 * textSize,
-    //      7 * textSize,
-    //      BACKGROUND_COLOR);
     frameBuffer->setCursor(x + a * 6 * textSize, y);
     frameBuffer->print(Date[a]);
   }
@@ -306,13 +286,6 @@ void drawTime(int x, int y, int textSize)
   }
   for (int a = 0; a < 11; a++)
   {
-    //since we use the framebuffer now we don't really need to fill in the background
-    //    frameBuffer->fillRect(
-    //      x + a * 6 * textSize,
-    //      y,
-    //      6 * textSize,
-    //      7 * textSize,
-    //      BACKGROUND_COLOR);
     frameBuffer->setCursor(x + a * 6 * textSize, y);
     frameBuffer->print(timestr[a]);
   }

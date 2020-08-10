@@ -15,14 +15,12 @@ int rapidTouchCount = 0;
 
 void IRAM_ATTR TOUCH_ISR()
 {
-#ifdef DEBUG
-  Serial.println("Touch detected from interrupt");
-#endif
+  printDebug("Touch detected from interrupt");
+
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
-#ifdef DEBUG
-    Serial.println("rapidTouchCount: " + String(rapidTouchCount));
-#endif
+    printDebug("rapidTouchCount: " + String(rapidTouchCount));
+
     if (rapidTouchCount > 50) {
 #ifdef DEBUG
       Serial.println("**** Rapid Touch shutdown registered ****");

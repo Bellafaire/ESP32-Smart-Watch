@@ -3,7 +3,7 @@ bool firstHomeSwitch = true;
 bool songCheckLaunched = false;
 bool checkedIsPlaying = false;
 
-double songNameScrollPosition = 0; 
+double songNameScrollPosition = 0;
 
 //record user input before the BLE connection is established so that when the connection is
 //made we can send the required commands
@@ -72,59 +72,59 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-//  //read th9e current song from the android device
-//  if (connected) {
-//
-//    if (nextButtonPressed) {
-//      pRemoteCharacteristic->writeValue("/nextSong", 9);
-//      nextButtonPressed = false;
-//    }
-//    if (lastButtonPressed) {
-//      pRemoteCharacteristic->writeValue("/lastSong", 9);
-//      lastButtonPressed = false;
-//    }
-//    if (playButtonPressed) {
-//      pRemoteCharacteristic->writeValue("/play", 5);
-//      playButtonPressed = false;
-//    }
-//    if (pauseButtonPressed) {
-//      pRemoteCharacteristic->writeValue("/pause", 6);
-//      pauseButtonPressed = false;
-//    }
-//
-//
-//    String command = "/currentSong";
-//    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
-//    bool completeString = false;
-//    String songData = "";
-//    do {
-//      //get characteristic read string
-//      songData += pRemoteCharacteristic->readValue().c_str();
-//
-//      //use when needed, spams way too much data to the serial terminal
-//      //#ifdef DEBUG
-//      //      Serial.println("Current Song Data: " + songData);
-//      //#endif
-//
-//      if (songData[songData.length() - 1 ] == '*') {
-//        completeString = true;
-//
-//        //kind of an arbitrary choice for the expected length of a song + artist name but should be sufficent
-//        if (songData.length() > 10) {
-//          isPlaying = true;
-//          for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
-//            if (songData[a] == '*') {
-//              songName[a] = ' ';
-//            } else {
-//              songName[a] = songData[a];
-//            }
-//          }
-//        } else {
-//          isPlaying = false;
-//        }
-//      }
-//    } while (!completeString);
-//  }
+  //  //read th9e current song from the android device
+  //  if (connected) {
+  //
+  //    if (nextButtonPressed) {
+  //      pRemoteCharacteristic->writeValue("/nextSong", 9);
+  //      nextButtonPressed = false;
+  //    }
+  //    if (lastButtonPressed) {
+  //      pRemoteCharacteristic->writeValue("/lastSong", 9);
+  //      lastButtonPressed = false;
+  //    }
+  //    if (playButtonPressed) {
+  //      pRemoteCharacteristic->writeValue("/play", 5);
+  //      playButtonPressed = false;
+  //    }
+  //    if (pauseButtonPressed) {
+  //      pRemoteCharacteristic->writeValue("/pause", 6);
+  //      pauseButtonPressed = false;
+  //    }
+  //
+  //
+  //    String command = "/currentSong";
+  //    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
+  //    bool completeString = false;
+  //    String songData = "";
+  //    do {
+  //      //get characteristic read string
+  //      songData += pRemoteCharacteristic->readValue().c_str();
+  //
+  //      //use when needed, spams way too much data to the serial terminal
+  //      //#ifdef DEBUG
+  //      //      Serial.println("Current Song Data: " + songData);
+  //      //#endif
+  //
+  //      if (songData[songData.length() - 1 ] == '*') {
+  //        completeString = true;
+  //
+  //        //kind of an arbitrary choice for the expected length of a song + artist name but should be sufficent
+  //        if (songData.length() > 10) {
+  //          isPlaying = true;
+  //          for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+  //            if (songData[a] == '*') {
+  //              songName[a] = ' ';
+  //            } else {
+  //              songName[a] = songData[a];
+  //            }
+  //          }
+  //        } else {
+  //          isPlaying = false;
+  //        }
+  //      }
+  //    } while (!completeString);
+  //  }
 
   //it's here if you want it
   //    drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
@@ -138,23 +138,23 @@ void drawHome()
   frameBuffer->setTextSize(1);
   frameBuffer->setCursor(0, 40);
 
-//  if (connected) {
-//    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
-//  } else if(doConnect){
-//     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 << 11); //Show a blue square if we found the device
-//    }else {
-//    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
-//  }
+  //  if (connected) {
+  //    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
+  //  } else if(doConnect){
+  //     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 << 11); //Show a blue square if we found the device
+  //    }else {
+  //    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
+  //  }
 
 
   writeNotifications() ;
 
   if (isPlaying) {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
-    if(songNameScrollPosition + 24 < String(songName).length()){
-      songNameScrollPosition += 0.3; 
-    }else{
-      songNameScrollPosition = 0; 
+    if (songNameScrollPosition + 24 < String(songName).length()) {
+      songNameScrollPosition += 0.3;
+    } else {
+      songNameScrollPosition = 0;
     }
 
     frameBuffer->setTextWrap(false);
@@ -214,34 +214,22 @@ void HomeTouchHandler(struct point p)
   else if (checkButtonPress(homeAppsButton, p.xPos, p.yPos)) {
     openApps();
   }
- else if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
+  else if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {
     pressButton(homeSettingsButton);
     switchToSettings();
   }
   else if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
-#ifdef DEBUG
-    Serial.println("Last Song Button Pressed");
-#endif
-
+    printDebug("Last Song Button Pressed");
   }
- else if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
-#ifdef DEBUG
-    Serial.println("Next Song Button Pressed");
-#endif
-
+  else if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
+    printDebug("Next Song Button Pressed");
   }
- else if (checkButtonPress(playButton, p.xPos, p.yPos)) {
-#ifdef DEBUG
-    Serial.println("Play Button Pressed");
-#endif
-    
+  else if (checkButtonPress(playButton, p.xPos, p.yPos)) {
+    printDebug("Play Button Pressed");
   }
- else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
-#ifdef DEBUG
-    Serial.println("Pause Button Pressed");
-#endif
-    
+  else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
+    printDebug("Pause Button Pressed");
   }
 }
 

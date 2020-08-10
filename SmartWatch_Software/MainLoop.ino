@@ -1,28 +1,24 @@
 
-/*  everything that happens in the normal operation of the smartwatch happens here. this is kind of the user-interface part of the code.  
- */
+/*  everything that happens in the normal operation of the smartwatch happens here. this is kind of the user-interface part of the code.
+*/
 void MainLoop()
 {
   switch (currentPage)
   {
-  case TEST_SCREEN:
-    testScreen();
-    break;
-  case HOME:
-#ifdef DEBUG
-    Serial.println("Switched to Home");
-#endif
-    switchToHome();
-    break;
-  case SETTINGS:
-#ifdef DEBUG
-    Serial.println("Switched to Settings");
-#endif
-    switchToSettings();
-    break;
-  default:
-    currentPage = 0;
-    break;
+    case TEST_SCREEN:
+      testScreen();
+      break;
+    case HOME:
+      printDebug("Switched to Home");
+      switchToHome();
+      break;
+    case SETTINGS:
+      printDebug("Switched to Settings");
+      switchToSettings();
+      break;
+    default:
+      currentPage = 0;
+      break;
   }
   digitalWrite(LCD_LED, LOW);
 }

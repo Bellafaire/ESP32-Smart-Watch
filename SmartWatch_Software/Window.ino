@@ -182,9 +182,7 @@ void Window::drawTextToWindow(boolean clr) {
     tft.fillRect(_x + 1 , _y + 1, _width - 2, _height - 2, BACKGROUND_COLOR);
   }
 
-#ifdef DEBUG
-  Serial.println(textBuffer);
-#endif
+printDebug(textBuffer);
 
   //set the initial y position
   int ypos = _y + 2 ;
