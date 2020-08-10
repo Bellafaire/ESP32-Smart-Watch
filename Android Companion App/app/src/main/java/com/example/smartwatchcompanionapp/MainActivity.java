@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 
     public static Handler handler = new Handler();
 
+    public static long dataAcquisitionStart = System.currentTimeMillis();
     BLEServer ble;
 
     @Override
@@ -71,6 +72,8 @@ public class MainActivity extends Activity {
         sfilter.addAction("com.spotify.music.metadatachanged");
         sfilter.addAction("com.spotify.music.queuechanged");
         registerReceiver(sReceiver, sfilter);
+
+
 
 
         nReceiver = new NotificationReceiver();
@@ -125,7 +128,7 @@ public class MainActivity extends Activity {
 
     public void updateText() {
         Log.d("inform", "update text function has been called");
-
+        MainActivity.dataAcquisitionStart = System.currentTimeMillis();
         outData = getDateAndTime() + "\n***";
         txtView.setText(getDateAndTime() + "\n***");
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
@@ -143,6 +146,7 @@ public class MainActivity extends Activity {
         reference.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                MainActivity.dataAcquisitionStart = System.currentTimeMillis();
                 outData = getDateAndTime() + "\n***";
                 txtView.setText(getDateAndTime() + "\n***");
                 Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
@@ -176,6 +180,7 @@ public class MainActivity extends Activity {
 
     public void updateText(View view) {
         Log.i(TAG, "update text button has been pressed");
+        MainActivity.dataAcquisitionStart = System.currentTimeMillis();
 //        messages.append("Manually updated: " + getDateAndTime() + "\n");
         logData += "Manually updated: " + getDateAndTime() + "\n";
         messages.setText(logData);
@@ -204,6 +209,10 @@ public class MainActivity extends Activity {
 
     }
 
+    public static boolean dataIsReady(){
+        return dataAcquisitionStart + 50 < System.currentTimeMillis();
+    }
+
     class NotificationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -217,8 +226,6 @@ public class MainActivity extends Activity {
                 temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
                 txtView.setText(temp.replace("\n\n", "\n"));
             }
-//            String temp = intent.getStringExtra("notification_event") + "\n" + txtView.getText();
-
         }
     }
 

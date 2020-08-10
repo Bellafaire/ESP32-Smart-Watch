@@ -25,8 +25,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
+import static android.bluetooth.BluetoothProfile.GATT;
 import static android.bluetooth.le.AdvertiseSettings.ADVERTISE_MODE_BALANCED;
 import static android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH;
 import static android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
@@ -47,6 +49,7 @@ public class BLEServer extends Service {
     private BluetoothGattServer bluetoothGattServer;
     private BluetoothGattService service;
     private BluetoothGattCharacteristic characteristic;
+    private BluetoothDevice requestingDevice; //device that makes a request command of the android app.
 
 
     public void createBLEServer() {
@@ -89,35 +92,24 @@ public class BLEServer extends Service {
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             Log.v("reads", "Read Request Received");
+
             //if the notification data is not ready then we need to inform the other device
-            if (!MainActivity.outData.contains("***")) {
+            if (!MainActivity.dataIsReady()) {
                 //send the word "null" until the notification data is available
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "null".getBytes());
                 Log.v(TAG, "btout: Data Not Ready");
             } else {
-                if (MainActivity.outData.length() < 16 && currentIndex == 0) {
-                    bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.outData.getBytes());
-                    Log.v("btout", "BT_OUT:" + MainActivity.outData.getBytes(StandardCharsets.UTF_8));
-                } else {
+                if(currentIndex >= MainActivity.outData.length()) {
                     try {
                         bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.outData.substring(currentIndex, currentIndex + 16).getBytes());
-                        Log.v("btout", "BT_OUT:" + MainActivity.outData.substring(currentIndex, currentIndex + 16).getBytes(StandardCharsets.UTF_8));
                     } catch (IndexOutOfBoundsException e) {
-                        if (currentIndex < MainActivity.outData.length()) {
-                            String res = MainActivity.outData.substring(currentIndex);
-                            while (res.length() < 16) {
-                                res += "*";
-                            }
-                            bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, res.getBytes());
-                            Log.v("btout", "BT_OUT:" + res.getBytes(StandardCharsets.UTF_8));
-                        } else {
-                            bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "****".getBytes());
-                            Log.v("btout", "BT_OUT:" + "****");
-                        }
-
+                        bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, MainActivity.outData.substring(currentIndex).getBytes());
                     }
+                    //notify connected device that we have changed the characteristic and that it should read again
+                    bluetoothGattServer.notifyCharacteristicChanged(requestingDevice, characteristic,false);
+                }else{
+                    bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "********".getBytes());
                 }
-
             }
             currentIndex += 16;
         }
@@ -174,6 +166,7 @@ public class BLEServer extends Service {
                 mAudioManager.dispatchMediaKeyEvent(event);
                 bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, "1".getBytes());
             }
+            requestingDevice = device;
         }
     };
 
