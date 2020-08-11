@@ -94,7 +94,8 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 #define Y_ACCEL 27
 
 //Time tracker variables (Stored in RTC)
-RTC_DATA_ATTR char notificationData[2048];
+#define NOTIFICATION_DATA_BUFFER_SIZE 2048
+RTC_DATA_ATTR char notificationData[NOTIFICATION_DATA_BUFFER_SIZE];
 RTC_DATA_ATTR time_t now;
 RTC_DATA_ATTR uint64_t Mics = 0;
 RTC_DATA_ATTR struct tm *timeinfo;
