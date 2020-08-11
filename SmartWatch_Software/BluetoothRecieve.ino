@@ -7,9 +7,13 @@ static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 static BLEClient*  pClient;
 static boolean connected = false;
+static boolean registeredForCallback = false;
 
+static String receivedData = "";
 
 /* Callbacks */
+
+//callback called when an advertised device is found
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       printDebug("BLE Advertised Device found: " + String(advertisedDevice.toString().c_str()));
@@ -21,6 +25,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     }
 };
 
+//client client callback which responds to connection related events
 class MyClientCallback : public BLEClientCallbacks {
     void onConnect(BLEClient* pclient) {
       connected = true;
@@ -32,20 +37,6 @@ class MyClientCallback : public BLEClientCallbacks {
     }
 };
 
-static void notifyCallback(
-  BLERemoteCharacteristic* pBLERemoteCharacteristic,
-  uint8_t* pData,
-  size_t length,
-  bool isNotify) {
-  Serial.print("Notify callback for characteristic ");
-  Serial.print(pBLERemoteCharacteristic->getUUID().toString().c_str());
-  Serial.print(" of data length ");
-  Serial.println(length);
-  Serial.print("data: ");
-  Serial.println((char*)pData);
-}
-
-
 /* BLE interfacing functions
 */
 // Start by scanning for the device we want to communicate with a FreeRTOS task
@@ -55,6 +46,7 @@ void initBLE() {
   }
 }
 
+//Called from the
 void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
   printDebug("%%% Find Device Task Launched %%%");
@@ -121,9 +113,30 @@ void formConnection(void * pvParameters) {
     vTaskDelete(NULL);
   }
 
-  //register to be notified of changes in the characteristic
-  if (pRemoteCharacteristic->canNotify()) {
-    pRemoteCharacteristic -> registerForNotify(notifyCallback);
-  }
+
   vTaskDelete(NULL);
+}
+
+String sendBLE(String command, bool hasReturnData) {
+  String ret = "";
+
+  //write our command to the remote characteristic
+  if (pRemoteCharacteristic) {
+    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
+    printDebug("Wrote \"" + command + "\" to remote device");
+  } else {
+    return ret;
+  }
+
+  if (hasReturnData) {
+    while (ret[ret.length() - 1] != '*' && ret[ret.length() - 2] != '*' && ret[ret.length() - 3] != '*') {
+      String receivedData = String(pRemoteCharacteristic->readValue().c_str());
+      if (!receivedData.equals("null")) {
+        ret = ret + receivedData;
+        receivedData = "";
+      }
+    }
+    printDebug("Data Obtained from BLE Device: " + ret); 
+  }
+  return ret;
 }
