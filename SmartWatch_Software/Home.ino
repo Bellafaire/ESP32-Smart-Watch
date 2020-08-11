@@ -1,9 +1,9 @@
 bool firstHomeSwitch = true;
 
-bool songCheckLaunched = false;
-bool checkedIsPlaying = false;
-
 double songNameScrollPosition = 0;
+
+long lastSongCheck = 0;
+#define SONG_CHECK_INTERVAL 500 //how many miliseconds between checking the current song
 
 //record user input before the BLE connection is established so that when the connection is
 //made we can send the required commands
@@ -46,59 +46,21 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  //  //read the current song from the android device
-  //  if (connected) {
-  //
-  //    if (nextButtonPressed) {
-  //      pRemoteCharacteristic->writeValue("/nextSong", 9);
-  //      nextButtonPressed = false;
-  //    }
-  //    if (lastButtonPressed) {
-  //      pRemoteCharacteristic->writeValue("/lastSong", 9);
-  //      lastButtonPressed = false;
-  //    }
-  //    if (playButtonPressed) {
-  //      pRemoteCharacteristic->writeValue("/play", 5);
-  //      playButtonPressed = false;
-  //    }
-  //    if (pauseButtonPressed) {
-  //      pRemoteCharacteristic->writeValue("/pause", 6);
-  //      pauseButtonPressed = false;
-  //    }
-  //
-  //
-  //    String command = "/currentSong";
-  //    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
-  //    bool completeString = false;
-  //    String songData = "";
-  //    do {
-  //      //get characteristic read string
-  //      songData += pRemoteCharacteristic->readValue().c_str();
-  //
-  //      //use when needed, spams way too much data to the serial terminal
-  //      //#ifdef DEBUG
-  //      //      Serial.println("Current Song Data: " + songData);
-  //      //#endif
-  //
-  //      if (songData[songData.length() - 1 ] == '*') {
-  //        completeString = true;
-  //
-  //        //kind of an arbitrary choice for the expected length of a song + artist name but should be sufficent
-  //        if (songData.length() > 10) {
-  //          isPlaying = true;
-  //          for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
-  //            if (songData[a] == '*') {
-  //              songName[a] = ' ';
-  //            } else {
-  //              songName[a] = songData[a];
-  //            }
-  //          }
-  //        } else {
-  //          isPlaying = false;
-  //        }
-  //      }
-  //    } while (!completeString);
-  //  }
+  //check if we've got a song playing on spotify at the moment, but only once every SONG_CHECK_INTERVAL miliseconds 
+  if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
+    isPlaying = sendBLE("/isPlaying", true).substring(0, 4).equals("true");
+    if (isPlaying) {
+      String song = sendBLE("/currentSong", true);
+      for (int a = 0; a < SONG_NAME_BUFFER_SIZE; a++) {
+        if (song[a] == '*') {
+          songName[a] = ' ';
+        } else {
+          songName[a] = song[a];
+        }
+      }
+    }
+    lastSongCheck = millis();
+  }
 
   //it's here if you want it
   //    drawCircularAnimation1(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2 + 30);
@@ -125,7 +87,7 @@ void drawHome()
   if (isPlaying) {
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 10);
     if (songNameScrollPosition + 24 < String(songName).length()) {
-      songNameScrollPosition += 0.3;
+      songNameScrollPosition += 0.1;
     } else {
       songNameScrollPosition = 0;
     }
@@ -190,18 +152,22 @@ void HomeTouchHandler(struct point p)
   else if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {
     pressButton(homeSettingsButton);
-    currentPage = SETTINGS; 
+    currentPage = SETTINGS;
   }
   else if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
+    sendBLE("/lastSong", false);
     printDebug("Last Song Button Pressed");
   }
   else if (checkButtonPress(nextSongButton, p.xPos, p.yPos)) {
+    sendBLE("/nextSong", false);
     printDebug("Next Song Button Pressed");
   }
   else if (checkButtonPress(playButton, p.xPos, p.yPos)) {
+    sendBLE("/playButton", false);
     printDebug("Play Button Pressed");
   }
   else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
+    sendBLE("/pause", false);
     printDebug("Pause Button Pressed");
   }
 }
