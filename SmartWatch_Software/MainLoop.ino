@@ -10,9 +10,9 @@ void MainLoop()
        //and simply switches to the correct touch handler
        handleTouch(); 
     } else {
-      if(myDevice && !connected){
-        formConnection();
-      }
+//      if(myDevice && !connected){
+//        formConnection();
+//      }
       switch (currentPage)
       {
         case TEST_SCREEN:

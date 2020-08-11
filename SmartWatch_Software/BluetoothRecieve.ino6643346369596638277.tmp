@@ -125,5 +125,4 @@ void formConnection(void * pvParameters) {
   if (pRemoteCharacteristic->canNotify()) {
     pRemoteCharacteristic -> registerForNotify(notifyCallback);
   }
-  vTaskDelete(NULL);
 }
