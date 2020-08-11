@@ -20,7 +20,7 @@ void setup()
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
   //wakeup every 10 minutes, we'll use this for getting notification updates and things like that
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  //  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
 
   //wakeup when someone touches the screen
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
@@ -66,31 +66,23 @@ void setup()
 
     //Check if this is the first reboot and get ready to setup another sleep
     ++bootCount;
-
-
+    
     switch (wakeup_reason)
     {
       case ESP_SLEEP_WAKEUP_EXT0:
         deviceActive = true;
         //if woken up by user touching screen
-
         initTouch();
         initLCD();
         MainLoop();
-
         break;
       case ESP_SLEEP_WAKEUP_EXT1:
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
-
-
         printDebug("Woken up by timer");
-
         break;
       default:
-
         printDebug("Wakeup was not caused by deep sleep: " + wakeup_reason);
-
         break;
     }
   }
@@ -100,9 +92,9 @@ void setup()
 #ifdef DEBUG
   Serial.flush();
 #endif
-  //  if(connected){
-  //        pClient->disconnect();
-  //  }
+//    if(connected){
+//          pClient->disconnect();
+//    }
 
   esp_deep_sleep_start();
 }
