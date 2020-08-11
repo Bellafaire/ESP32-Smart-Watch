@@ -66,7 +66,7 @@ void changeNetwork()
     testWifi();
   }
   else  {
-    
+
     delay(100);
     printDebug("user exited selection window with cancel button");
   }
@@ -108,7 +108,7 @@ void SettingsTouchHandler(struct point p)
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
   {
     pressButton(homeButton);
-currentPage = HOME; 
+    currentPage = HOME;
   }
   if (checkButtonPress(upArrowButton, p.xPos, p.yPos))
   {
@@ -160,6 +160,8 @@ void getNotifications() {
 
   Window w = Window(0, 14, 160, 100, true);
   w.println("Getting phone notifications");
+  updateNotificationData();
+  w.println("done");
   w.focus();
   drawSettings();
 }
