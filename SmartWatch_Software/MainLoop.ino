@@ -1,18 +1,20 @@
-
 /*  everything that happens in the normal operation of the smartwatch happens here. this is kind of the user-interface part of the code.
 */
+bool newNotificationData = false;
+
 void MainLoop()
 {
   initBLE();
   while (lastTouchTime + screenOnTime > millis()) {
+    if(!newNotificationData && pRemoteCharacteristic){
+      updateNotificationData(); 
+      newNotificationData = true;
+    }
     if (touchDetected) {
        //handleTouch() operates in a similar manner to the MainLoop() 
        //and simply switches to the correct touch handler
        handleTouch(); 
     } else {
-//      if(myDevice && !connected){
-//        formConnection();
-//      }
       switch (currentPage)
       {
         case TEST_SCREEN:
