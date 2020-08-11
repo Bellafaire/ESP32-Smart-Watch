@@ -13,8 +13,9 @@
 #ifdef DEBUG
 #define printDebug(a) Serial.println(a)
 #else
-#define printDebug(a)
+#define printDebug(a)  
 #endif
+
 
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 

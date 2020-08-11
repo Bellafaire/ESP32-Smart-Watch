@@ -58,15 +58,13 @@ void xFindDevice(void * pvParameters ) {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
 
-#ifdef DEBUG
-  //if myDevice is not null then we have found the device
   if (myDevice) {
-    Serial.println("%%% Device Found %%%");
+    printDebug("%%% Device Found %%%");
     xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
   } else {
-    Serial.println("%%%% Device Not Found %%%");
+    printDebug("%%%% Device Not Found %%%");
   }
-#endif
+
   vTaskDelete(NULL);
 }
 
@@ -113,7 +111,6 @@ void formConnection(void * pvParameters) {
     vTaskDelete(NULL);
   }
 
-
   vTaskDelete(NULL);
 }
 
@@ -136,7 +133,7 @@ String sendBLE(String command, bool hasReturnData) {
         receivedData = "";
       }
     }
-    printDebug("Data Obtained from BLE Device: " + ret); 
+    printDebug("Data Obtained from BLE Device: " + ret);
   }
   return ret;
 }
