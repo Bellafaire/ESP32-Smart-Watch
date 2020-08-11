@@ -4,6 +4,18 @@ int selectedNotification = 0;
 #define FIELD_SEPARATOR ';'
 #define FIELD_SEPARATOR_STRING ";"
 
+void updateNotificationData(){
+  printDebug("Updating Notification Data"); 
+  String data = sendBLE("/notifications", true);
+  printDebug(data);
+  for(int a = 0; a < NOTIFICATION_DATA_BUFFER_SIZE; a++){
+    notificationData[a] = data[a]; 
+  }
+  updateTimeFromNotificationData();
+}
+
+
+
 void NotificationsTouchHandler(struct point p) {
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
   {
