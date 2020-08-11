@@ -76,6 +76,12 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define vempty 0x9650
 #define modelcfg 0x8400
 
+//Bluetooth.ino
+String sendBLE(String command, bool hasReturnData);
+void initBLE();
+void xFindDevice(void * pvParameters ) ;
+void formConnection(void * pvParameters) ;
+
 //Touch Calibration
 #define X_MAX 233
 #define X_MIN 19

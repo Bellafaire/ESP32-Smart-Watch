@@ -28,11 +28,7 @@ void openApps() {
 
   if (selectedOption == 0) {
     //things to do for the media controller
-//    if (connected) {
-//      if (connected) {
-//        pRemoteCharacteristic->writeValue("/play", 5);
-//      }
-//    }
+    sendBLE("/play", false);
     return;
   }
 }

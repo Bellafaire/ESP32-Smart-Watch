@@ -163,7 +163,7 @@ void HomeTouchHandler(struct point p)
     printDebug("Next Song Button Pressed");
   }
   else if (checkButtonPress(playButton, p.xPos, p.yPos)) {
-    sendBLE("/playButton", false);
+    sendBLE("/play", false);
     printDebug("Play Button Pressed");
   }
   else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {

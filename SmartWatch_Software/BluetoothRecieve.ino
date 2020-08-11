@@ -11,6 +11,7 @@ static boolean registeredForCallback = false;
 
 static String receivedData = "";
 
+
 /* Callbacks */
 
 //callback called when an advertised device is found
