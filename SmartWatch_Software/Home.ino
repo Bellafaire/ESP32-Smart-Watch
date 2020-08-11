@@ -13,32 +13,6 @@ bool playButtonPressed = false;
 bool pauseButtonPressed = false;
 
 
-void switchToHome()
-{
-
-  //  SweepClear();
-  frameBuffer->drawFastHLine(0, 5, frameBuffer->width(), INTERFACE_COLOR);
-  drawTime(13, 10, 2);
-  frameBuffer->drawFastHLine(0, 29, frameBuffer->width(), INTERFACE_COLOR);
-  drawDateCentered(26, 1);
-  frameBuffer->setTextSize(1);
-
-  writeNotifications();
-
-  paintButtonFull(homeNotificationsButton);
-  paintButtonFull(homeSettingsButton);
-  paintButtonFull(homeAppsButton);
-
-  currentPage = HOME;
-  //  if (firstHomeSwitch) {
-  //    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
-  //    firstHomeSwitch = false;
-  //  }
-  homeLoop();
-
-
-}
-
 void writeNotifications() {
   frameBuffer->setCursor(0, 40);
   frameBuffer->setTextSize(0);
@@ -72,7 +46,7 @@ void drawHome()
 
   frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  //  //read th9e current song from the android device
+  //  //read the current song from the android device
   //  if (connected) {
   //
   //    if (nextButtonPressed) {
@@ -138,14 +112,13 @@ void drawHome()
   frameBuffer->setTextSize(1);
   frameBuffer->setCursor(0, 40);
 
-  //  if (connected) {
-  //    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
-  //  } else if(doConnect){
-  //     frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 << 11); //Show a blue square if we found the device
-  //    }else {
-  //    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
-  //  }
-
+  if (connected) {
+    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00111111 << 5); //if connected draw a green square in the corner
+  } else if (myDevice) {
+    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 << 11); //Show a blue square if we found the device
+  } else {
+    frameBuffer-> fillRect(SCREEN_WIDTH - 3, 0, 3, 3, 0b00011111 ); //else draw red square
+  }
 
   writeNotifications() ;
 
@@ -209,7 +182,7 @@ void HomeTouchHandler(struct point p)
   if (checkButtonPress(homeNotificationsButton, p.xPos, p.yPos))
   {
     pressButton(homeNotificationsButton);
-    switchToNotifications();
+    currentPage = NOTIFICATIONS;
   }
   else if (checkButtonPress(homeAppsButton, p.xPos, p.yPos)) {
     openApps();
@@ -217,7 +190,7 @@ void HomeTouchHandler(struct point p)
   else if (checkButtonPress(homeSettingsButton, p.xPos, p.yPos))
   {
     pressButton(homeSettingsButton);
-    switchToSettings();
+    currentPage = SETTINGS; 
   }
   else if (checkButtonPress(lastSongButton, p.xPos, p.yPos)) {
     printDebug("Last Song Button Pressed");
@@ -230,19 +203,5 @@ void HomeTouchHandler(struct point p)
   }
   else if (checkButtonPress(pauseButton, p.xPos, p.yPos)) {
     printDebug("Pause Button Pressed");
-  }
-}
-
-void homeLoop()
-{
-  lastTouchTime = millis();
-  while (lastTouchTime + screenOnTime > millis())
-  {
-    drawHome();
-    if (touchDetected) {
-      handleTouch();
-      touchDetected = false;
-    }
-
   }
 }

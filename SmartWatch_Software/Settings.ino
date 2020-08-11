@@ -58,7 +58,7 @@ void changeNetwork()
 
   int selectedOption = w.focus() - 1; //the cancel option of the selection counts as option 0, since array is zero indexed we subtract
 
-printDebug("network selection window lost focus with selected option: " + String(selectedOption));
+  printDebug("network selection window lost focus with selected option: " + String(selectedOption));
 
   if (selectedOption >= 0)  {
     ssid = ssidList[selectedOption];
@@ -66,21 +66,10 @@ printDebug("network selection window lost focus with selected option: " + String
     testWifi();
   }
   else  {
-    switchToSettings(); //normally the popup window would clear the screen but since we don't do anything that needs to happen on its own
+    
     delay(100);
     printDebug("user exited selection window with cancel button");
   }
-}
-
-void switchToSettings()
-{
-  printDebug("Switched to Settings");
-  //  SweepClear();
-  settingScrollPosition = 0;
-  drawSettings();
-  paintButtonFull(homeButton);
-  currentPage = SETTINGS;
-  settingsLoop();
 }
 
 void drawSettings()
@@ -119,15 +108,13 @@ void SettingsTouchHandler(struct point p)
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
   {
     pressButton(homeButton);
-    switchToHome();
+currentPage = HOME; 
   }
   if (checkButtonPress(upArrowButton, p.xPos, p.yPos))
   {
     if (settingScrollPosition > 0)
     {
       settingScrollPosition--;
-      //      SweepClear();
-      drawSettings();
     }
   }
   if (checkButtonPress(downArrowButton, p.xPos, p.yPos))
@@ -135,8 +122,6 @@ void SettingsTouchHandler(struct point p)
     if (settingScrollPosition < SETTING_OPTIONS - MAX_ON_SCREEN_SETTINGS_BUTTONS)
     {
       settingScrollPosition++;
-      //      SweepClear();
-      drawSettings();
     }
   }
   for (int a = 0; a < SETTING_OPTIONS; a++)

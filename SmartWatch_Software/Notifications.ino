@@ -8,14 +8,13 @@ void NotificationsTouchHandler(struct point p) {
   if (checkButtonPress(homeButton, p.xPos, p.yPos))
   {
     pressButton(homeButton);
-    switchToHome();
+    currentPage= HOME; 
   }
   else if (checkButtonPress(upArrowButton, p.xPos, p.yPos))
   {
     if (selectedNotification > 0)
     {
       selectedNotification--;
-      drawNotifications();
     }
   }
   else if (checkButtonPress(downArrowButton, p.xPos, p.yPos))
@@ -23,12 +22,10 @@ void NotificationsTouchHandler(struct point p) {
     if (selectedNotification < numberOfNotifications - 2)
     {
       selectedNotification++;
-      drawNotifications();
     }
   }
   else if (p.xPos > 0 && p.xPos < SCREEN_WIDTH - 32 && p.yPos > 0 && p.yPos < SCREEN_HEIGHT) {
     openNotification(selectedNotification);
-    switchToNotifications();
   }
 
   printDebug("notification selected index: " + String(selectedNotification));
@@ -81,18 +78,6 @@ void openNotification(int sel) {
   w.focus();
 }
 
-
-void notificationsLoop()
-{
-  delay(300);
-  selectedNotification = 1;
-  //settings has a seperate timeout
-  while (currentPage == NOTIFICATIONS)
-  {
-    handleTouch();
-  }
-
-}
 
 void switchToNotifications()
 {

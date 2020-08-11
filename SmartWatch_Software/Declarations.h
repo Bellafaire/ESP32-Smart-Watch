@@ -223,7 +223,6 @@ void updateTime(uint64_t elapsedTime);
 void updateTimeFromNotificationData();
 
 //Home.ino
-void switchToHome();
 void drawHome();
 void HomeTouchHandler(int x, int y);
 void homeLoop();
@@ -234,7 +233,6 @@ void writeNotifications();
 int getNotificationLines();
 String parseFromNotifications(int line, int field);
 String getValue(String data, char separator, int index);
-void switchToNotifications();
 void drawNotifications();
 void NotificationsTouchHandler(struct point p);
 void notificationsLoop();
@@ -265,7 +263,6 @@ void reAdjustTime();
 void accelTest();
 void SettingsTouchHandler(struct point p);
 void drawSettings();
-void switchToSettings();
 void settingsLoop();
 
 //CircularAnimation.ino

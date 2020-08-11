@@ -3,22 +3,35 @@
 */
 void MainLoop()
 {
-  switch (currentPage)
-  {
-    case TEST_SCREEN:
-      testScreen();
-      break;
-    case HOME:
-      printDebug("Switched to Home");
-      switchToHome();
-      break;
-    case SETTINGS:
-      printDebug("Switched to Settings");
-      switchToSettings();
-      break;
-    default:
-      currentPage = 0;
-      break;
+  initBLE();
+  while (lastTouchTime + screenOnTime > millis()) {
+    if (touchDetected) {
+       //handleTouch() operates in a similar manner to the MainLoop() 
+       //and simply switches to the correct touch handler
+       handleTouch(); 
+    } else {
+      if(myDevice && !connected){
+        formConnection();
+      }
+      switch (currentPage)
+      {
+        case TEST_SCREEN:
+          testScreen();
+          break;
+        case HOME:
+          drawHome();
+          break;
+        case SETTINGS:
+          drawSettings();
+          break;
+        case NOTIFICATIONS: 
+          drawNotifications();
+          break;
+        default:
+          currentPage = 0;
+          break;
+      }
+    }
   }
   digitalWrite(LCD_LED, LOW);
 }
