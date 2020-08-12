@@ -1,9 +1,5 @@
 package com.example.smartwatchcompanionapp;
 
-//resources that make the BLE stuff actually work on the android side of things (these were absolutely invalueable)
-//https://stackoverflow.com/questions/37181843/android-using-bluetoothgattserver
-//https://riptutorial.com/android/example/30768/using-a-gatt-server
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 
 public class MainActivity extends Activity {
 
@@ -43,17 +40,21 @@ public class MainActivity extends Activity {
 
     String TAG = "inform";
 
-    public static Handler handler = new Handler();
-
     public static long dataAcquisitionStart = System.currentTimeMillis();
-    BLEServer ble;
 
+
+/* onCreate
+    everything that's important on startup happens here
+ */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //save a reference of this instance, this allows for static
+        //objects to access this instance
         reference = this;
         notificationHeaders = new ArrayList();
         notificationText = new ArrayList();
 
+        //init UI
         Log.i(TAG, "application starting...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -66,6 +67,7 @@ public class MainActivity extends Activity {
         messages = (TextView) findViewById(R.id.messages);
         messages.append("\n");
 
+        //init Spotify receiver and register it's actions so it can be accessed
         sReceiver = new SpotifyReceiver();
         IntentFilter sfilter = new IntentFilter();
         sfilter.addAction("com.spotify.music.playbackstatechanged");
@@ -73,32 +75,22 @@ public class MainActivity extends Activity {
         sfilter.addAction("com.spotify.music.queuechanged");
         registerReceiver(sReceiver, sfilter);
 
-
-
-
+        //init notification receiver
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+        filter.addAction(NLService.NOTIFICATION_ACTION);
         registerReceiver(nReceiver, filter);
 
-        Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+        //get the current notifications by broadcasting an intent
+        Intent i = new Intent(NLService.GET_NOTIFICATION_INTENT);
         i.putExtra("command", "list");
         sendBroadcast(i);
 
+        //start BLE server as a service
         startService(new Intent(MainActivity.this, BLEServer.class));
     }
 
-    //only used by the force BT send button
-    public void sendBluetoothData() {
-        Toast.makeText(getApplicationContext(), "sendBluetoothData() disabled (for now)",
-                Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void status(String str) {
-        messages.append(str + "\n");
-    }
-
+    //make sure that the button on the UI reflects the current state of the BLE server
     public static void updateBLEStatus() {
         reference.runOnUiThread(new Runnable() {
             @Override
@@ -112,6 +104,7 @@ public class MainActivity extends Activity {
         });
     }
 
+    //enable/disable the bleService
     public void toggleService(View view) {
         if (bleServiceRunning) {
             stopService(new Intent(MainActivity.this, BLEServer.class));
@@ -121,26 +114,15 @@ public class MainActivity extends Activity {
     }
 
 
+    //opens the "grant notification permission" settings window
     public void gotoSettings(View view) {
         Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
         startActivity(intent);
     }
 
-    public void updateText() {
-        Log.d("inform", "update text function has been called");
-        MainActivity.dataAcquisitionStart = System.currentTimeMillis();
-        outData = getDateAndTime() + "\n***";
-        txtView.setText(getDateAndTime() + "\n***");
-        Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-        i.putExtra("command", "list");
-        sendBroadcast(i);
-
-//        messages.append("BLE Data Sent - " + getDateAndTime() + "\n");
-        logData += "BLE Data Sent - " + getDateAndTime() + "\n";
-        messages.setText(logData);
-    }
-
-
+    //sends intent to obtain notification data and updates the textview
+    //that the user sees along with the output data field. this version of the
+    //function can be called from a static context
     public static void updateText(Context context) {
         Log.d("inform", "update text function has been called");
         reference.runOnUiThread(new Runnable() {
@@ -149,16 +131,31 @@ public class MainActivity extends Activity {
                 MainActivity.dataAcquisitionStart = System.currentTimeMillis();
                 outData = getDateAndTime() + "\n***";
                 txtView.setText(getDateAndTime() + "\n***");
-                Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+                Intent i = new Intent(NLService.GET_NOTIFICATION_INTENT);
                 i.putExtra("command", "list");
                 context.sendBroadcast(i);
-//                messages.setText("BLE Data Sent - " + getDateAndTime() + "\n");
                 logData += "BLE Data Sent - " + getDateAndTime() + "\n";
                 messages.setText(logData);
             }
         });
     }
 
+    //sends intent to obtain notification data and updates the textview
+    //that the user sees along with the output data field. this version of the
+    //function CANNOT be called from a static context
+    public void updateText(View view) {
+        Log.i(TAG, "update text button has been pressed");
+        MainActivity.dataAcquisitionStart = System.currentTimeMillis();
+        logData += "Manually updated: " + getDateAndTime() + "\n";
+        messages.setText(logData);
+        outData = getDateAndTime() + "\n***";
+        txtView.setText(getDateAndTime() + "\n***");
+        Intent i = new Intent(NLService.GET_NOTIFICATION_INTENT);
+        i.putExtra("command", "list");
+        sendBroadcast(i);
+    }
+
+    //sets text on the UI, can be called from a static context
     public static void setUIText(Context context, String data) {
         Log.d("inform", "update text function has been called");
         reference.runOnUiThread(new Runnable() {
@@ -178,18 +175,6 @@ public class MainActivity extends Activity {
         messages.setText(logData);
     }
 
-    public void updateText(View view) {
-        Log.i(TAG, "update text button has been pressed");
-        MainActivity.dataAcquisitionStart = System.currentTimeMillis();
-//        messages.append("Manually updated: " + getDateAndTime() + "\n");
-        logData += "Manually updated: " + getDateAndTime() + "\n";
-        messages.setText(logData);
-        outData = getDateAndTime() + "\n***";
-        txtView.setText(getDateAndTime() + "\n***");
-        Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-        i.putExtra("command", "list");
-        sendBroadcast(i);
-    }
 
     @Override
     protected void onDestroy() {
@@ -209,10 +194,13 @@ public class MainActivity extends Activity {
 
     }
 
+    //some data needs time to be acquired, we don't want the external device to be sent incomplete data
+    // in these cases
     public static boolean dataIsReady(){
-        return dataAcquisitionStart + 50 < System.currentTimeMillis();
+        return dataAcquisitionStart + 100 < System.currentTimeMillis();
     }
 
+    //receives the data from the NLService and updates fields in this class.
     class NotificationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
