@@ -23,7 +23,7 @@ void writeNotifications() {
 
   if (lines > 1) {
     for (int a = 0; a < lines - 1; a++) {
-      frameBuffer->println(parseFromNotifications(a, 0) + "-" + parseFromNotifications(a, 1));
+      frameBuffer->println(parseFromNotifications(a, 0));
     }
   } else {
     frameBuffer->println("No Notifications");
