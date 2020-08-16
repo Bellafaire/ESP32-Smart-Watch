@@ -1,4 +1,4 @@
-#define CALCULATOR_BUTTON_PADDING 3
+#define CALCULATOR_BUTTON_PADDING 4
 #define CALCULATOR_BUTTON_COLUMNS 5
 #define CALCULATOR_BUTTON_ROWS 4
 
@@ -53,13 +53,13 @@ void drawCalculator() {
   //on different screen sizes
   if (!calculatorButtonsGenerated) {
     int xSpacePerButton = (SCREEN_WIDTH ) / CALCULATOR_BUTTON_COLUMNS;
-    int ySpacePerButton = (SCREEN_HEIGHT  - CALCULATION_BOX_HEIGHT ) / CALCULATOR_BUTTON_ROWS;
+    int ySpacePerButton = (SCREEN_HEIGHT  - CALCULATION_BOX_HEIGHT - CALCULATOR_BUTTON_PADDING  ) / CALCULATOR_BUTTON_ROWS;
 
     for (int a = 0; a < CALCULATOR_BUTTON_COLUMNS; a++) {
       for (int b = 0; b < CALCULATOR_BUTTON_ROWS; b++) {
         //        calculatorButtons[(a * CALCULATOR_BUTTON_COLUMNS) + b] = {xSpacePerButton * a, ySpacePerButton * b + CALCULATION_BOX_HEIGHT, xSpacePerButton, ySpacePerButton, INTERFACE_COLOR, BACKGROUND_COLOR, calculatorButtonLabels[(a * CALCULATOR_BUTTON_COLUMNS) + b]};
         calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._x = xSpacePerButton * a ;
-        calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._y = ySpacePerButton * b + CALCULATION_BOX_HEIGHT;
+        calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._y = ySpacePerButton * b + CALCULATION_BOX_HEIGHT + CALCULATOR_BUTTON_PADDING;
         calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._width =  xSpacePerButton - CALCULATOR_BUTTON_PADDING;
         calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._height = ySpacePerButton - CALCULATOR_BUTTON_PADDING;
         calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._text = calculatorButtonLabels[(b * CALCULATOR_BUTTON_COLUMNS) + a];
@@ -130,5 +130,37 @@ void calculatorTouchHandler(struct point p) {
 }
 
 void calculatorCalculate() {
+  double first = firstOperand.toDouble();
+  double second = secondOperand.toDouble();
+  double result = 0;
+  boolean error = false;
+  switch (calculatorOperation[0]) {
+    case '+':
+      result = first + second;
+      break;
+    case '-':
+      result = first - second;
+      break;
+    case '*':
+      result = first * second;
+      break;
+    case '/':
+      if (second != 0) {
+        result = first / second;
+      } else {
+        error = true;
+      }
+      break;
+    default:
+      error = true;
+      break;
+  }
 
+  if (error) {
+    firstOperand = "NaN";
+  } else {
+    firstOperand = String(result, 4);
+  }
+  secondOperand = "";
+  calculatorOperation = "";
 }
