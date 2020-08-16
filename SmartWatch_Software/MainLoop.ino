@@ -1,11 +1,12 @@
 /*  everything that happens in the normal operation of the smartwatch happens here. this is kind of the user-interface part of the code.
 */
 bool newNotificationData = false;
+bool dontSleep = false;
 
 void MainLoop()
 {
   initBLE();
-  while (lastTouchTime + screenOnTime > millis()) {
+  while (lastTouchTime + screenOnTime > millis() || dontSleep) {
     if (!newNotificationData && pRemoteCharacteristic) {
       updateNotificationData();
       newNotificationData = true;
@@ -18,18 +19,23 @@ void MainLoop()
       switch (currentPage)
       {
         case TEST_SCREEN:
+          dontSleep = false;
           testScreen();
           break;
         case HOME:
+          dontSleep = false;
           drawHome();
           break;
         case SETTINGS:
+          dontSleep = false;
           drawSettings();
           break;
         case NOTIFICATIONS:
+          dontSleep = false;
           drawNotifications();
           break;
         case CALCULATOR:
+          dontSleep = true;
           drawCalculator();
           break;
         default:
