@@ -6,14 +6,14 @@ void MainLoop()
 {
   initBLE();
   while (lastTouchTime + screenOnTime > millis()) {
-    if(!newNotificationData && pRemoteCharacteristic){
-      updateNotificationData(); 
+    if (!newNotificationData && pRemoteCharacteristic) {
+      updateNotificationData();
       newNotificationData = true;
     }
     if (touchDetected) {
-       //handleTouch() operates in a similar manner to the MainLoop() 
-       //and simply switches to the correct touch handler
-       handleTouch(); 
+      //handleTouch() operates in a similar manner to the MainLoop()
+      //and simply switches to the correct touch handler
+      handleTouch();
     } else {
       switch (currentPage)
       {
@@ -26,8 +26,11 @@ void MainLoop()
         case SETTINGS:
           drawSettings();
           break;
-        case NOTIFICATIONS: 
+        case NOTIFICATIONS:
           drawNotifications();
+          break;
+        case CALCULATOR:
+          drawCalculator();
           break;
         default:
           currentPage = 0;

@@ -100,6 +100,9 @@ void handleTouch()
       case NOTIFICATIONS:
         NotificationsTouchHandler(readTouch());
         break;
+      case CALCULATOR:
+        calculatorTouchHandler(readTouch());
+        break;
       default:
         break;
     }
