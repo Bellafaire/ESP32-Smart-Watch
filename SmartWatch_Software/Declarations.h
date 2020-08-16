@@ -7,13 +7,11 @@
 #include "BLEDevice.h"
 
 //prints debug information to the serial terminal when declared
-#define DEBUG
+//#define DEBUG
+//#define printDebug(a) Serial.println(a)
 
-//macro for printing information to the terminal (makes code look significantly cleaner)
-#ifdef DEBUG
-#define printDebug(a) Serial.println(a)
-#else
-#define printDebug(a)  
+#ifndef DEBUG
+#define printDebug(a)
 #endif
 
 
