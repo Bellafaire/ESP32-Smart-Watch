@@ -24,6 +24,10 @@ void initBatMonitor()
 
     sendWrite(BAT_MONITOR_ADDR, 0xDB, 0x8000); // Write ModelCFG
 
+
+    sendWrite(BAT_MONITOR_ADDR, 0x1D,  0x2210); // Write ModelCFG
+    sendWrite(BAT_MONITOR_ADDR, 0xBB,  0x365A); // Write ModelCFG
+
     //Poll ModelCFG.Refresh(highest bit),
     //proceed to Step 3 when ModelCFG.Refresh=0.
     while (readRegister(BAT_MONITOR_ADDR, 0xDB) & 0x8000)
@@ -71,7 +75,7 @@ float getBatteryVoltage() {
   int a = readRegister(BAT_MONITOR_ADDR, 0x19);
   float voltage = (float)a * 0.000078125;
   return voltage;
-//return 3.19; //debug
+  //return 3.19; //debug
 }
 
 //returns in Ah
@@ -121,9 +125,9 @@ int readRegister(byte deviceAddr, byte location)
   Wire.endTransmission();
   Wire.requestFrom(deviceAddr, 2, true); //request battery percentage
 
-    int  a = Wire.read();
-    a |= Wire.read() << 8;
+  int  a = Wire.read();
+  a |= Wire.read() << 8;
 
-//  int a = Wire.read() << 8 | Wire.read();
+  //  int a = Wire.read() << 8 | Wire.read();
   return a;
 }
