@@ -20,7 +20,7 @@
 //just to avoid putting my wifi credentials on the public repo
 //Later the wifi credentials should be stored in eeprom or on the android device
 #include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //desktop computer location
-// #include "C:\Users\James\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //laptop computer location
+//#include "C:\Users\James\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //laptop computer location
 
 #include "Pages.h"
 #include "Icons.h"
@@ -48,8 +48,8 @@ unsigned long lastTouchTime = 0;
 
 //LCD pins
 #define LCD_EN 13
-#define LCD_CS 14
-#define LCD_LED 16
+#define LCD_CS 16
+#define LCD_LED 14
 #define LCD_SCK 18
 #define LCD_DC 21 //LCD_A0
 #define LCD_RST 22
@@ -60,7 +60,6 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 //#define BAT_ALRT 34 //not used in v4.1
 #define CHG_STAT 35
 #define REG_PG 36
-#define LCD_PG 39
 
 //I2C Pins and Addresses
 #define I2C_SCL 32
@@ -69,7 +68,8 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 #define TOUCH_ADDR 0x48
 
 //Battery Monitor Configuration Values
-#define designcap 1200 //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
+//#define designcap 1200 //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
+#define designcap 480 //240mAh (240mAh /0.5mAh resolution ) (for 10m sense resistor)
 #define ichgterm 20
 #define vempty 0x9650
 #define modelcfg 0x8400
@@ -227,6 +227,7 @@ void MainLoop();
 void printLocalTime();
 void updateTime(uint64_t elapsedTime);
 void updateTimeFromNotificationData();
+String getInternetTime();
 
 //Home.ino
 void drawHome();
