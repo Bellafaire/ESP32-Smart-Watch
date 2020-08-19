@@ -7,7 +7,7 @@ Using the ESP32 allows for the user to develop their software while leveraging t
 
 The companion android app that allows the smartwatch to control media and obtain phone notifications has been split to a seperate repo and can be found [here](https://github.com/Bellafaire/Android-Companion-App-For-BLE-Devices) along with an example sketch for bluetooth interfacing using the ESP32. 
 
-<img src="https://github.com/Bellafaire/ESP32-Smart-Watch/blob/master/Pictures%20and%20Videos/IMG_20200719_233829.jpg?raw=true" height="600px"/>
+<img src="https://github.com/Bellafaire/ESP32-Smart-Watch/blob/master/Pictures%20and%20Videos/IMG_20200818_204732.jpg?raw=true" height="600px"/>
 
 The case is 3D printed and designed in FreeCAD, the design files are available in this repo. 
 
