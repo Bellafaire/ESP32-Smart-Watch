@@ -249,6 +249,14 @@ void batterySettings()
     w.print(String(getTimeUntilEmpty(), 2));
     w.println("H");
 
+    w.print("Charge Stat: ");
+    if (!digitalRead(CHG_STAT)) {
+      w.println("Charging");
+    } else {
+      w.println("Not Charging");
+    }
+
+
     for (int a = 0; a < 1000; a++)
     {
       if (!digitalRead(TOUCH_IRQ))

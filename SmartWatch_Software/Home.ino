@@ -127,7 +127,7 @@ void drawHome()
     frameBuffer->print("Battery ");
     frameBuffer->print(String(getBatteryPercentage()));
     frameBuffer->print("%");
-    if (getBatteryCurrent() > 0.0) {
+    if (!digitalRead(CHG_STAT)) {
       frameBuffer->print(" Charging");
     }
   }

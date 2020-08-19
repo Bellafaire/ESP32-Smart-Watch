@@ -25,6 +25,7 @@ void setup()
   //wakeup when someone touches the screen
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
+  pinMode(CHG_STAT, INPUT); 
   pinMode(TOUCH_IRQ, INPUT);
   initTouch();
 
