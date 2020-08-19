@@ -25,8 +25,8 @@ void initBatMonitor()
     sendWrite(BAT_MONITOR_ADDR, 0xDB, 0x8000); // Write ModelCFG
 
 
-    sendWrite(BAT_MONITOR_ADDR, 0x1D,  0x2210); // Write ModelCFG
-    sendWrite(BAT_MONITOR_ADDR, 0xBB,  0x365A); // Write ModelCFG
+    sendWrite(BAT_MONITOR_ADDR, 0x1D,  0x2210); // Write CONFIG1
+    sendWrite(BAT_MONITOR_ADDR, 0xBB,  0x365A); // Write CONFIG2
 
     //Poll ModelCFG.Refresh(highest bit),
     //proceed to Step 3 when ModelCFG.Refresh=0.
