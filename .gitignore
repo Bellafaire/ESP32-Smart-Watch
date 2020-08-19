@@ -4,3 +4,5 @@ SmartWatch_Software/.vscode/
 SmartWatch_Software/VScode Workspace.code-workspace
 
 *.db
+
+*.FCStd1
