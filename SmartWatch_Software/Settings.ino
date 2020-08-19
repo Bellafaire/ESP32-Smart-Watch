@@ -170,21 +170,20 @@ void getNotifications() {
 void accelTest()
 {
 
-  pinMode(X_ACCEL, INPUT);
-  pinMode(Y_ACCEL, INPUT);
-  pinMode(Z_ACCEL, INPUT);
-
   Window w = Window(0, 14, 160, 100, false);
 
   long lastTouchTime = millis();
+  int read_raw;
+
 
   while (w.isFocused())
   {
     Window w = Window(0, 14, 160, 100, false);
     w.touch();
-    w.println("X = " + String(analogRead(X_ACCEL)));
-    w.println("Y = " + String(analogRead(Y_ACCEL)));
-    w.println("Z = " + String(analogRead(Z_ACCEL)));
+
+    w.println("X = " + String(readXAccel()));
+    w.println("Y = " + String(readYAccel()));
+    w.println("Z = " + String(readZAccel()));
     for (int a = 0; a < 1000; a++)
     {
       if (!digitalRead(TOUCH_IRQ))

@@ -14,7 +14,7 @@
 #define printDebug(a)
 #endif
 
-
+//#define ALLOW_ACCELEROMETER_WAKEUP //when declared allows device to be woken up by reading accelerometer (may consume more power) 
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //just to avoid putting my wifi credentials on the public repo
@@ -94,9 +94,13 @@ void formConnection(void * pvParameters) ;
 GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 
 //Accelerometer connections (optional extra)
-#define Z_ACCEL 25
 #define X_ACCEL 26
 #define Y_ACCEL 27
+#define Z_ACCEL 25
+
+#define X_ACCEL_ADC_CH 9
+#define Y_ACCEL_ADC_CH 7
+#define Z_ACCEL_ADC_CH 8
 
 //Time tracker variables (Stored in RTC)
 #define NOTIFICATION_DATA_BUFFER_SIZE 2048
@@ -235,6 +239,10 @@ void HomeTouchHandler(int x, int y);
 void homeLoop();
 void writeNotifications();
 
+//accelerometer.ino
+int readZAccel();
+int readXAccel();
+int readYAccel();
 
 //notifications.ino
 int getNotificationLines();

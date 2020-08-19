@@ -4,9 +4,11 @@
 #define TIME_TO_SLEEP 60         /* Time ESP32 will go to sleep (in seconds) */
 
 RTC_DATA_ATTR int bootCount = 0;
+RTC_DATA_ATTR boolean YWakeupCondition = false;
 
 void setup()
 {
+  unsigned long wakeupTime = micros();
   unsigned long chrono = micros();
 #ifdef DEBUG
   Serial.begin(115200);
@@ -19,13 +21,15 @@ void setup()
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
-  //wakeup every 10 minutes, we'll use this for getting notification updates and things like that
-  //  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+#ifdef ALLOW_ACCELEROMETER_WAKEUP
+  //check every 200ms to see whether or not to wake up
+  esp_sleep_enable_timer_wakeup(100000);
+#endif
 
   //wakeup when someone touches the screen
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
-  pinMode(CHG_STAT, INPUT); 
+  pinMode(CHG_STAT, INPUT);
   pinMode(TOUCH_IRQ, INPUT);
   initTouch();
 
@@ -67,7 +71,7 @@ void setup()
 
     //Check if this is the first reboot and get ready to setup another sleep
     ++bootCount;
-    
+
     switch (wakeup_reason)
     {
       case ESP_SLEEP_WAKEUP_EXT0:
@@ -80,7 +84,16 @@ void setup()
       case ESP_SLEEP_WAKEUP_EXT1:
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
-        printDebug("Woken up by timer");
+#ifdef ALLOW_ACCELEROMETER_WAKEUP
+        if (readZAccel() < 1000 ) {
+          printDebug(" ------ Woken up by accelerometer");
+          deviceActive = true;
+          //if woken up by timer
+          initTouch();
+          initLCD();
+          MainLoop();
+        }
+#endif
         break;
       default:
         printDebug("Wakeup was not caused by deep sleep: " + wakeup_reason);
@@ -91,11 +104,12 @@ void setup()
   printDebug("Going to sleep now");
 
 #ifdef DEBUG
+  printDebug("Awake for " + String(micros() - wakeupTime) + "uS");
   Serial.flush();
 #endif
-//    if(connected){
-//          pClient->disconnect();
-//    }
+  //    if(connected){
+  //          pClient->disconnect();
+  //    }
 
   esp_deep_sleep_start();
 }
