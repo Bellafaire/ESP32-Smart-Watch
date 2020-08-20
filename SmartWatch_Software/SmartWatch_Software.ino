@@ -23,8 +23,8 @@ void setup()
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
 #ifdef ALLOW_ACCELEROMETER_WAKEUP
-  //check every 200ms to see whether or not to wake up
-  esp_sleep_enable_timer_wakeup(100000);
+  //check every 250ms to see whether or not to wake up
+  esp_sleep_enable_timer_wakeup(250000);
 #endif
 
   //wakeup when someone touches the screen
