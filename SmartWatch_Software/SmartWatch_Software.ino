@@ -97,6 +97,7 @@ void setup()
         }
         if (
           readZAccel() > 2300
+          && readZAccel() < 2400
           && readXAccel() < 1920
           && readYAccel() < 1920
           && YWakeupCondition
