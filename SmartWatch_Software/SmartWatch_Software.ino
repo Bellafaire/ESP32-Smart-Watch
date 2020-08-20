@@ -86,8 +86,9 @@ void setup()
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
 #ifdef ALLOW_ACCELEROMETER_WAKEUP
-        if (readYAccel() > 2250) {
+        if (readYAccel() > 2260 && readYAccel() < 2330) {
           YWakeupCondition = true;
+          YWakeupCount = 0;
         }
         if (YWakeupCondition && YWakeupCount < 5) {
           YWakeupCount++;
@@ -103,6 +104,8 @@ void setup()
           && YWakeupCondition
         ) {
           printDebug(" ------ Woken up by accelerometer");
+          YWakeupCondition = false;
+          YWakeupCount = 0;
           deviceActive = true;
           //if woken up by timer
           initTouch();
