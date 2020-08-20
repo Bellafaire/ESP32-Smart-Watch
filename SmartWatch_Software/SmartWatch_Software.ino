@@ -106,7 +106,9 @@ void setup()
           printDebug(" ------ Woken up by accelerometer");
           YWakeupCondition = false;
           YWakeupCount = 0;
+          screenOnTime = 1000;
           deviceActive = true;
+          wokenByAccelerometer = true; 
           //if woken up by timer
           initTouch();
           initLCD();

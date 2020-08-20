@@ -6,7 +6,7 @@ bool dontSleep = false;
 void MainLoop()
 {
   initBLE();
-  while (lastTouchTime + screenOnTime > millis() || dontSleep) {
+  while (lastTouchTime + screenOnTime > millis() || dontSleep || (readZAccel() > 2200 && wokenByAccelerometer)) {
     if (!newNotificationData && pRemoteCharacteristic) {
       updateNotificationData();
       newNotificationData = true;
