@@ -5,6 +5,7 @@
 
 RTC_DATA_ATTR int bootCount = 0;
 RTC_DATA_ATTR boolean YWakeupCondition = false;
+RTC_DATA_ATTR int YWakeupCount = 0;
 
 void setup()
 {
@@ -85,7 +86,21 @@ void setup()
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
 #ifdef ALLOW_ACCELEROMETER_WAKEUP
-        if (readZAccel() < 1000 ) {
+        if (readYAccel() > 2250) {
+          YWakeupCondition = true;
+        }
+        if (YWakeupCondition && YWakeupCount < 5) {
+          YWakeupCount++;
+        } else {
+          YWakeupCondition = false;
+          YWakeupCount = 0;
+        }
+        if (
+          readZAccel() > 2300
+          && readXAccel() < 1920
+          && readYAccel() < 1920
+          && YWakeupCondition
+        ) {
           printDebug(" ------ Woken up by accelerometer");
           deviceActive = true;
           //if woken up by timer

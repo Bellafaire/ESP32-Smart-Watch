@@ -8,14 +8,17 @@
 
 //prints debug information to the serial terminal when declared
 //#define DEBUG
-//#define printDebug(a) Serial.println(a)
 
+
+#define ALLOW_ACCELEROMETER_WAKEUP //when declared allows device to be woken up by reading accelerometer (may consume more power)
+#define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
+
+#ifdef DEBUG
+#define printDebug(a) Serial.println(a)
+#endif
 #ifndef DEBUG
 #define printDebug(a)
 #endif
-
-//#define ALLOW_ACCELEROMETER_WAKEUP //when declared allows device to be woken up by reading accelerometer (may consume more power) 
-#define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
 
 //just to avoid putting my wifi credentials on the public repo
 //Later the wifi credentials should be stored in eeprom or on the android device
