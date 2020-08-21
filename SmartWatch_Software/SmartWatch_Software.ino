@@ -22,11 +22,6 @@ void setup()
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
-#ifdef ALLOW_ACCELEROMETER_WAKEUP
-  //check every 250ms to see whether or not to wake up
-  esp_sleep_enable_timer_wakeup(250000);
-#endif
-
   //wakeup when someone touches the screen
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
@@ -85,36 +80,6 @@ void setup()
       case ESP_SLEEP_WAKEUP_EXT1:
         break;
       case ESP_SLEEP_WAKEUP_TIMER:
-#ifdef ALLOW_ACCELEROMETER_WAKEUP
-        if (readYAccel() > 2260 && readYAccel() < 2330) {
-          YWakeupCondition = true;
-          YWakeupCount = 0;
-        }
-        if (YWakeupCondition && YWakeupCount < 5) {
-          YWakeupCount++;
-        } else {
-          YWakeupCondition = false;
-          YWakeupCount = 0;
-        }
-        if (
-          readZAccel() > 2300
-          && readZAccel() < 2400
-          && readXAccel() < 1920
-          && readYAccel() < 1920
-          && YWakeupCondition
-        ) {
-          printDebug(" ------ Woken up by accelerometer");
-          YWakeupCondition = false;
-          YWakeupCount = 0;
-          screenOnTime = 1000;
-          deviceActive = true;
-          wokenByAccelerometer = true; 
-          //if woken up by timer
-          initTouch();
-          initLCD();
-          MainLoop();
-        }
-#endif
         break;
       default:
         printDebug("Wakeup was not caused by deep sleep: " + wakeup_reason);
