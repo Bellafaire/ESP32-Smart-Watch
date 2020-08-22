@@ -7,6 +7,20 @@ RTC_DATA_ATTR int bootCount = 0;
 RTC_DATA_ATTR boolean YWakeupCondition = false;
 RTC_DATA_ATTR int YWakeupCount = 0;
 
+static void RTC_IRAM_ATTR wake_stub();
+
+static void RTC_IRAM_ATTR wake_stub() {
+
+}
+
+//puts device to sleep and configures wakeup sources
+void deviceSleep() {
+  //re-enable touch wakeup
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
+  esp_set_deep_sleep_wake_stub(&wake_stub);
+  esp_deep_sleep_start();
+}
+
 void setup()
 {
   unsigned long wakeupTime = micros();
@@ -21,9 +35,6 @@ void setup()
 
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause();
-
-  //wakeup when someone touches the screen
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
   pinMode(CHG_STAT, INPUT);
   pinMode(TOUCH_IRQ, INPUT);
@@ -43,8 +54,7 @@ void setup()
       delay(100);
     }
 
-    //re-enable touch wakeup
-    esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
+
 
   } else {
 
@@ -93,11 +103,8 @@ void setup()
   printDebug("Awake for " + String(micros() - wakeupTime) + "uS");
   Serial.flush();
 #endif
-  //    if(connected){
-  //          pClient->disconnect();
-  //    }
 
-  esp_deep_sleep_start();
+  deviceSleep();
 }
 
 void loop()

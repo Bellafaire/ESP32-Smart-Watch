@@ -26,7 +26,7 @@ void IRAM_ATTR TOUCH_ISR()
       Serial.println("**** Rapid Touch shutdown registered ****");
       Serial.flush();
 #endif
-      esp_deep_sleep_start();
+      deviceSleep();
     }
   } else {
     rapidTouchCount = 0;
