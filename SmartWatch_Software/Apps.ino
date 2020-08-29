@@ -4,20 +4,22 @@
      apps are intended to be single function calls that essentially take control of the device for the duration of their use
 */
 
-#define APP_NUMBER 2
+#define APP_NUMBER 3
 
 #define MEDIA_CONTROLLER "Play Spotify"
 #define CALCULATOR_APP "Calculator"
+#define BLUETOOTH_SERIAL_APP "Bluetooth Serial"
 
 String appNames[APP_NUMBER] {
-  MEDIA_CONTROLLER, 
-  CALCULATOR_APP
+  MEDIA_CONTROLLER,
+  CALCULATOR_APP,
+  BLUETOOTH_SERIAL_APP
 };
 
 
-/* this ENTIRE FILE needs a rework, as it stands right now expanding 
- *  to add more options could become a pain
- */
+/* this ENTIRE FILE needs a rework, as it stands right now expanding
+    to add more options could become a pain
+*/
 void openApps() {
   SelectionWindow w = SelectionWindow(0, 14, 160, 100);
 
@@ -36,8 +38,13 @@ void openApps() {
     //things to do for the media controller
     sendBLE("/play", false);
     return;
-  }else if(selectedOption == 1){
-    currentPage = CALCULATOR; 
+  } else if (selectedOption == 1) {
+    currentPage = CALCULATOR;
+    return;
+  }
+  else if (selectedOption == 2) {
+    currentPage = BLUETOOTH_SERIAL;
+    BluetoothSerialApp();
     return;
   }
 }

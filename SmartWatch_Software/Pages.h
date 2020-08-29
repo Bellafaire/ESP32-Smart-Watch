@@ -3,3 +3,4 @@
 #define SETTINGS 2
 #define NOTIFICATIONS 3
 #define CALCULATOR 4
+#define BLUETOOTH_SERIAL 5 
