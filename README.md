@@ -13,8 +13,11 @@ The case is 3D printed and designed in FreeCAD, the design files are available i
 
 ## Video Updates about the project
 
+[Video Update #4](https://www.youtube.com/watch?v=E8-lO0pQunM)
+
 [Video Update #3](https://www.youtube.com/watch?v=vvuce4NQqrk)
 
 [Video Update #2](https://www.youtube.com/watch?v=UNLAq5FuJq4)
 
 [Video Update #1](https://www.youtube.com/watch?v=IoVqdB_q3pE)
+
