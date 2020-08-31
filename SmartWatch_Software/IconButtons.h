@@ -1,3 +1,26 @@
+/*****************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2020 Matthew James Bellafaire
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
 PROGMEM iconButton homeButton = {128, 96, 32, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000000 << 8) | 0b00000000, (0b00000000 << 8) | 0b00000000, (0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00111111 << 8) | 0b11111100, (0b00111110 << 8) | 0b00111100, (0b00111110 << 8) | 0b00111100, (0b00111110 << 8) | 0b00111100, (0b00111110 << 8) | 0b00111100, (0b00111110 << 8) | 0b00111100, (0b00000000 << 8) | 0b00000000}};
 PROGMEM iconButton homeNotificationsButton = {128, 32, 32, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00100001 << 8) | 0b10000100, (0b01000111 << 8) | 0b11100010, (0b10001100 << 8) | 0b00110001, (0b10011000 << 8) | 0b00011001, (0b10010000 << 8) | 0b00001001, (0b00110000 << 8) | 0b00001100, (0b00110000 << 8) | 0b00001100, (0b00110000 << 8) | 0b00001100, (0b00110000 << 8) | 0b00001100, (0b00110000 << 8) | 0b00001100, (0b00100000 << 8) | 0b00000100, (0b01100000 << 8) | 0b00000110, (0b11000000 << 8) | 0b00000011, (0b11000000 << 8) | 0b00000011, (0b11111111 << 8) | 0b11111111, (0b00000011 << 8) | 0b11000000}};
 PROGMEM iconButton homeSettingsButton = {128, 64, 32, 32, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000000 << 8) | 0b00001110, (0b00000000 << 8) | 0b00011111, (0b11111111 << 8) | 0b11011111, (0b11111111 << 8) | 0b11011111, (0b00000000 << 8) | 0b00001110, (0b00001100 << 8) | 0b00000000, (0b11011111 << 8) | 0b01111111, (0b11011111 << 8) | 0b01111111, (0b00011111 << 8) | 0b00000000, (0b00001110 << 8) | 0b00001110, (0b00000000 << 8) | 0b00011111, (0b11111111 << 8) | 0b11011111, (0b11111111 << 8) | 0b11011111, (0b00000000 << 8) | 0b00001110, (0b00000000 << 8) | 0b00000000, (0b00000000 << 8) | 0b00000000}};
