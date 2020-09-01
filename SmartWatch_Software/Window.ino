@@ -1,25 +1,25 @@
 /*****************************************************************************
-The MIT License (MIT)
+  The MIT License (MIT)
 
-Copyright (c) 2020 Matthew James Bellafaire
+  Copyright (c) 2020 Matthew James Bellafaire
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 ******************************************************************************/
 /* due to the limited screen size this class is designed to be called in functions to display larger amounts of text to the user.
     Allows for nearly unlimted string data to be stored in the textbox. and then opened/closed
@@ -157,7 +157,61 @@ void Window::print(String Text)
 
 //draw the text to the screen (inside the window)
 void Window::drawTextToWindow(boolean clr) {
+  //values we need to know in order to draw text properly
+  int charactersPerLine = (_width) / WINDOW_CHARACTER_WIDTH - 1;
+  int maximumLines = ((_height - 4) / (WINDOW_CHARACTER_HEIGHT));
 
+
+  //now we reformat the data, the basic idea is that we add a line break for every charactersPerLine of
+  //characters that don't have a line break. this way we'll be able to later parse out the data using the getValue function
+  String newData = "";
+  int totalLines = 0;
+  int contiguousCharacterCount = 0;
+
+  for (int a = 0; a < textBuffer.length(); a++) {
+    newData += textBuffer[a];
+    if (textBuffer[a] == '\n') {
+      totalLines++;
+      contiguousCharacterCount = 0;
+    } else {
+      //the '_' character marks the start of a grayed section of text, we don't count it in the data
+      if (textBuffer[a] != '_') {
+        contiguousCharacterCount++;
+      }
+    }
+    if (contiguousCharacterCount > charactersPerLine) {
+      newData += '\n';
+      totalLines++;
+      contiguousCharacterCount = 0;
+    }
+  }
+
+  //now we finally draw the new data to the window
+  tft.setCursor(_x + 1, _y + 2);
+  tft.setTextSize(WINDOW_FONT_SIZE);
+  tft.setTextColor(INTERFACE_COLOR);
+
+  boolean grayed = false;
+  tft.fillRect(_x + 1, _y + 1, _width - 1, _height - 2, BACKGROUND_COLOR);
+
+  for (int a = scrollPosition; a < maximumLines + scrollPosition; a++) {
+    tft.setCursor(_x + 1, _y + 2 + WINDOW_CHARACTER_HEIGHT * (a - scrollPosition));
+    if (a < totalLines) {
+      String currentLine = getValue(newData, '\n', a);
+      for (int b = 0; b < currentLine.length(); b++) {
+        if (currentLine[b] != '_') {
+          tft.print(currentLine[b]);
+        } else {
+          grayed = !grayed;
+          if (grayed) {
+            tft.setTextColor(GRAYED);
+          } else {
+            tft.setTextColor(INTERFACE_COLOR);
+          }
+        }
+      }
+    }
+  }
 }
 
 //print but with line break
