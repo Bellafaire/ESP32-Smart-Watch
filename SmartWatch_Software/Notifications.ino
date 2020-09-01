@@ -24,9 +24,6 @@ SOFTWARE.
 int numberOfNotifications;
 int selectedNotification = 0;
 
-#define FIELD_SEPARATOR ';'
-#define FIELD_SEPARATOR_STRING ";"
-
 void updateNotificationData(){
   printDebug("Updating Notification Data"); 
   String data = sendBLE("/notifications", true);
