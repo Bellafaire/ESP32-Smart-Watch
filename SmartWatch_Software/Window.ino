@@ -151,118 +151,13 @@ void Window::touch()
 */
 void Window::print(String Text)
 {
-
-  //replace spaces with linebreaks so we don't overflow the window
-  int inputPos = 0;
-  String inputWord = getValue(Text, ' ', inputPos);
-
-  //we'll use this to determine whether the text overflows
-  int xpos = _x + 2;
-
-  /* in essence we check the current x position then determine whether the new word can fit on the same line
-    if the new word can't fit on the line then we put it on a new line, otherwise we don't bother.  */
-  while (!inputWord.equals(""))
-  {
-    if (xpos + 6 * inputWord.length() > _x + _width)
-    {
-      //doesn't fit, new line
-      xpos = _x + 2;
-      textBuffer += '\n';
-      textBuffer += inputWord;
-    }
-    else
-    {
-      //fits, add to line
-      xpos += 6 * inputWord.length() + 1;
-      textBuffer += inputWord + ' ';
-    }
-
-    //get next input word
-    inputPos++;
-    inputWord = getValue(Text, ' ', inputPos);
-  }
-
-  //draw text to screen.
+  textBuffer += Text;
   drawTextToWindow(false);
 }
 
 //draw the text to the screen (inside the window)
 void Window::drawTextToWindow(boolean clr) {
 
-  //determine how many lines we can fit with the window's height
-  int maxLines = _height / 8;
-
-  //set color;
-  tft.setTextColor(TEXT_COLOR);
-  tft.setTextSize(1);
-
-  //to make things easier to read in some cases surrounding a word with '_' should cause that word to be displayed as gray.
-  //we use this variable to control that change.
-  boolean isGrayed = false;
-
-  //if parameter indicates that we should clear the screen then we clear the screen (things like scrolling require this)
-  if (clr) {
-    tft.fillRect(_x + 1 , _y + 1, _width - 2, _height - 2, BACKGROUND_COLOR);
-  }
-
-printDebug(textBuffer);
-
-  //set the initial y position
-  int ypos = _y + 2 ;
-
-  //set position
-  tft.setCursor(_x + 2, ypos);
-
-  int maxCharactersPerRow = _width / 6;
-
-  /*split text buffer by line breaks, we will write the text to the window one line at a time (since we only want a
-     subset of the text buffer's lines). also we give each line of text an extra pixel gap for readability
-  */
-  for (int a = scrollPosition; a < scrollPosition + maxLines; a++) {
-    String line = getValue(textBuffer, '\n', a);
-    if (line.length() < maxCharactersPerRow) {
-      for (int b = 0; b < line.length(); b++) {
-        if (line[b] == '_') {
-          isGrayed = !isGrayed;
-          if (isGrayed) {
-            tft.setTextColor(GRAYED);
-          } else {
-            tft.setTextColor(TEXT_COLOR);
-          }
-        } else {
-          tft.print(line[b]);
-        }
-      }
-    } else {
-      int startPos = 0;
-      int endPos = maxCharactersPerRow;
-
-
-      do {
-        tft.print(line.substring(startPos, endPos));
-
-        if (endPos + maxCharactersPerRow > line.length()) {
-          endPos = line.length();
-          startPos += maxCharactersPerRow;
-          ypos += 8;
-          if (ypos > _y + _height - 8) {
-            return;
-          }
-          tft.setCursor(_x + 2, ypos);
-          tft.print(line.substring(startPos, endPos));
-        } else {
-          endPos += maxCharactersPerRow;
-          startPos += maxCharactersPerRow;
-        }
-      }
-      while (endPos < line.length());
-    }
-    ypos += 8;
-    tft.setCursor(_x + 2, ypos);
-    if (ypos > _y + _height - 8) {
-      return;
-    }
-  }
 }
 
 //print but with line break
