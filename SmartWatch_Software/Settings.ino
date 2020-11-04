@@ -1,25 +1,25 @@
 /*****************************************************************************
-The MIT License (MIT)
+  The MIT License (MIT)
 
-Copyright (c) 2020 Matthew James Bellafaire
+  Copyright (c) 2020 Matthew James Bellafaire
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 ******************************************************************************/
 #define settingNumber 3
 #define MAX_ON_SCREEN_SETTINGS_BUTTONS 5
@@ -28,18 +28,20 @@ SOFTWARE.
 #define SETTING_BUTTON_HEIGHT 25
 
 int settingScrollPosition = 0;
-#define SETTING_OPTIONS 7
+#define SETTING_OPTIONS 8
 
 //define options positions
-#define REUPDATE_TIME 0
-#define BATTERY 1
-#define ACCELTEST 2
-#define NETWORK_SELECT 3
-#define OBTAIN_NOTIFICATIONS 4
-#define VIEW_RAW_NOTIFICATIONS 5
-#define ABOUT 6
+#define CONFIGURE_SETTINGS 0
+#define REUPDATE_TIME 1
+#define BATTERY 2
+#define ACCELTEST 3
+#define NETWORK_SELECT 4
+#define OBTAIN_NOTIFICATIONS 5
+#define VIEW_RAW_NOTIFICATIONS 6
+#define ABOUT 7
 
 button settingButtons[SETTING_OPTIONS] = {
+  {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Configure Settings"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Re-update Time"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "Battery Stats"},
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "AccelTest"},
@@ -49,10 +51,10 @@ button settingButtons[SETTING_OPTIONS] = {
   {0, 0, SETTING_BUTTON_WIDTH, SETTING_BUTTON_HEIGHT, INTERFACE_COLOR, BACKGROUND_COLOR, "About"}
 };
 
-String settingOptions[] = {
-  "Re-update Time",
-  "About"
-};
+//String settingOptions[] = {
+//  "Re-update Time",
+//  "About"
+//};
 
 void settingsLoop()
 {
@@ -153,6 +155,9 @@ void SettingsTouchHandler(struct point p)
     {
       switch (a)
       {
+        case CONFIGURE_SETTINGS:
+          config_EEPROM_Settings();
+          break;
         case REUPDATE_TIME:
           reAdjustTime();
           break;
@@ -173,6 +178,8 @@ void SettingsTouchHandler(struct point p)
           break;
         case ACCELTEST:
           accelTest();
+          break;
+        default:
           break;
       }
     }
