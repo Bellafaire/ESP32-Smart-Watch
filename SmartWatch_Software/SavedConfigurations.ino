@@ -22,13 +22,6 @@
   SOFTWARE.
 ******************************************************************************/
 
-//eeprom allocations for data placement and their corrosponding string for display.
-#define DAYLIGHT_SAVINGS 0
-#define DAYLIGHT_SAVINGS_STRING "Daylight Savings"
-
-#define USE_ACCELEROMETER 1
-#define USE_ACCELEROMETER_STRING "Enable Acclerometer"
-
 void config_EEPROM_Settings() {
   SelectionWindow w = SelectionWindow(0, 14, 160, 100);
 

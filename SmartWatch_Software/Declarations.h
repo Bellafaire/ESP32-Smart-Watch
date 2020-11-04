@@ -94,6 +94,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 //#define BAT_ALRT 34 //not used in v4.1
 #define CHG_STAT 35
 #define REG_PG 36
+#define ACCEL_EN 34
 
 //I2C Pins and Addresses
 #define I2C_SCL 32
@@ -233,6 +234,15 @@ class SelectionWindow {
     String getValue(String data, char separator, int index); //splits the options string
     void touch(); //touch handler
 };
+
+
+//EEPROM Data locations and information
+//eeprom allocations for data placement and their corrosponding string for display.
+#define DAYLIGHT_SAVINGS 0
+#define DAYLIGHT_SAVINGS_STRING "Daylight Savings"
+
+#define USE_ACCELEROMETER 1
+#define USE_ACCELEROMETER_STRING "Enable Acclerometer"
 
 
 
