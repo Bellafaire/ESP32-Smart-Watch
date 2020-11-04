@@ -157,28 +157,28 @@ void SettingsTouchHandler(struct point p)
       {
         case CONFIGURE_SETTINGS:
           config_EEPROM_Settings();
-          break;
+          return;
         case REUPDATE_TIME:
           reAdjustTime();
-          break;
+          return;
         case ABOUT:
           about();
-          break;
+          return;
         case NETWORK_SELECT:
           changeNetwork();
-          break;
+          return;
         case BATTERY:
           batterySettings();
-          break;
+          return;
         case OBTAIN_NOTIFICATIONS:
           getNotifications();
-          break;
+          return;
         case VIEW_RAW_NOTIFICATIONS:
           viewNotifications();
-          break;
+          return;
         case ACCELTEST:
           accelTest();
-          break;
+          return;
         default:
           break;
       }
