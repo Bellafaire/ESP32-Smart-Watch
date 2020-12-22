@@ -32,7 +32,7 @@ SOFTWARE.
 
 
 //prints debug information to the serial terminal when declared
-//#define DEBUG
+#define DEBUG
 
 #define ALLOW_ACCELEROMETER_WAKEUP //when declared allows device to be woken up by reading accelerometer (may consume more power)
 #define SHOW_LAST_NOTIFICATION_TIME //when declared shows the time of the last recieved notification update at the bottom of the screen
@@ -50,8 +50,8 @@ SOFTWARE.
 
 //just to avoid putting my wifi credentials on the public repo
 //Later the wifi credentials should be stored in eeprom or on the android device
-//#include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //desktop computer location
-#include "C:\Users\James\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //laptop computer location
+#include "J:\Dropbox\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //desktop computer location
+//#include "C:\Users\James\Dropbox\Lab Projects\Smart Watch\WifiCredentials.h" //laptop computer location
 
 #include "Pages.h"
 #include "Icons.h"
