@@ -56,13 +56,8 @@ void initBLE() {
 
 
   if (!connected) {
-    if (myDevice) {
-      printDebug("forming connection to device");
-      xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , 2, &xConnect, 0 );
-    } else {
-      printDebug("Finding Device");
-      xTaskCreatePinnedToCore( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
-    }
+    printDebug("Finding Device");
+    xTaskCreatePinnedToCore( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
   }
 }
 
