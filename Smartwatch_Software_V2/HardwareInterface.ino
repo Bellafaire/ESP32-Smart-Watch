@@ -15,10 +15,27 @@ void initLCD() {
 /********************************************************************
                                Touch
  ********************************************************************/
+int rapidTouchCount = 0;
 
 void IRAM_ATTR TOUCH_ISR()
 {
+  lastTouchTime = millis();
+  if (millis() - lastTouchTime < 200) {
+    rapidTouchCount++;
+    printDebug("rapidTouchCount: " + String(rapidTouchCount));
 
+    if (rapidTouchCount > 50) {
+#ifdef DEBUG
+      Serial.println("**** Rapid Touch shutdown registered ****");
+      Serial.flush();
+#endif
+      esp_sleep_enable_timer_wakeup(1);
+      esp_deep_sleep_start();
+
+    }
+  } else {
+    rapidTouchCount = 0;
+  }
 }
 
 void initTouch()

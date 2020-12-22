@@ -87,20 +87,3 @@ unsigned long lastTouchTime = 0;
 #define X_MIN 19
 #define Y_MAX 230
 #define Y_MIN 14
-
-/********************************************************************
-                          TASK Handles
- ********************************************************************/
-TaskHandle_t xConnect = NULL;
-TaskHandle_t xNotification = NULL;
-
-
-/********************************************************************
-                               BLE
- ********************************************************************/
-static BLERemoteCharacteristic* pRemoteCharacteristic;
-static BLEAdvertisedDevice* myDevice;
-static BLEClient*  pClient;
-static boolean connected = false;
-static boolean registeredForCallback = false;
-static String notificationData = "";
