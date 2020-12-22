@@ -85,9 +85,9 @@ void active() {
       updateTimeFromNotificationData(notificationData);
     }
 
-    frameBuffer->fillScreen(0x0000);
+    frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    drawTime(0, 0, 2, 0xFFFF);
+    drawTime(5, 5, 2, 0xFFFF);
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 50);
     if (!digitalRead(TOUCH_IRQ)) {
       struct point p = readTouch();

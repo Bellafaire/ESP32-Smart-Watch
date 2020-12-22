@@ -28,8 +28,9 @@ void updateTimeFromNotificationData(String notificationString) {
     //get the last line of the notification string, that will contain the current time,
     //note that this function should only be called directly after receiving a notification update
     //otherwise the time will be inaccurate
-    String timeString = getValue(notificationString, lineCount - 1, 0);
-    printDebug("Parsed Time String - " + timeString);
+    String timeString = getValue(notificationString, '\n', lineCount - 1);
+
+    printDebug("Parsing time from " + timeString);
 
     //format "HH:mm:ss dd-MM-yyyy"
     //simply parse out the data from the string, some adjustments need to be made for year and month.
