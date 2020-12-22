@@ -78,7 +78,7 @@ void onWakeup() {
 void active() {
   String notificationData = "";
 
-  while (millis() < lastTouchTime + 20000) {
+  while (millis() < lastTouchTime + 10000) {
 
     if (connected && notificationData.length() < 10) {
       notificationData = sendBLE("/notifications", true); //gets current android notifications as a string
@@ -88,6 +88,7 @@ void active() {
     frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     drawTime(3, 5, 2, 0xFFFF, 1);
+    drawDateCentered(20, 1);
 
     frameBuffer->setTextColor(0x0000);
     frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4, 5 );
@@ -98,16 +99,29 @@ void active() {
     frameBuffer->println(String(getBatteryPercentage()) + "%");
 
 
+    drawNotifications(notificationData, 0, 30, 0xFFFF);
 
-    frameBuffer->setCursor(0, SCREEN_HEIGHT - 50);
-    if (!digitalRead(TOUCH_IRQ)) {
-      struct point p = readTouch();
-      frameBuffer->fillCircle(p.x, p.y, 4, 0xFFFF);
-    }
-    frameBuffer->println("Smartwatch " + String(millis()));
-    if (notificationData.length() > 10) {
-      frameBuffer->println(notificationData);
-    }
     tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  }
+}
+
+
+void drawNotifications(String notificationData, int x, int y, int color) {
+  //count lines
+  int lineCount = 0;
+  for (int a = 0; a < notificationData.length(); a++) {
+    if (notificationData[a] == '\n') {
+      lineCount++;
+    }
+  }
+  //last 2 lines are not notification data, they're time and EOM terminator
+  lineCount = lineCount - 1;
+
+  frameBuffer->setTextColor(color);
+  frameBuffer->setCursor(x, y);
+
+  for (int a = 0; a < lineCount; a++) {
+    String line = getValue(notificationData, '\n', a);
+    frameBuffer->println(getValue(line, ';', 0));
   }
 }

@@ -199,10 +199,105 @@ void drawTime(int x, int y, int textSize, int color, int shadowOffset)
     frameBuffer->setTextColor(BACKGROUND_COLOR);
     frameBuffer->setCursor(x + a * 6 * textSize + shadowOffset, y + shadowOffset);
     frameBuffer->print(timestr[a]);
-    
+
     frameBuffer->setTextColor(color);
     frameBuffer->setCursor(x + a * 6 * textSize, y);
     frameBuffer->print(timestr[a]);
   }
   frameBuffer->setTextSize(1);
+}
+
+
+void drawDate(int x, int y, int textSize)
+{
+  //configure current timezone (this information gets lost in deep sleep)
+  getRTCTime();
+
+  String weekday;
+
+  switch (timeinfo->tm_wday)
+  {
+    case 0:
+      weekday = "Sunday";
+      break;
+    case 1:
+      weekday = "Monday";
+      break;
+    case 2:
+      weekday = "Tuesday";
+      break;
+    case 3:
+      weekday = "Wednesday";
+      break;
+    case 4:
+      weekday = "Thursday";
+      break;
+    case 5:
+      weekday = "Friday";
+      break;
+    case 6:
+      weekday = "Saturday";
+      break;
+    default:
+      weekday = "error";
+      break;
+  }
+
+  String Date = weekday + ", " + String(timeinfo->tm_mon + 1) + "/" + String(timeinfo->tm_mday);
+
+  frameBuffer->setTextSize(textSize);
+  frameBuffer->setTextColor(TEXT_COLOR);
+  for (int a = 0; a < Date.length(); a++)
+  {
+    frameBuffer->setCursor(x + a * 6 * textSize, y);
+    frameBuffer->print(Date[a]);
+  }
+}
+
+void drawDateCentered(int y, int textSize)
+{
+  //configure current timezone (this information gets lost in deep sleep)
+  getRTCTime();
+
+  String weekday;
+
+  switch (timeinfo->tm_wday)
+  {
+    case 0:
+      weekday = "Sunday";
+      break;
+    case 1:
+      weekday = "Monday";
+      break;
+    case 2:
+      weekday = "Tuesday";
+      break;
+    case 3:
+      weekday = "Wednesday";
+      break;
+    case 4:
+      weekday = "Thursday";
+      break;
+    case 5:
+      weekday = "Friday";
+      break;
+    case 6:
+      weekday = "Saturday";
+      break;
+    default:
+      weekday = "error";
+      break;
+  }
+
+  String Date = weekday + ", " + String(timeinfo->tm_mon + 1) + "/" + String(timeinfo->tm_mday);
+
+  int x = (160 - (Date.length() * 6 * textSize)) / 2;
+
+  frameBuffer->setTextSize(textSize);
+  frameBuffer->setTextColor(TEXT_COLOR);
+  for (int a = 0; a < Date.length(); a++)
+  {
+    frameBuffer->setCursor(x + a * 6 * textSize, y);
+    frameBuffer->print(Date[a]);
+  }
 }
