@@ -30,6 +30,9 @@ void setup() {
   initLCD();
   initTouch();
 
+  //temporary until settings configuration option is pulled in
+  setDataField(0, DAYLIGHT_SAVINGS);
+
 
 }
 
@@ -74,8 +77,6 @@ void onWakeup() {
 
 
 void active() {
-
-
   String notificationData = "";
 
   while (millis() < lastTouchTime + 20000) {
