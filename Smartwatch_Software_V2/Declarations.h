@@ -2,7 +2,9 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Wire.h>
 #include "BLEDevice.h"
-
+#include <EEPROM.h>
+#include <soc/rtc.h>
+#include <sys/time.h>
 
 /*******************************************************************
                               DEBUG
@@ -80,10 +82,34 @@ struct point
   int y = -1;
 };
 
-unsigned long lastTouchTime = 0; 
+unsigned long lastTouchTime = 0;
 
 //Touch Calibration
 #define X_MAX 233
 #define X_MIN 19
 #define Y_MAX 230
 #define Y_MIN 14
+
+/********************************************************************
+                            timeKeeping
+ ********************************************************************/
+RTC_DATA_ATTR struct tm* timeinfo;
+
+/********************************************************************
+                            DataSeperators
+ ********************************************************************/
+#define FIELD_SEPARATOR ';'
+#define FIELD_SEPARATOR_STRING ";"
+
+/********************************************************************
+                        EEPROM Data Fieldfs
+ ********************************************************************/
+#define EEPROM_SIZE 512
+
+//EEPROM Data locations and information
+//eeprom allocations for data placement and their corrosponding string for display.
+#define DAYLIGHT_SAVINGS 0
+#define DAYLIGHT_SAVINGS_STRING "Daylight Savings"
+
+#define USE_ACCELEROMETER 1
+#define USE_ACCELEROMETER_STRING "Enable Acclerometer"

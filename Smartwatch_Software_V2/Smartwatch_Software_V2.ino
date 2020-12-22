@@ -25,7 +25,7 @@ void setup() {
 #ifdef DEBUG
   Serial.begin(115200);
 #endif
-
+  EEPROM.begin(EEPROM_SIZE);
   Wire.begin(I2C_SDA, I2C_SCL, 100000);
   initLCD();
   initTouch();
@@ -41,7 +41,7 @@ void deviceSleep() {
   if (connected) {
     pClient->disconnect();
     while (connected) {
-     delay(1);
+      delay(1);
     };
     printDebug("disconnected");
   }
@@ -64,6 +64,8 @@ void loop() {
 
 
 void onWakeup() {
+  getRTCTime();
+  printRTCTime();
   digitalWrite(LCD_LED, HIGH);
   //initalizes BLE connection in seperate thread
   //when connected will update the "connected" variable to true
@@ -80,10 +82,13 @@ void active() {
 
     if (connected && notificationData.length() < 10) {
       notificationData = sendBLE("/notifications", true); //gets current android notifications as a string
+      updateTimeFromNotificationData(notificationData);
     }
 
     frameBuffer->fillScreen(0x0000);
-    frameBuffer->setCursor(0, 0);
+
+    drawTime(0, 0, 2, 0xFFFF);
+    frameBuffer->setCursor(0, SCREEN_HEIGHT - 50);
     if (!digitalRead(TOUCH_IRQ)) {
       struct point p = readTouch();
       frameBuffer->fillCircle(p.x, p.y, 4, 0xFFFF);
