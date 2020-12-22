@@ -28,12 +28,11 @@ void setup() {
   EEPROM.begin(EEPROM_SIZE);
   Wire.begin(I2C_SDA, I2C_SCL, 100000);
   initLCD();
+  initBatMonitor();
   initTouch();
 
   //temporary until settings configuration option is pulled in
   setDataField(0, DAYLIGHT_SAVINGS);
-
-
 }
 
 
@@ -86,9 +85,20 @@ void active() {
       updateTimeFromNotificationData(notificationData);
     }
 
-    frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+    frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    drawTime(5, 5, 2, 0xFFFF);
+    drawTime(3, 5, 2, 0xFFFF, 1);
+
+    frameBuffer->setTextColor(0x0000);
+    frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4, 5 );
+    frameBuffer->println(String(getBatteryPercentage()) + "%");
+
+    frameBuffer->setTextColor(0xFFFF);
+    frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4 - 1, 5 - 1);
+    frameBuffer->println(String(getBatteryPercentage()) + "%");
+
+
+
     frameBuffer->setCursor(0, SCREEN_HEIGHT - 50);
     if (!digitalRead(TOUCH_IRQ)) {
       struct point p = readTouch();

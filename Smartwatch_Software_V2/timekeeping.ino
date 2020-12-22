@@ -144,7 +144,7 @@ String getValue(String data, char separator, int index)
 }
 
 
-void drawTime(int x, int y, int textSize, int color)
+void drawTime(int x, int y, int textSize, int color, int shadowOffset)
 {
   //configure current timezone (this information gets lost in deep sleep)
   mjd_set_timezone_est();
@@ -196,6 +196,11 @@ void drawTime(int x, int y, int textSize, int color)
 
   for (int a = 0; a < 11; a++)
   {
+    frameBuffer->setTextColor(BACKGROUND_COLOR);
+    frameBuffer->setCursor(x + a * 6 * textSize + shadowOffset, y + shadowOffset);
+    frameBuffer->print(timestr[a]);
+    
+    frameBuffer->setTextColor(color);
     frameBuffer->setCursor(x + a * 6 * textSize, y);
     frameBuffer->print(timestr[a]);
   }
