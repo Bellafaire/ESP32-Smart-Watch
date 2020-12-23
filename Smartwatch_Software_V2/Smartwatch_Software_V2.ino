@@ -93,10 +93,17 @@ void onWakeup() {
   //when connected will update the "connected" variable to true
   initBLE();
 }
+int ta;
+
+void testFunction() {
+  printDebug("************ TEST FUNCTION CALLED ***********");
+  deactivateTouchArea(ta);
+}
 
 void active() {
   String notificationData = "";
 
+  ta = createTouchArea(0, 0, 50, 50, (void*)testFunction);
 
   AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 255), 3.5, 2);
   AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 255, 0), -3, 3);

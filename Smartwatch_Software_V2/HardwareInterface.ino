@@ -36,7 +36,7 @@ void IRAM_ATTR TOUCH_ISR()
   } else {
     rapidTouchCount = 0;
   }
-  
+
   lastTouchTime = millis();
   if (!xTouch) {
     xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4096, (void *) 1 , tskIDLE_PRIORITY, &xTouch, 0 );
@@ -55,6 +55,9 @@ void initTouch()
   pinMode(TOUCH_IRQ, INPUT);
 
   attachInterrupt(TOUCH_IRQ, TOUCH_ISR, FALLING);
+
+  //init the touch handler defined in Touchinterface.ino
+  initTouchAreas();
 }
 
 

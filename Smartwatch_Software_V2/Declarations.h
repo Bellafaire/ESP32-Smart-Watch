@@ -155,8 +155,19 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define USE_ACCELEROMETER_STRING "Enable Acclerometer"
 
 /********************************************************************
-                          Task Managers
+                          Touch Interface
  ********************************************************************/
+#define MAX_TOUCH_AREAS 25
+
+struct touchArea {
+  int x, y, width, height;
+  void *action;
+  int identifier = 0;
+};
+
+int touchAreaIdentifierCount = 1; //keeps track of the number of touch areas created
+static struct touchArea activeTouchAreas[MAX_TOUCH_AREAS];
+
 
 
 /********************************************************************
