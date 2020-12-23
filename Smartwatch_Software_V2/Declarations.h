@@ -116,6 +116,7 @@ unsigned long lastTouchTime = 0;
 #define Y_MAX 230
 #define Y_MIN 14
 
+TaskHandle_t xTouch = NULL;
 
 
 /********************************************************************
@@ -153,6 +154,9 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define USE_ACCELEROMETER 1
 #define USE_ACCELEROMETER_STRING "Enable Acclerometer"
 
+/********************************************************************
+                          Task Managers
+ ********************************************************************/
 
 
 /********************************************************************

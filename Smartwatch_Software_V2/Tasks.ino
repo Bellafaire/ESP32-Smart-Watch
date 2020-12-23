@@ -17,3 +17,15 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 ******************************************************************************/
+
+/* Checks a touch event and triggers any required actions,
+  this task is called within the touch interrupt defined in HardwareInterface.ino */
+void TouchTask(void * pvParameters ) {
+  printDebug("TouchTask Triggerred");
+
+  point p = readTouch();
+  printDebug("x:" + String(p.x) + " y:" + String(p.y));
+
+  xTouch = NULL;
+  vTaskDelete(NULL);
+}

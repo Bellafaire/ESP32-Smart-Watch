@@ -94,7 +94,6 @@ void onWakeup() {
   initBLE();
 }
 
-
 void active() {
   String notificationData = "";
 
@@ -103,8 +102,8 @@ void active() {
   AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 255, 0), -3, 3);
   AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(255, 0, 0), 2.5, 4);
   AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(255, 0, 255), -2, 5);
-  AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 255, 255), -1.5, 6);
-  
+  AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 255, 255), 1.5, 6);
+
   while (millis() < lastTouchTime + 10000) {
 
     if (connected && notificationData.length() < 10) {

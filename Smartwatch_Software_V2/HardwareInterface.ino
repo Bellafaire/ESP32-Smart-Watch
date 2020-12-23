@@ -19,7 +19,6 @@ int rapidTouchCount = 0;
 
 void IRAM_ATTR TOUCH_ISR()
 {
-  lastTouchTime = millis();
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
     printDebug("rapidTouchCount: " + String(rapidTouchCount));
@@ -29,13 +28,20 @@ void IRAM_ATTR TOUCH_ISR()
       Serial.println("**** Rapid Touch shutdown registered ****");
       Serial.flush();
 #endif
+      //rapid touch is meant to restart, using deep sleep we can essentially go back to
+      //the same state we would get from a cold restart
       esp_sleep_enable_timer_wakeup(1);
       esp_deep_sleep_start();
-
     }
   } else {
     rapidTouchCount = 0;
   }
+  
+  lastTouchTime = millis();
+  if (!xTouch) {
+    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4096, (void *) 1 , tskIDLE_PRIORITY, &xTouch, 0 );
+  }
+
 }
 
 void initTouch()
