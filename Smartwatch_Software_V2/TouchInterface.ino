@@ -83,6 +83,16 @@ void deactivateTouchArea(int identifier) {
   }
 }
 
+void deactivateAllTouchAreas() {
+  for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
+    if (activeTouchAreas[a].identifier) {
+      activeTouchAreas[a].identifier = 0;
+      printDebug("Deactivating touchArea " + String(activeTouchAreas[a].identifier));
+      break;
+    }
+  }
+}
+
 void checkAllTouchAreas(int x, int y) {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (x >=  activeTouchAreas[a].x
