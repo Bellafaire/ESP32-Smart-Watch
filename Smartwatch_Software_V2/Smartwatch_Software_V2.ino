@@ -39,7 +39,7 @@ void initBLE();
 void xFindDevice(void * pvParameters ) ;
 void formConnection(void * pvParameters) ;
 
-
+int batteryPercentage = 100;
 
 void setup() {
 #ifdef DEBUG
@@ -57,6 +57,7 @@ void setup() {
 
 
 void deviceSleep() {
+  batteryPercentage = getBatteryPercentage();
   //re-enable touch wakeup
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
   digitalWrite(LCD_LED, LOW);
@@ -105,11 +106,11 @@ void active() {
 
   ta = createTouchArea(0, 0, 50, 50, (void*)testFunction);
 
-  AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0,0,0), 3.5, 2);
-  AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0,0,0), -3, 3);
-  AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0,0,0), 2.5, 4);
-  AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0,0,0), -2, 5);
-  AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0,0,255), 1.5, 6);
+  AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
+  AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
+  AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 2.5, 4);
+  AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
+  AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
   while (millis() < lastTouchTime + 10000) {
 
@@ -125,11 +126,11 @@ void active() {
 
     frameBuffer->setTextColor(0x0000);
     frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4, 5 );
-    frameBuffer->println(String(getBatteryPercentage()) + "%");
+    frameBuffer->println(String(batteryPercentage) + "%");
 
     frameBuffer->setTextColor(0xFFFF);
     frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4 - 1, 5 - 1);
-    frameBuffer->println(String(getBatteryPercentage()) + "%");
+    frameBuffer->println(String(batteryPercentage) + "%");
 
 
     drawNotifications(notificationData, 0, 30, 0xFFFF);
