@@ -213,6 +213,9 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
     buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
     buffer->fillCircle(xPos, yPos, circleRadius, color);
     buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
+    
+    buffer->fillCircle(xPos2, yPos2, circleRadius, color);
+    buffer->drawCircle(xPos2, yPos2, circleRadius, ringColor);
 
   }
   theta += speed;
