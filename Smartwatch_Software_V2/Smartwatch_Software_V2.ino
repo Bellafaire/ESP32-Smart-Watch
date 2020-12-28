@@ -20,25 +20,6 @@
 
 #include "Declarations.h"
 
-//BLE related variables
-//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
-static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
-static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
-
-//important variables used to establish BLE communication
-static BLERemoteCharacteristic* pRemoteCharacteristic;
-static BLEAdvertisedDevice* myDevice;
-static BLEClient*  pClient;
-TaskHandle_t xConnect = NULL;
-static volatile boolean connected = false;
-static boolean registeredForCallback = false;
-
-//function signatures for functions in BluetoothReceive.ino
-String sendBLE(String command, bool hasReturnData);
-void initBLE();
-void xFindDevice(void * pvParameters ) ;
-void formConnection(void * pvParameters) ;
-
 int batteryPercentage = 100;
 
 void setup() {
@@ -51,8 +32,33 @@ void setup() {
   initBatMonitor();
   initTouch();
 
+  //create "watchdog task" to put the device in deepsleep if something goes wrong
+  xTaskCreatePinnedToCore(
+    watchDog
+    ,  "watchdog"
+    ,  1024  // Stack size
+    ,  NULL
+    ,  3  // Priority
+    ,  NULL
+    ,  1);
+
   //temporary until settings configuration option is pulled in
   setDataField(0, DAYLIGHT_SAVINGS);
+}
+
+void watchDog(void *pvParameters)  // This is a task.
+{
+  (void) pvParameters;
+
+  for (;;)
+  {
+//    printDebug("***watchdog serviced***");
+    if (millis() > lastTouchTime + 15000) {
+      esp_sleep_enable_timer_wakeup(1);
+      esp_deep_sleep_start();
+    }
+    vTaskDelay(500);
+  }
 }
 
 
@@ -69,6 +75,10 @@ void deviceSleep() {
     printDebug("disconnected");
   }
   Serial.flush();
+
+  //put display to sleep
+  tft.enableSleep(true);
+
   esp_light_sleep_start();
 }
 
@@ -89,11 +99,14 @@ void loop() {
 void onWakeup() {
   getRTCTime();
   printRTCTime();
+  //wake up display
+  tft.enableSleep(false);
   digitalWrite(LCD_LED, HIGH);
   //initalizes BLE connection in seperate thread
   //when connected will update the "connected" variable to true
   initBLE();
 }
+
 int ta;
 
 void testFunction() {
@@ -102,6 +115,8 @@ void testFunction() {
 }
 
 void active() {
+
+
   String notificationData = "";
 
   ta = createTouchArea(0, 0, 50, 50, (void*)testFunction);
@@ -112,7 +127,16 @@ void active() {
   AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
   AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
+
   while (millis() < lastTouchTime + 10000) {
+
+    if (connected) {
+      circ1.setColor(RGB_TO_BGR565(0, 255, 0));
+    } else if (myDevice) {
+      circ1.setColor(RGB_TO_BGR565(0, 0, 255));
+    } else {
+      circ1.setColor(RGB_TO_BGR565(255, 0, 0));
+    }
 
     if (connected && notificationData.length() < 10) {
       notificationData = sendBLE("/notifications", true); //gets current android notifications as a string

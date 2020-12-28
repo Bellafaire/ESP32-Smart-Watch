@@ -108,7 +108,7 @@ struct point
   int y = -1;
 };
 
-unsigned long lastTouchTime = 0;
+volatile unsigned long lastTouchTime = 0;
 
 //Touch Calibration
 #define X_MAX 233
@@ -155,6 +155,22 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define USE_ACCELEROMETER_STRING "Enable Acclerometer"
 
 /********************************************************************
+                              BLE
+ ********************************************************************/
+//BLE related variables
+//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
+static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
+static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
+
+//important variables used to establish BLE communication
+static BLERemoteCharacteristic* pRemoteCharacteristic;
+static BLEAdvertisedDevice* myDevice;
+static BLEClient*  pClient;
+TaskHandle_t xConnect = NULL;
+static volatile boolean connected = false;
+static boolean registeredForCallback = false;
+
+/********************************************************************
                           Touch Interface
  ********************************************************************/
 #define MAX_TOUCH_AREAS 25
@@ -171,7 +187,7 @@ static struct touchArea activeTouchAreas[MAX_TOUCH_AREAS];
 
 
 /********************************************************************
-                        Temporary placement
+                              UI Elements
  ********************************************************************/
 class AnimationCircle {
     int rotationRadius;
@@ -187,39 +203,11 @@ class AnimationCircle {
   public:
     AnimationCircle(int _x, int _y, int _rotationRadius, int _circleRadius, int _ringColor, int _color, float _speed, int _circleNumber);
     void animateAndDraw(GFXcanvas16 * buffer);
+    void setColor(uint16_t _color); 
+    void expand(int newRadius, int steps); 
 };
 
-AnimationCircle:: AnimationCircle(int _x, int _y, int _rotationRadius, int _circleRadius, int _ringColor, int _color, float _speed, int _circleNumber) {
-  rotationRadius = _rotationRadius;
-  circleRadius = _circleRadius;
-  color = _color;
-  ringColor = _ringColor;
-  circleNumber = _circleNumber;
-  speed = _speed;
-  x = _x;
-  y = _y;
-}
 
-void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
-  buffer->drawCircle(x, y, rotationRadius, ringColor);
-
-  for (int a = 0; a < circleNumber; a++) {
-    int xPos = x + (float) rotationRadius * sin((float)theta * PI / 180 + (2 * PI * (float)a / (float)circleNumber));
-    int yPos = y + (float) rotationRadius * cos((float)theta * PI / 180 + (2 * PI * (float)a / (float)circleNumber));
-
-    int xPos2 = x + (float) rotationRadius * sin((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
-    int yPos2 = y + (float) rotationRadius * cos((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
-
-    buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
-    buffer->fillCircle(xPos, yPos, circleRadius, color);
-    buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
-    
-    buffer->fillCircle(xPos2, yPos2, circleRadius, color);
-    buffer->drawCircle(xPos2, yPos2, circleRadius, ringColor);
-
-  }
-  theta += speed;
-}
 
 
 //"Untitled.png" width=160 height=128
