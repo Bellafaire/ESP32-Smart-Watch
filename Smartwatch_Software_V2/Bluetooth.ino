@@ -50,7 +50,7 @@ class MyClientCallback : public BLEClientCallbacks {
 void initBLE() {
 
   pRemoteCharacteristic = NULL;
-  //  myDevice = NULL;
+  myDevice = NULL;
   pClient = NULL;
   registeredForCallback = false;
 
