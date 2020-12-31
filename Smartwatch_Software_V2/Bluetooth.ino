@@ -39,6 +39,7 @@ class MyClientCallback : public BLEClientCallbacks {
 
     void onDisconnect(BLEClient* pclient) {
       connected = false;
+      myDevice = NULL; 
       Serial.println("%%%%%%%%%% Device has Disconnected %%%%%%%%");
     }
 };
@@ -50,7 +51,7 @@ class MyClientCallback : public BLEClientCallbacks {
 void initBLE() {
 
   pRemoteCharacteristic = NULL;
-  myDevice = NULL;
+  //  myDevice = NULL;
   pClient = NULL;
   registeredForCallback = false;
 
@@ -66,13 +67,15 @@ void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
   Serial.println("%%% Find Device Task Launched %%%");
 
-  BLEScan* pBLEScan = BLEDevice::getScan();
-  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  pBLEScan->setInterval(40);           //I've found these interval and window values to work the best with android, but others may be better.
-  pBLEScan->setWindow(39);
-  pBLEScan->setActiveScan(true);
-  pBLEScan->start(8);
-
+  if (!myDevice) {
+    BLEScan* pBLEScan = BLEDevice::getScan();
+    pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
+    pBLEScan->setInterval(40);           //I've found these interval and window values to work the best with android, but others may be better.
+    pBLEScan->setWindow(39);
+    pBLEScan->setActiveScan(true);
+    pBLEScan->start(8);
+  }
+  
   if (myDevice) {
     Serial.println("%%% Device Found %%%");
     xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
