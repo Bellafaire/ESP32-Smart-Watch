@@ -39,7 +39,7 @@ class MyClientCallback : public BLEClientCallbacks {
 
     void onDisconnect(BLEClient* pclient) {
       connected = false;
-      myDevice = NULL; 
+//      myDevice = NULL; 
       Serial.println("%%%%%%%%%% Device has Disconnected %%%%%%%%");
     }
 };
