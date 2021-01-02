@@ -18,21 +18,40 @@
   SOFTWARE.
 ******************************************************************************/
 
-
-
-/********************************************************************
-                                 HOME
- ********************************************************************/
-
 String notificationData = "";
 
-//ta = createTouchArea(0, 0, 50, 50, (void*)testFunction);
-
+//animation circles, I kind of made these awhile ago as a cool visual element but now they're fairly essential to the entire UI design
 AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
 AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
 AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 2.5, 4);
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
+
+
+/********************************************************************
+                                 HOME
+ ********************************************************************/
+//ta = createTouchArea(0, 0, 50, 50, (void*)testFunction);
+
+int homeTouchArea;
+
+void initHome() {
+
+  printDebug("initializing home");
+  //re-init animation circles
+  circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
+  circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
+  circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 2.5, 4);
+  circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
+  circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
+
+  //remove all previous touch areas
+  deactivateAllTouchAreas();
+
+  //create touch area for going to the navigation page
+  homeTouchArea = createTouchArea(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 70, 140, 140, (void*) transitionToNav);
+  currentPage = (void*)home;
+}
 
 void home() {
 
@@ -71,6 +90,55 @@ void home() {
   circ3.animateAndDraw(frameBuffer);
   circ2.animateAndDraw(frameBuffer);
   circ1.animateAndDraw(frameBuffer);
+}
 
-  tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+
+/* Quick and dirty animation to transition to the navigation page.
+*/
+void homeTransitionToNav() {
+  for (int a = 0; a < 8; a++) {
+    home();
+    frameBuffer->fillCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, (int)(45.0 * ((float)a / 8.0)), 0x0000);
+    circ5.animateAndDraw(frameBuffer);
+    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  }
+
+  for (int a = 0; a < 8; a++) {
+    home();
+    frameBuffer->fillCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45 + a * (SCREEN_WIDTH / 8), 0x0000);
+    circ5.setRadius(45 + a * (SCREEN_WIDTH / 8));
+    circ5.animateAndDraw(frameBuffer);
+    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  }
+  currentPage = (void*)initNavigation;
+}
+
+void transitionToNav() {
+  currentPage = (void*)homeTransitionToNav;
+}
+
+
+/********************************************************************
+                              Navigation
+ ********************************************************************/
+
+void initNavigation() {
+  deactivateAllTouchAreas();
+  createTouchArea(SCREEN_WIDTH - 45, SCREEN_HEIGHT - 45, 90, 90, (void*) initHome);
+  currentPage = (void*)navigation;
+}
+
+void navigation() {
+  frameBuffer->fillScreen(0x0000);
+  frameBuffer->setCursor(0, 0);
+  frameBuffer->println("Navigation");
+
+  frameBuffer->setCursor(SCREEN_WIDTH - 36, SCREEN_HEIGHT - 75);
+  frameBuffer->println("Home");
+
+  //draw the animation circles
+  circ4.animateAndDraw(frameBuffer);
+  circ3.animateAndDraw(frameBuffer);
+  circ2.animateAndDraw(frameBuffer);
+  circ1.animateAndDraw(frameBuffer);
 }

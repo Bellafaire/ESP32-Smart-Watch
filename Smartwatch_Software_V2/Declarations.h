@@ -211,6 +211,8 @@ class AnimationCircle {
     AnimationCircle(int _x, int _y, int _rotationRadius, int _circleRadius, int _ringColor, int _color, float _speed, int _circleNumber);
     void animateAndDraw(GFXcanvas16 * buffer);
     void setColor(uint16_t _color);
+    void setRadius(int newRadius);
+    void setSpeed(float newSpeed); 
   private:
 };
 

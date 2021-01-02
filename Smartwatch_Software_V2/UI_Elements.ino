@@ -59,3 +59,11 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
 void AnimationCircle::setColor(uint16_t _color) {
   color = _color;
 }
+
+void  AnimationCircle::setRadius(int newRadius) {
+  rotationRadius = newRadius;
+}
+
+void  AnimationCircle::setSpeed(float newSpeed) {
+  speed = newSpeed;
+}

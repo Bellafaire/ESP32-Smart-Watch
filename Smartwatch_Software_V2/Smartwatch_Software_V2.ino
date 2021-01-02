@@ -42,7 +42,7 @@ void setup() {
     ,  NULL
     ,  1);
 
-  currentPage = (void*)home;
+  currentPage = (void*)initHome;
 
   //temporary until settings configuration option is pulled in
   setDataField(0, DAYLIGHT_SAVINGS);
@@ -94,14 +94,15 @@ void clearTask(TaskHandle_t handle) {
 
 
 void loop() {
-  //do everything we need to on wakeup. 
+  //do everything we need to on wakeup.
   onWakeup();
 
-  //the current page is set by a void pointer, this pointer can be reassigned to new pages. 
-  //using this approach creating new pages should be much easier since they're more-or-less self
-  //contained
+  //the current page is set by a void pointer, this pointer can be reassigned to new pages.
+  //using this approach creating new pages should be much easier since they're more-or-less self contained
+  //all pages draw to the framebuffer then the buffer is drawn at the end
   while (millis() < lastTouchTime + 10000) {
     ((void(*)())currentPage)();
+    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
   }
 
   printDebug("Going to sleep");
