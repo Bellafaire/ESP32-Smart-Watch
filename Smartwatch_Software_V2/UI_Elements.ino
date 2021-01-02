@@ -32,6 +32,7 @@ AnimationCircle:: AnimationCircle(int _x, int _y, int _rotationRadius, int _circ
   speed = _speed;
   x = _x;
   y = _y;
+
 }
 
 void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
@@ -54,7 +55,6 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
   }
   theta += speed;
 }
-
 
 void AnimationCircle::setColor(uint16_t _color) {
   color = _color;

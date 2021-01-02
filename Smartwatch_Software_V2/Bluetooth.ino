@@ -50,6 +50,7 @@ class MyClientCallback : public BLEClientCallbacks {
 // Start by scanning for the device we want to communicate with a FreeRTOS task
 void initBLE() {
 
+  printDebug("initalizing BLE");
   pRemoteCharacteristic = NULL;
   //  myDevice = NULL;
   pClient = NULL;
@@ -116,11 +117,13 @@ void formConnection(void * pvParameters) {
   //check that device is found again
   //attempting to connect to a null device will cause the device to crash
   if (myDevice) {
-    printDebug("...forming connection to BLE device");
-    if (pClient->connect(myDevice)) {
-      printDebug("...client has formed connection");
-    } else {
-      printDebug("...ERROR: client has failed to form connection");
+    while (!connected) {
+      printDebug("...forming connection to BLE device");
+      if (pClient->connect(myDevice)) {
+        printDebug("...client has formed connection");
+      } else {
+        printDebug("...ERROR: client has failed to form connection - retrying");
+      }
     }
   } else {
     printDebug("...ERROR: myDevice was found to be null when attempting to connect to server");

@@ -41,9 +41,7 @@ void updateTimeFromNotificationData(String notificationString) {
   }
 
   String lastNotificationLine = getValue(notificationString, '\n', lineCount);
-  if (lastNotificationLine[0] == '*' &&
-      lastNotificationLine[1] == '*' &&
-      lastNotificationLine[2] == '*') {
+  if (lastNotificationLine[0] == '*') {
 
     //get the last line of the notification string, that will contain the current time,
     //note that this function should only be called directly after receiving a notification update
@@ -81,7 +79,6 @@ void updateTimeFromNotificationData(String notificationString) {
     getRTCTime();
   } else {
     printDebug("Notification data not complete, cannot parse time");
-
   }
 }
 
