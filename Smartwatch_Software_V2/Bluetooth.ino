@@ -39,7 +39,7 @@ class MyClientCallback : public BLEClientCallbacks {
 
     void onDisconnect(BLEClient* pclient) {
       connected = false;
-//      myDevice = NULL; 
+      //      myDevice = NULL;
       Serial.println("%%%%%%%%%% Device has Disconnected %%%%%%%%");
     }
 };
@@ -65,7 +65,7 @@ void initBLE() {
 //Called from the
 void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
-  Serial.println("%%% Find Device Task Launched %%%");
+  printDebug("%%% Find Device Task Launched %%%");
 
   if (!myDevice) {
     BLEScan* pBLEScan = BLEDevice::getScan();
@@ -75,12 +75,12 @@ void xFindDevice(void * pvParameters ) {
     pBLEScan->setActiveScan(true);
     pBLEScan->start(8);
   }
-  
+
   if (myDevice) {
-    Serial.println("%%% Device Found %%%");
+    printDebug("%%% Device Found %%%");
     xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
   } else {
-    Serial.println("%%%% Device Not Found %%%");
+    printDebug("%%%% Device Not Found %%%");
   }
 
   vTaskDelete(NULL);
@@ -93,22 +93,37 @@ void xFindDevice(void * pvParameters ) {
 void formConnection(void * pvParameters) {
   //if for some this function is called before we find the device then we need to
   //do the scan again and make sure that we have a device
+
+  printDebug("Form Connection Task Launched");
   if (!myDevice) {
+    printDebug("...Device not recorded, scanning for device");
     xFindDevice((void*) 1);
+  } else {
+    printDebug("...Attempting to connect to device previously found");
   }
 
   //create a client to communicate to the server through
   pClient = BLEDevice::createClient();
 
+  printDebug("...created client");
+
   //set callbacks for client, if it disconnects we need to know,
   //also we don't consider the device to be connected unless the client is connected
   pClient->setClientCallbacks(new MyClientCallback());
 
+  printDebug("...set callback");
+
   //check that device is found again
   //attempting to connect to a null device will cause the device to crash
   if (myDevice) {
-    pClient->connect(myDevice);
+    printDebug("...forming connection to BLE device");
+    if (pClient->connect(myDevice)) {
+      printDebug("...client has formed connection");
+    } else {
+      printDebug("...ERROR: client has failed to form connection");
+    }
   } else {
+    printDebug("...ERROR: myDevice was found to be null when attempting to connect to server");
     vTaskDelete(NULL);
   }
 
@@ -117,7 +132,7 @@ void formConnection(void * pvParameters) {
   BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
   if (!pRemoteService) {
     pClient->disconnect();
-    Serial.println("%%%% Could not obtain remote service");
+    printDebug("%%%% Could not obtain remote service");
     vTaskDelete(NULL);
   }
 
@@ -125,9 +140,11 @@ void formConnection(void * pvParameters) {
   pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
   if (!pRemoteCharacteristic) {
     pClient->disconnect();
-    Serial.println("%%%% Could not obtain remote characteristic");
+    printDebug("%%%% Could not obtain remote characteristic");
     vTaskDelete(NULL);
   }
+
+  printDebug("...Bluetooth connection established");
 
   vTaskDelete(NULL);
 }
