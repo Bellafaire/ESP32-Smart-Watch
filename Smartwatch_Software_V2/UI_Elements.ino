@@ -51,7 +51,6 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
 
     buffer->fillCircle(xPos2, yPos2, circleRadius, color);
     buffer->drawCircle(xPos2, yPos2, circleRadius, ringColor);
-
   }
   theta += speed;
 }
@@ -67,3 +66,52 @@ void  AnimationCircle::setRadius(int newRadius) {
 void  AnimationCircle::setSpeed(float newSpeed) {
   speed = newSpeed;
 }
+
+
+/********************************************************************
+                              Buttons
+ ********************************************************************/
+RoundButton::RoundButton(int _x, int _y, int _radius, uint16_t _icon[16], void* _action) {
+  x = _x;
+  y = _y;
+  radius = _radius;
+  action = _action;
+  touchAreaID = createTouchArea(_x - _radius, y - _radius , _radius * 2, _radius * 2, _action);
+
+  //better ways to do this
+  for (int a = 0; a < 16; a++) {
+    icon[a] = _icon[a];
+  }
+}
+
+void   RoundButton::draw(GFXcanvas16 * buffer) {
+  buffer->fillCircle(x, y, radius, BACKGROUND_COLOR);
+  buffer->drawCircle(x, y, radius, INTERFACE_COLOR);
+
+  for (int row = 0; row < 16; row++) {
+    for (int column = 0; column < 16; column++) {
+      buffer->drawPixel(
+        x - 8 + column,
+        y - 8 + row,
+        (icon[row] & (1 << (15 - column))) ? INTERFACE_COLOR : BACKGROUND_COLOR
+      );
+    }
+  }
+}
+
+void  RoundButton::activate() {
+  touchAreaID = createTouchArea(x - radius, y - radius , radius * 2, radius * 2, action);
+}
+void RoundButton::deactivate() {
+  deactivateTouchArea(touchAreaID);
+}
+
+RoundButton::RoundButton() {
+}
+
+/********************************************************************
+                              ICONS
+ ********************************************************************/
+uint16_t HOME_ICON[] =  {  (0b00000000 << 8) | 0b00000000,  (0b00000000 << 8) | 0b00000000,  (0b00000001 << 8) | 0b10000000,  (0b00000011 << 8) | 0b11000000,  (0b00000111 << 8) | 0b11100000,  (0b00001111 << 8) | 0b11110000,  (0b00111111 << 8) | 0b11111100,  (0b01111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00000000 << 8) | 0b00000000};
+uint16_t NOTIFICATIONS_ICON[]  = { (0b00100001 << 8) | 0b10000100,    (0b01000111 << 8) | 0b11100010,    (0b10001100 << 8) | 0b00110001,    (0b10011000 << 8) | 0b00011001,    (0b10010000 << 8) | 0b00001001,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00100000 << 8) | 0b00000100,    (0b01100000 << 8) | 0b00000110,    (0b11000000 << 8) | 0b00000011,    (0b11000000 << 8) | 0b00000011,    (0b11111111 << 8) | 0b11111111,    (0b00000011 << 8) | 0b11000000  };
+uint16_t SETTINGS_ICON[]  =  {    (0b00000000 << 8) | 0b00001110,    (0b00000000 << 8) | 0b00011111,    (0b11111111 << 8) | 0b11011111,    (0b11111111 << 8) | 0b11011111,    (0b00000000 << 8) | 0b00001110,    (0b00001100 << 8) | 0b00000000,    (0b11011111 << 8) | 0b01111111,    (0b11011111 << 8) | 0b01111111,    (0b00011111 << 8) | 0b00000000,    (0b00001110 << 8) | 0b00001110,    (0b00000000 << 8) | 0b00011111,    (0b11111111 << 8) | 0b11011111,    (0b11111111 << 8) | 0b11011111,    (0b00000000 << 8) | 0b00001110,    (0b00000000 << 8) | 0b00000000,    (0b00000000 << 8) | 0b00000000  };

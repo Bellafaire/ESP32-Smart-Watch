@@ -27,6 +27,8 @@ AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 3
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
+RoundButton homeButton, settingButton, notificationsButton;
+
 
 /********************************************************************
                                  HOME
@@ -49,7 +51,7 @@ void initHome() {
   deactivateAllTouchAreas();
 
   //create touch area for going to the navigation page
-  homeTouchArea = createTouchArea(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 70, 140, 140, (void*) transitionToNav);
+  homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) transitionToNav);
   currentPage = (void*)home;
 }
 
@@ -124,7 +126,12 @@ void transitionToNav() {
 
 void initNavigation() {
   deactivateAllTouchAreas();
-  createTouchArea(SCREEN_WIDTH - 45, SCREEN_HEIGHT - 45, 90, 90, (void*) initHome);
+
+  //create homeButton
+  homeButton = RoundButton(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 16, HOME_ICON, (void*)initHome);
+  settingButton = RoundButton(25, 35, 16, SETTINGS_ICON, (void*)initSettings);
+  notificationsButton = RoundButton(75, 35, 16, NOTIFICATIONS_ICON, (void*)initNotifications);
+
   currentPage = (void*)navigation;
 }
 
@@ -141,4 +148,30 @@ void navigation() {
   circ3.animateAndDraw(frameBuffer);
   circ2.animateAndDraw(frameBuffer);
   circ1.animateAndDraw(frameBuffer);
+
+  homeButton.draw(frameBuffer);
+  settingButton.draw(frameBuffer);
+  notificationsButton.draw(frameBuffer);
+}
+
+/********************************************************************
+                              Settings
+ ********************************************************************/
+void initSettings() {
+  navigation();
+  frameBuffer->setCursor(0, 100);
+  frameBuffer->println("Settings not supported yet");
+
+  currentPage = (void*)initSettings;
+}
+
+/********************************************************************
+                            Notifications
+ ********************************************************************/
+void initNotifications() {
+  navigation();
+  frameBuffer->setCursor(0, 100);
+  frameBuffer->println("Notifications not supported yet");
+
+  currentPage = (void*)initNotifications;
 }

@@ -33,8 +33,7 @@ void setup() {
   initTouch();
 
   //create "watchdog task" to put the device in deepsleep if something goes wrong
-  xTaskCreatePinnedToCore(
-    watchDog
+  xTaskCreatePinnedToCore(    watchDog
     ,  "watchdog"
     ,  1024  // Stack size
     ,  NULL
@@ -42,6 +41,7 @@ void setup() {
     ,  NULL
     ,  1);
 
+  //the currentPage variable controls which page is currently being displayed.
   currentPage = (void*)initHome;
 
   //temporary until settings configuration option is pulled in
