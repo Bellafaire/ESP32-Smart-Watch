@@ -17,7 +17,10 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 ******************************************************************************/
-
+/* Hardware interfacing code, this should ideally be the only file that requires modification if
+ *  the hardware should change, everything else is more-or-less talking to a function in this file
+ *  if any hardware external to the ESP32 needs to talk 
+ */
 
 
 /********************************************************************
@@ -39,11 +42,16 @@ void initLCD() {
  ********************************************************************/
 int rapidTouchCount = 0;
 
+
+/* Touch interrupt
+ * This interrupt triggers the touch handling task defined in TouchInterface.ino which allows
+ * for touch areas to be identified. It also contains a rapid-touch shutdown which can be triggerred
+ * by tapping the screen rapidly. 
+ */
 void IRAM_ATTR TOUCH_ISR()
 {
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
-//    printDebug("rapidTouchCount: " + String(rapidTouchCount));
 
     if (rapidTouchCount > 50) {
 #ifdef DEBUG
@@ -66,6 +74,7 @@ void IRAM_ATTR TOUCH_ISR()
 
 }
 
+//init touch IC
 void initTouch()
 {
 
@@ -82,7 +91,7 @@ void initTouch()
   initTouchAreas();
 }
 
-
+//read touch
 struct point readTouch() {
   struct point p;
   if (!digitalRead(TOUCH_IRQ))
@@ -145,6 +154,7 @@ int readRegister(byte deviceAddr, byte location)
                           Battery Monitor
  ********************************************************************/
 //starts battery monitor and configures with parameters stated in Declarations.h
+//most of this code came directly from t manufactuer's example
 void initBatMonitor()
 {
   int StatusPOR = readRegister(BAT_MONITOR_ADDR, 0x00) & 0x0002;

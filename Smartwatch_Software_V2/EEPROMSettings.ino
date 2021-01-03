@@ -17,8 +17,10 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 ******************************************************************************/
-
-
+/* Certain settings are best stored in EEPROM since we'll want to retain them regardless
+ *  provided these settings aren't modified too often there shouldn't be any issues with the
+ *  hardware side of things. The locations for various settings are defined in the declarations.h 
+ *  file */
 void setDataField(byte data, int pos) {
   EEPROM.write(data, pos);
   EEPROM.commit();

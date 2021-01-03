@@ -29,7 +29,7 @@ void mjd_set_timezone_est()
   tzset();
 }
 
-
+//parses time out of the notification data obtained from the phone 
 void updateTimeFromNotificationData(String notificationString) {
   //check that the notification data we have is complete
   //first count the number of line breaks in the string
@@ -82,18 +82,29 @@ void updateTimeFromNotificationData(String notificationString) {
   }
 }
 
+//pulls the time from the ESP32's onboard RTC
 time_t getRTCTime() {
+  //set the timezone of the ESP32, this information is generally lost during deepsleep
   setenv("TZ", "EST5EDT", 1);
   tzset();
+
+  //create time holder variables
   time_t t;
   timeval tval;
+
+  //get time from the RTC
   gettimeofday(&tval, NULL);
-  t = tval.tv_sec;
-  timeinfo = localtime(&t);
+
+  //convert to time values we can actually use
+  t = tval.tv_sec;           //seconds since epoch
+  timeinfo = localtime(&t);  //time struct 
+
+  //return seconds since epoch
   return t;
 }
 
 
+//prints RTC to serial terminal when in debug mode
 void printRTCTime() {
   time_t t = getRTCTime();
   printDebug("NOW: " + String(t));
@@ -111,6 +122,8 @@ String twoCharacters(int value) {
   return r;
 }
 
+
+//converts time struct to a string for display on the LCD
 String getTimeString(struct tm* timeinfo) {
   setenv("TZ", "EST5EDT", 1);
   tzset();
@@ -125,6 +138,7 @@ String getTimeString(struct tm* timeinfo) {
   return  timeString;
 }
 
+//converts time struct to date for display on the LCD
 String getDateString(struct tm* timeinfo) {
   setenv("TZ", "EST5EDT", 1);
   tzset();
@@ -140,7 +154,6 @@ String getDateString(struct tm* timeinfo) {
 
 
 
-//duplicated in settings.ino
 String getValue(String data, char separator, int index)
 {
   int found = 0;
@@ -161,6 +174,7 @@ String getValue(String data, char separator, int index)
 }
 
 
+//draws the gime at a given location on the LCD using the frameBuffer
 void drawTime(int x, int y, int textSize, int color, int shadowOffset)
 {
   //configure current timezone (this information gets lost in deep sleep)
@@ -224,7 +238,7 @@ void drawTime(int x, int y, int textSize, int color, int shadowOffset)
   frameBuffer->setTextSize(1);
 }
 
-
+//draws the current date to the LCD at a given location utilizing the frameBuffer
 void drawDate(int x, int y, int textSize)
 {
   //configure current timezone (this information gets lost in deep sleep)
@@ -271,6 +285,7 @@ void drawDate(int x, int y, int textSize)
   }
 }
 
+//draws the date centered on the screen at a given y position (Uses framebuffer)
 void drawDateCentered(int y, int textSize)
 {
   //configure current timezone (this information gets lost in deep sleep)

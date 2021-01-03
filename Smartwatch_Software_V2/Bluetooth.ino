@@ -176,6 +176,7 @@ String sendBLE(String command, bool hasReturnData) {
   return ret;
 }
 
+//just an extra variable to make sure we don't end up sending the same command multiple times
 unsigned long lastMediaCommandIssued = 0;
 
 void playMusic() {

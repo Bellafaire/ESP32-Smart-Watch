@@ -18,9 +18,18 @@
   SOFTWARE.
 ******************************************************************************/
 
+/* Elements used in the UI design of this project, things that can be abstracted to classes
+ * should be to ease development of user interaction. 
+ * 
+ */
 
 /********************************************************************
                          Animation Circles
+                meant to look like a kind of alchemy circle
+                they spin on the screen to add some life to 
+                the overall interface, but they can be used 
+                to indicate various conditions by changing
+                color or speed of rotation
  ********************************************************************/
 
 AnimationCircle:: AnimationCircle(int _x, int _y, int _rotationRadius, int _circleRadius, int _ringColor, int _color, float _speed, int _circleNumber) {
@@ -70,6 +79,10 @@ void  AnimationCircle::setSpeed(float newSpeed) {
 
 /********************************************************************
                               Buttons
+
+                 Round buttons will use an Icon and 
+                 when placed on screen automatically 
+                   assign themselves a touch area
  ********************************************************************/
 RoundButton::RoundButton(int _x, int _y, int _radius, uint16_t _icon[16], void* _action) {
   x = _x;

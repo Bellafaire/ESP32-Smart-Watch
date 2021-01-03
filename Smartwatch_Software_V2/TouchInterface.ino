@@ -32,19 +32,10 @@ void TouchTask(void * pvParameters ) {
   vTaskDelete(NULL);
 }
 
-/*
-  #define MAX_TOUCH_AREAS 25
 
-  struct touchArea{
-  int x, y, width, height;
-  ((void*)()) action;
-  int identifier;
-  };
-
-  int touchAreaIdentifierCount = 1; //keeps track of the number of touch areas created
-  static struct activeTouchAreas[MAX_TOUCH_AREAS];
-*/
-
+/* Creates a touch area which will be recognized when an area is touched
+ * each area has a designated function which it will trigger when pressed 
+ */
 int createTouchArea(int x, int y, int width, int height, void* action) {
   struct touchArea ta;
   ta.x = x;
@@ -64,6 +55,7 @@ int createTouchArea(int x, int y, int width, int height, void* action) {
   return ta.identifier;
 }
 
+//fills touch area array with dummy values
 void initTouchAreas() {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     struct touchArea t;
@@ -72,7 +64,7 @@ void initTouchAreas() {
   }
 }
 
-
+//deactivates a touch area and allows for its place in memory to be reallocated
 void deactivateTouchArea(int identifier) {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (activeTouchAreas[a].identifier == identifier) {
@@ -83,6 +75,7 @@ void deactivateTouchArea(int identifier) {
   }
 }
 
+//deactivates all active touch areas 
 void deactivateAllTouchAreas() {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (activeTouchAreas[a].identifier) {
@@ -93,6 +86,7 @@ void deactivateAllTouchAreas() {
   }
 }
 
+//checks all touch areas that are currently active and triggers the appropriate function
 void checkAllTouchAreas(int x, int y) {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (x >=  activeTouchAreas[a].x
