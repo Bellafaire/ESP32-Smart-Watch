@@ -57,7 +57,7 @@ void watchDog(void *pvParameters)  // This is a task.
   for (;;)
   {
     //    printDebug("***watchdog serviced***");
-    if (millis() > lastTouchTime + 15000) {
+    if (millis() > lastTouchTime + 20000) {
       esp_sleep_enable_timer_wakeup(1);
       esp_deep_sleep_start();
     }
@@ -100,7 +100,7 @@ void loop() {
   //the current page is set by a void pointer, this pointer can be reassigned to new pages.
   //using this approach creating new pages should be much easier since they're more-or-less self contained
   //all pages draw to the framebuffer then the buffer is drawn at the end
-  while (millis() < lastTouchTime + 10000) {
+  while (millis() < lastTouchTime + 15000) {
     ((void(*)())currentPage)();
     tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
   }

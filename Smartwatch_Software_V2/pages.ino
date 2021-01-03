@@ -104,7 +104,6 @@ void home() {
   //draw the notification data to the screen
   drawNotifications(notificationData, 0, 30, 0xFFFF);
 
-
   //animate all the circles (the class will handle all of that for us as long as we call it)
   circ5.animateAndDraw(frameBuffer);
   circ4.animateAndDraw(frameBuffer);

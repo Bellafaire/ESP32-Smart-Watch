@@ -68,14 +68,12 @@ void xFindDevice(void * pvParameters ) {
   BLEDevice::init("");
   printDebug("%%% Find Device Task Launched %%%");
 
-  if (!myDevice) {
-    BLEScan* pBLEScan = BLEDevice::getScan();
-    pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-    pBLEScan->setInterval(40);           //I've found these interval and window values to work the best with android, but others may be better.
-    pBLEScan->setWindow(39);
-    pBLEScan->setActiveScan(true);
-    pBLEScan->start(8);
-  }
+  BLEScan* pBLEScan = BLEDevice::getScan();
+  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
+  pBLEScan->setInterval(200);           //I've found these interval and window values to work the best with android, but others may be better.
+  pBLEScan->setWindow(175);
+  pBLEScan->setActiveScan(true);
+  pBLEScan->start(8);
 
   if (myDevice) {
     printDebug("%%% Device Found %%%");
@@ -117,13 +115,11 @@ void formConnection(void * pvParameters) {
   //check that device is found again
   //attempting to connect to a null device will cause the device to crash
   if (myDevice) {
-    while (!connected) {
-      printDebug("...forming connection to BLE device");
-      if (pClient->connect(myDevice)) {
-        printDebug("...client has formed connection");
-      } else {
-        printDebug("...ERROR: client has failed to form connection - retrying");
-      }
+    printDebug("...forming connection to BLE device");
+    if (pClient->connect(myDevice)) {
+      printDebug("...client has formed connection");
+    } else {
+      printDebug("...ERROR: client has failed to form connection");
     }
   } else {
     printDebug("...ERROR: myDevice was found to be null when attempting to connect to server");
