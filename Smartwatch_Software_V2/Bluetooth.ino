@@ -175,3 +175,33 @@ String sendBLE(String command, bool hasReturnData) {
   }
   return ret;
 }
+
+unsigned long lastMediaCommandIssued = 0;
+
+void playMusic() {
+  if (lastMediaCommandIssued + 500 < millis()) {
+    sendBLE("/play", false);
+    lastMediaCommandIssued = millis();
+  }
+}
+
+void pauseMusic() {
+  if (lastMediaCommandIssued + 500 < millis()) {
+    sendBLE("/pause", false);
+    lastMediaCommandIssued = millis();
+  }
+}
+
+void nextSong() {
+  if (lastMediaCommandIssued + 500 < millis()) {
+    sendBLE("/nextSong", false);
+    lastMediaCommandIssued = millis();
+  }
+}
+
+void lastSong() {
+  if (lastMediaCommandIssued + 500 < millis()) {
+    sendBLE("/lastSong", false);
+    lastMediaCommandIssued = millis();
+  }
+}

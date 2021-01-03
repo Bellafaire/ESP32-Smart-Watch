@@ -27,7 +27,7 @@ AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 3
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
-RoundButton homeButton, settingButton, notificationsButton;
+RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton;
 
 
 /********************************************************************
@@ -52,18 +52,15 @@ void initHome() {
 
   //create touch area for going to the navigation page
   homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) transitionToNav);
+  homeMediaButton = RoundButton(16, SCREEN_HEIGHT - 16, 16, MEDIA_PLAY_ICON, (void*)initHomeMedia);
+  homeMediaButton.deactivate();
   currentPage = (void*)home;
 }
 
-void home() {
+long lastSongCheck = 0;
+#define SONG_CHECK_INTERVAL 1000 //how many miliseconds between checking the current song
 
-  if (connected) {
-    circ1.setColor(RGB_TO_BGR565(0, 255, 0));
-  } else if (myDevice) {
-    circ1.setColor(RGB_TO_BGR565(0, 0, 255));
-  } else {
-    circ1.setColor(RGB_TO_BGR565(255, 0, 0));
-  }
+void home() {
 
   if (connected && notificationData.length() < 10) {
     notificationData = sendBLE("/notifications", true); //gets current android notifications as a string
@@ -92,11 +89,28 @@ void home() {
   circ3.animateAndDraw(frameBuffer);
   circ2.animateAndDraw(frameBuffer);
   circ1.animateAndDraw(frameBuffer);
+
+  if (connected) {
+    circ1.setColor(RGB_TO_BGR565(0, 255, 0));
+
+    if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
+      boolean isPlaying = sendBLE("/isPlaying", true).substring(0, 4).equals("true");
+      if (isPlaying) {
+        homeMediaButton.activate();
+      }
+      lastSongCheck = millis();
+    }
+  } else if (myDevice) {
+    circ1.setColor(RGB_TO_BGR565(0, 0, 255));
+  } else {
+    circ1.setColor(RGB_TO_BGR565(255, 0, 0));
+  }
+
+  homeMediaButton.draw(frameBuffer);
 }
 
 
-/* Quick and dirty animation to transition to the navigation page.
-*/
+/* Quick and dirty animation to transition to the navigation page.*/
 void homeTransitionToNav() {
   for (int a = 0; a < 8; a++) {
     home();
@@ -118,6 +132,29 @@ void homeTransitionToNav() {
 void transitionToNav() {
   currentPage = (void*)homeTransitionToNav;
 }
+
+/* Home Media
+   technically just an extension of home activated by tapping the play icon
+*/
+
+void initHomeMedia() {
+  currentPage = (void*)homeMedia;
+  deactivateAllTouchAreas();
+  homeMediaButton = RoundButton(16, SCREEN_HEIGHT - 16, 16, MEDIA_PLAY_ICON, (void*)playMusic);
+  homeNextMediaButton = RoundButton(56, SCREEN_HEIGHT - 56, 16, MEDIA_NEXT_ICON, (void*)nextSong);
+  homePreviousMediaButton = RoundButton(16, SCREEN_HEIGHT - 66, 16, MEDIA_LAST_ICON, (void*)lastSong);
+  homePauseMediaButton = RoundButton(66, SCREEN_HEIGHT - 16, 16, MEDIA_PAUSE_ICON, (void*)pauseMusic);
+  homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) initHome);
+}
+
+void homeMedia() {
+  home();
+  homeNextMediaButton.draw(frameBuffer);
+  homePreviousMediaButton.draw(frameBuffer);
+  homePauseMediaButton.draw(frameBuffer);
+  homeMediaButton.draw(frameBuffer);
+}
+
 
 
 /********************************************************************

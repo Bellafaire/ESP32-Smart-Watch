@@ -217,15 +217,17 @@ class AnimationCircle {
 
 
 class RoundButton {
-    int x, y, radius;
     void* action;
     uint16_t icon[16];
+    boolean active = true;
 
   public:
+    int x, y, radius;
     RoundButton(int _x, int _y, int _radius, uint16_t _icon[16], void* _action);
     RoundButton();
     void draw(GFXcanvas16 * buffer);
     void activate();
+    boolean isActive();
     void deactivate();
   private:
     int touchAreaID = 0;
