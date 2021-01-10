@@ -176,6 +176,9 @@ static BLEClient*  pClient;
 TaskHandle_t xConnect = NULL;
 static volatile boolean connected = false;
 static boolean registeredForCallback = false;
+static boolean deviceFound = false;
+
+#define BLUETOOTH_CONNECTION_TASK_PRIORITY 3
 
 /********************************************************************
                           Touch Interface

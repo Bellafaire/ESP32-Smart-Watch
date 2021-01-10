@@ -125,7 +125,7 @@ void home() {
       }
       lastSongCheck = millis();
     }
-  } else if (myDevice) {
+  } else if (deviceFound) {
     circ1.setColor(RGB_TO_BGR565(0, 0, 255));
   } else {
     circ1.setColor(RGB_TO_BGR565(255, 0, 0));

@@ -26,6 +26,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
       if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
         BLEDevice::getScan()->stop();
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
+        deviceFound = true;
         Serial.println("%%%%%%%%%%%% Device Found %%%%%%%%%%%%%%%%%");
       }
     }
@@ -38,8 +39,8 @@ class MyClientCallback : public BLEClientCallbacks {
     }
 
     void onDisconnect(BLEClient* pclient) {
+      //      deviceFound = false;
       connected = false;
-      //      myDevice = NULL;
       Serial.println("%%%%%%%%%% Device has Disconnected %%%%%%%%");
     }
 };
@@ -53,13 +54,13 @@ void initBLE() {
   printDebug("initalizing BLE");
   pRemoteCharacteristic = NULL;
   //  myDevice = NULL;
-  pClient = NULL;
-  registeredForCallback = false;
+  //  pClient = NULL;
+  //  registeredForCallback = false;
 
 
   if (!connected) {
     printDebug("Finding Device");
-    xTaskCreatePinnedToCore( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
+    xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , BLUETOOTH_CONNECTION_TASK_PRIORITY, &xConnect, 0 );
   }
 }
 
@@ -75,9 +76,9 @@ void xFindDevice(void * pvParameters ) {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(8);
 
-  if (myDevice) {
+  if (deviceFound) {
     printDebug("%%% Device Found %%%");
-    xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
+    xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , BLUETOOTH_CONNECTION_TASK_PRIORITY, &xConnect, 0 );
   } else {
     printDebug("%%%% Device Not Found %%%");
   }
@@ -94,7 +95,7 @@ void formConnection(void * pvParameters) {
   //do the scan again and make sure that we have a device
 
   printDebug("Form Connection Task Launched");
-  if (!myDevice) {
+  if (!deviceFound) {
     printDebug("...Device not recorded, scanning for device");
     xFindDevice((void*) 1);
   } else {
@@ -102,15 +103,18 @@ void formConnection(void * pvParameters) {
   }
 
   //create a client to communicate to the server through
-  pClient = BLEDevice::createClient();
+  if (!pClient) {
+    pClient = BLEDevice::createClient();
+    printDebug("...created client");
 
-  printDebug("...created client");
+    //set callbacks for client, if it disconnects we need to know,
+    //also we don't consider the device to be connected unless the client is connected
+    pClient->setClientCallbacks(new MyClientCallback());
+    printDebug("...set callback");
+  } else {
+    printDebug("...Using existing client");
+  }
 
-  //set callbacks for client, if it disconnects we need to know,
-  //also we don't consider the device to be connected unless the client is connected
-  pClient->setClientCallbacks(new MyClientCallback());
-
-  printDebug("...set callback");
 
   //check that device is found again
   //attempting to connect to a null device will cause the device to crash

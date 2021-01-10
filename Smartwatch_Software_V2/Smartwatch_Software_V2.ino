@@ -34,12 +34,12 @@ void setup() {
 
   //create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(    watchDog
-    ,  "watchdog"
-    ,  1024  // Stack size
-    ,  NULL
-    ,  3  // Priority
-    ,  NULL
-    ,  1);
+                              ,  "watchdog"
+                              ,  1024  // Stack size
+                              ,  NULL
+                              ,  3  // Priority
+                              ,  NULL
+                              ,  1);
 
   //the currentPage variable controls which page is currently being displayed.
   currentPage = (void*)initHome;
@@ -49,8 +49,9 @@ void setup() {
 }
 
 
-
-void watchDog(void *pvParameters)  // This is a task.
+//watchdog tasks, it's possible some of the code can bind up. This at least prevents
+//the user from having to manually press the reset button
+void watchDog(void *pvParameters) 
 {
   (void) pvParameters;
 
@@ -78,6 +79,14 @@ void deviceSleep() {
     };
     printDebug("disconnected");
   }
+
+  //make sure the BLE task is killed, otherwise this will create
+  //issues when the device wakes up again.
+  //  if (xConnect != NULL) {
+  //    printDebug("Ending xConnect Task before entering sleep");
+  //    vTaskDelete(xConnect);
+  //  }
+
   Serial.flush();
 
   //put display to sleep
