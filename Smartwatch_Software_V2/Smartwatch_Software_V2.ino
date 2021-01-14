@@ -21,6 +21,7 @@
 #include "Declarations.h"
 
 int batteryPercentage = 100;
+esp_sleep_wakeup_cause_t wakeup_reason;
 
 void setup() {
 #ifdef DEBUG
@@ -51,16 +52,19 @@ void setup() {
 
 //watchdog tasks, it's possible some of the code can bind up. This at least prevents
 //the user from having to manually press the reset button
-void watchDog(void *pvParameters) 
+void watchDog(void *pvParameters)
 {
   (void) pvParameters;
 
   for (;;)
   {
     //    printDebug("***watchdog serviced***");
-    if (millis() > lastTouchTime + 20000) {
-      esp_sleep_enable_timer_wakeup(1);
-      esp_deep_sleep_start();
+    if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
+      if (millis() > lastTouchTime + 20000
+         ) {
+        esp_sleep_enable_timer_wakeup(1);
+        esp_deep_sleep_start();
+      }
     }
     vTaskDelay(500);
   }
@@ -71,22 +75,31 @@ void deviceSleep() {
   batteryPercentage = getBatteryPercentage();
   //re-enable touch wakeup
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
+  esp_sleep_enable_timer_wakeup(TIMER_SLEEP_TIME);
   digitalWrite(LCD_LED, LOW);
   if (connected) {
-    pClient->disconnect();
-    while (connected) {
-      delay(1);
-    };
+
+    BLEAddress devices = myDevice->getAddress();
+
+    if (esp_ble_gap_disconnect((uint8_t*)devices.getNative()) == ESP_OK) {
+      printDebug("%%%%%%%%%%%%%%% CLOSED BLE CLIENT CONNECTION %%%%%%%%%%%%%%%%%%");
+    }
+
+    unsigned long disconnectTimeout = millis() + 1000;
+
+    while (connected && millis() < disconnectTimeout) {
+      vTaskDelay(10);
+    }
+
+    if(millis() >= disconnectTimeout){
+      connected = false;
+      printDebug("Device disconnected improperly"); 
+    }
+
     printDebug("disconnected");
   }
 
-  //make sure the BLE task is killed, otherwise this will create
-  //issues when the device wakes up again.
-  //  if (xConnect != NULL) {
-  //    printDebug("Ending xConnect Task before entering sleep");
-  //    vTaskDelete(xConnect);
-  //  }
-
+  printDebug("Going to sleep");
   Serial.flush();
 
   //put display to sleep
@@ -104,27 +117,43 @@ void clearTask(TaskHandle_t handle) {
 
 void loop() {
   //do everything we need to on wakeup.
-  onWakeup();
+  wakeup_reason = esp_sleep_get_wakeup_cause();
 
-  //the current page is set by a void pointer, this pointer can be reassigned to new pages.
-  //using this approach creating new pages should be much easier since they're more-or-less self contained
-  //all pages draw to the framebuffer then the buffer is drawn at the end
-  while (millis() < lastTouchTime + 15000) {
-    ((void(*)())currentPage)();
-    tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  //check the wakeup reason, if it's touch we go right into the main loop.
+  //if it's timer then we're checking whether the accelerometer is in the proper threshold region. 
+  if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0
+      || readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
+      if(readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD){
+        lastTouchTime = millis() - 14000; 
+      }
+    onWakeup();
+
+    //the current page is set by a void pointer, this pointer can be reassigned to new pages.
+    //using this approach creating new pages should be much easier since they're more-or-less self contained
+    //all pages draw to the framebuffer then the buffer is drawn at the end
+    //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100 
+    while (millis() < lastTouchTime + 15000 || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
+      ((void(*)())currentPage)();
+      tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
   }
 
-  printDebug("Going to sleep");
+
   deviceSleep();
+
 }
 
 
 void onWakeup() {
+
   getRTCTime();
   printRTCTime();
   //wake up display
   tft.enableSleep(false);
   digitalWrite(LCD_LED, HIGH);
+
+  //always start on the home page when waking up
+  currentPage = (void*)initHome;
   //initalizes BLE connection in seperate thread
   //when connected will update the "connected" variable to true
   initBLE();

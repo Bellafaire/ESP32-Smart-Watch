@@ -18,7 +18,6 @@
   SOFTWARE.
 ******************************************************************************/
 
-
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Wire.h>
@@ -26,6 +25,7 @@
 #include <EEPROM.h>
 #include <soc/rtc.h>
 #include <sys/time.h>
+#include <driver/adc.h>
 
 /*******************************************************************
                               DEBUG
@@ -97,6 +97,18 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 #define INTERFACE_COLOR ST77XX_WHITE
 #define GRAYED 0xBDF7
 int ERROR_COLOR = ST77XX_BLUE;
+
+/********************************************************************
+                             SLEEP
+ ********************************************************************/
+//number of times per second the ESP32 will wake up to check the accelerometer
+#define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 6
+#define ACCELEROMETER_WAKEUP_THRESHOLD 2400
+#define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2100
+       
+#define TIMER_SLEEP_TIME 1000000ULL / ACCELEROMETER_SLEEP_POLLING_PER_SECOND
+
+
 
 /********************************************************************
                             Current Page

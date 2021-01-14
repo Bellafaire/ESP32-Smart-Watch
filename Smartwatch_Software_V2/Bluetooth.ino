@@ -124,9 +124,13 @@ void formConnection(void * pvParameters) {
       printDebug("...client has formed connection");
     } else {
       printDebug("...ERROR: client has failed to form connection");
+      printDebug("...Attempting to find device again"); 
+      xFindDevice((void*) 1);
+      vTaskDelete(NULL);
     }
   } else {
     printDebug("...ERROR: myDevice was found to be null when attempting to connect to server");
+
     vTaskDelete(NULL);
   }
 
