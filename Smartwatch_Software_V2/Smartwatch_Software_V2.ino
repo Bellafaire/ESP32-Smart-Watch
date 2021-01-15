@@ -125,7 +125,7 @@ void loop() {
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0
       || readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
     if (readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
-      lastTouchTime = millis() - 14000;
+      lastTouchTime = millis() - (TAP_WAKE_TIME - 1000);
     }
 
     //do all the normal things we have to do when the device wakes up
@@ -137,13 +137,13 @@ void loop() {
     //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100
     while (millis() < lastTouchTime + TAP_WAKE_TIME || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
 
-      //specific elements need to bypass the loop thread drawing so that they can 
+      //specific elements need to bypass the loop thread drawing so that they can
       //have more direct control of the display for short periods of time.
       if (drawInLoop) {
-        
+
         ((void(*)())currentPage)();
         tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
-      
+
       }
     }
   }
@@ -167,24 +167,4 @@ void onWakeup() {
   //initalizes BLE connection in seperate thread
   //when connected will update the "connected" variable to true
   initBLE();
-}
-
-void drawNotifications(String notificationData, int x, int y, int color) {
-  //count lines
-  int lineCount = 0;
-  for (int a = 0; a < notificationData.length(); a++) {
-    if (notificationData[a] == '\n') {
-      lineCount++;
-    }
-  }
-  //last 2 lines are not notification data, they're time and EOM terminator
-  lineCount = lineCount - 1;
-
-  frameBuffer->setTextColor(color);
-  frameBuffer->setCursor(x, y);
-
-  for (int a = 0; a < lineCount; a++) {
-    String line = getValue(notificationData, '\n', a);
-    frameBuffer->println(getValue(line, ';', 0));
-  }
 }

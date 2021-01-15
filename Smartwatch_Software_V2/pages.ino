@@ -26,9 +26,6 @@
 */
 
 
-
-String notificationData = "";
-
 //animation circles, I kind of made these awhile ago as a cool visual element but now they're fairly essential to the entire UI design
 AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
 AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
@@ -273,10 +270,8 @@ void initSettings() {
 /********************************************************************
                             Notifications
  ********************************************************************/
+int notificationScrollPosition = 0; 
+ 
 void initNotifications() {
   navigation();
-  frameBuffer->setCursor(0, 100);
-  frameBuffer->println("Notifications not supported yet");
-
-  currentPage = (void*)initNotifications;
 }

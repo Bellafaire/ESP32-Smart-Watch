@@ -18,22 +18,17 @@
   SOFTWARE.
 ******************************************************************************/
 
-//to support some legacy windows we need to give them full control of the touch screen.
-//since these are relatively minior UI elements that are important to functionality
-//this is alright, for the duration of their activity they must control the entire screen.
-boolean useTouchAreas = true;
-
 /* Checks a touch event and triggers any required actions,
   this task is called within the touch interrupt defined in HardwareInterface.ino */
 void TouchTask(void * pvParameters ) {
   printDebug("TouchTask Triggerred");
 
-  point p = readTouch();
-  printDebug("x:" + String(p.x) + " y:" + String(p.y));
 
-  if (useTouchAreas) {
+    point p = readTouch();
+    printDebug("x:" + String(p.x) + " y:" + String(p.y));
+
     checkAllTouchAreas(p.x, p.y);
-  }
+ 
   xTouch = NULL;
   vTaskDelete(NULL);
 }
@@ -110,7 +105,7 @@ void checkAllTouchAreas(int x, int y) {
         && y >=  activeTouchAreas[a].y
         && y <=  activeTouchAreas[a].y +  activeTouchAreas[a].height
         &&  activeTouchAreas[a].identifier) {
-      printDebug("Registered touch for touchEvent: " + String(activeTouchAreas[a].identifier));
+      printDebug("Detected touch for touchEvent: " + String(activeTouchAreas[a].identifier) + " at x:" + String(x) + " y:" + String(y) );
       //call the action associated with this touch area
       ((void(*)())activeTouchAreas[a].action)();
     }

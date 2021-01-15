@@ -18,9 +18,9 @@
   SOFTWARE.
 ******************************************************************************/
 /* Hardware interfacing code, this should ideally be the only file that requires modification if
- *  the hardware should change, everything else is more-or-less talking to a function in this file
- *  if any hardware external to the ESP32 needs to talk 
- */
+    the hardware should change, everything else is more-or-less talking to a function in this file
+    if any hardware external to the ESP32 needs to talk
+*/
 
 
 /********************************************************************
@@ -44,10 +44,10 @@ int rapidTouchCount = 0;
 
 
 /* Touch interrupt
- * This interrupt triggers the touch handling task defined in TouchInterface.ino which allows
- * for touch areas to be identified. It also contains a rapid-touch shutdown which can be triggerred
- * by tapping the screen rapidly. 
- */
+   This interrupt triggers the touch handling task defined in TouchInterface.ino which allows
+   for touch areas to be identified. It also contains a rapid-touch shutdown which can be triggerred
+   by tapping the screen rapidly.
+*/
 void IRAM_ATTR TOUCH_ISR()
 {
   if (millis() - lastTouchTime < 200) {
@@ -69,7 +69,9 @@ void IRAM_ATTR TOUCH_ISR()
 
   lastTouchTime = millis();
   if (!xTouch) {
-    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4096, (void *) 1 , 3, &xTouch, 0 );
+    if (useTouchAreas) {
+      xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4096, (void *) 1 , 3, &xTouch, 0 );
+    }
   }
 
 }

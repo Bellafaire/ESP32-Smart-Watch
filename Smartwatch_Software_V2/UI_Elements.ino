@@ -78,6 +78,38 @@ void  AnimationCircle::setSpeed(float newSpeed) {
 
 
 /********************************************************************
+                          Notifications
+         support related functions for drawing notifications
+ ********************************************************************/
+
+int getNumberOfLines(String data) {
+  int lineCount = 0;
+  for (int a = 0; a < data.length(); a++) {
+    if (notificationData[a] == '\n') {
+      lineCount++;
+    }
+  }
+  return lineCount;
+}
+
+void drawNotifications(String notificationData, int x, int y, int color) {
+  //count lines
+  int lineCount = getNumberOfLines(notificationData);
+  
+  //last 2 lines are not notification data, they're time and EOM terminator
+  lineCount = lineCount - 1;
+
+  frameBuffer->setTextColor(color);
+  frameBuffer->setCursor(x, y);
+
+  for (int a = 0; a < lineCount; a++) {
+    String line = getValue(notificationData, '\n', a);
+    frameBuffer->println(getValue(line, ';', 0));
+  }
+}
+
+
+/********************************************************************
                               Buttons
 
                  Round buttons will use an Icon and

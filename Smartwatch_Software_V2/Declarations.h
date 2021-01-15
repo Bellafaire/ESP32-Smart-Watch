@@ -126,6 +126,11 @@ void * currentPage;
 boolean drawInLoop = true;
 
 /********************************************************************
+                          Globals
+ ********************************************************************/
+String notificationData = "";
+
+/********************************************************************
                             TOUCH
  ********************************************************************/
 struct point
@@ -143,6 +148,11 @@ volatile unsigned long lastTouchTime = 0;
 #define Y_MIN 14
 
 TaskHandle_t xTouch = NULL;
+
+//to support some legacy windows we need to give them full control of the touch screen.
+//since these are relatively minior UI elements that are important to functionality
+//this is alright, for the duration of their activity they must control the entire screen.
+boolean useTouchAreas = true;
 
 
 /********************************************************************
