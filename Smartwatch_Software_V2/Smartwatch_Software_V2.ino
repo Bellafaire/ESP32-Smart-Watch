@@ -44,9 +44,6 @@ void setup() {
 
   //the currentPage variable controls which page is currently being displayed.
   currentPage = (void*)initHome;
-
-  //temporary until settings configuration option is pulled in
-  setDataField(0, DAYLIGHT_SAVINGS);
 }
 
 
@@ -60,7 +57,7 @@ void watchDog(void *pvParameters)
   {
     //    printDebug("***watchdog serviced***");
     if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
-      if (millis() > lastTouchTime + TAP_WAKE_TIME
+      if (millis() > lastTouchTime + 20000
           &&  readZAccel() < ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
         esp_sleep_enable_timer_wakeup(1);
         esp_deep_sleep_start();
@@ -98,7 +95,7 @@ void deviceSleep() {
 
     eTaskState con = eTaskGetState(xConnect);
     if (con == 0) {
-      printDebug("Deleting Bluetooth Task"); 
+      printDebug("Deleting Bluetooth Task");
       vTaskDelete(xConnect);
     }
 
@@ -130,15 +127,24 @@ void loop() {
     if (readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
       lastTouchTime = millis() - 14000;
     }
+
+    //do all the normal things we have to do when the device wakes up
     onWakeup();
 
     //the current page is set by a void pointer, this pointer can be reassigned to new pages.
     //using this approach creating new pages should be much easier since they're more-or-less self contained
     //all pages draw to the framebuffer then the buffer is drawn at the end
     //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100
-    while (millis() < lastTouchTime + 15000 || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
-      ((void(*)())currentPage)();
-      tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+    while (millis() < lastTouchTime + TAP_WAKE_TIME || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
+
+      //specific elements need to bypass the loop thread drawing so that they can 
+      //have more direct control of the display for short periods of time.
+      if (drawInLoop) {
+        
+        ((void(*)())currentPage)();
+        tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+      
+      }
     }
   }
 

@@ -133,6 +133,282 @@ void RoundButton::deactivate() {
 RoundButton::RoundButton() {
 }
 
+
+/********************************************************************
+                           LEGACY BUTTONS
+ ********************************************************************/
+//determines width of text displayed on LCD screen, default text has width of 5 pixels + 1 space pixel
+int TextWidth(struct onscreenButton b) {
+  return b._text.length() * 6;
+}
+
+
+void paintButton(struct onscreenButton b) {
+  frameBuffer->drawRect(b._x, b._y, b._width, b._height, b._color);
+  frameBuffer->setTextColor(b._color);
+  frameBuffer->setCursor(b._x + (int)(b._width - TextWidth(b)) / 2, b._y + (int)b._height / 2 - 5);
+  frameBuffer->println(b._text);
+}
+
+void paintButton(struct iconButton b) {
+  frameBuffer->drawRect(b._x, b._y, b._width, b._height, b._color);
+  for (int row = 0; row < 16; row++) {
+    for (int column = 0; column < 16; column++) {
+      frameBuffer->drawPixel(
+        b._x + b._width / 2 - 8 + column,
+        b._y + b._height / 2 - 8 + row,
+        (b.icon[row] & (1 << (15 - column))) ? b._color : b._backgroundColor
+      );
+    }
+  }
+}
+
+
+
+void paintButtonNoBuffer(struct onscreenButton b) {
+  tft.fillRect(b._x, b._y, b._width, b._height, b._backgroundColor);
+  tft.drawRect(b._x, b._y, b._width, b._height, b._color);
+  tft.setTextColor(b._color);
+  tft.setCursor(b._x + (int)(b._width - TextWidth(b)) / 2, b._y + (int)b._height / 2 - 5);
+  tft.println(b._text);
+}
+
+
+void paintButtonNoBuffer(struct iconButton b) {
+  tft.fillRect(b._x, b._y, b._width, b._height, b._backgroundColor);
+  tft.drawRect(b._x, b._y, b._width, b._height, b._color);
+  for (int row = 0; row < 16; row++) {
+    for (int column = 0; column < 16; column++) {
+      tft.drawPixel(
+        b._x + b._width / 2 - 8 + column,
+        b._y + b._height / 2 - 8 + row,
+        (b.icon[row] & (1 << (15 - column))) ? b._color : b._backgroundColor
+      );
+    }
+  }
+}
+
+
+
+void paintButtonFull(struct onscreenButton b) {
+  frameBuffer->fillRect(b._x, b._y, b._width, b._height, b._backgroundColor);
+  frameBuffer->drawRect(b._x, b._y, b._width, b._height, b._color);
+  frameBuffer->setTextColor(b._color);
+  frameBuffer->setCursor(b._x + (int)(b._width - TextWidth(b)) / 2, b._y + (int)b._height / 2 - 5);
+  frameBuffer->println(b._text);
+}
+
+
+void paintButtonFull(struct iconButton b) {
+  frameBuffer->fillRect(b._x, b._y, b._width, b._height, b._backgroundColor);
+  frameBuffer->drawRect(b._x, b._y, b._width, b._height, b._color);
+  for (int row = 0; row < 16; row++) {
+    for (int column = 0; column < 16; column++) {
+      frameBuffer->drawPixel(
+        b._x + b._width / 2 - 8 + column,
+        b._y + b._height / 2 - 8 + row,
+        (b.icon[row] & (1 << (15 - column))) ? b._color : b._backgroundColor
+      );
+    }
+  }
+}
+
+void pressButton(struct iconButton b) {
+  frameBuffer->fillRect(b._x, b._y, b._width, b._height, b._color);
+}
+
+void pressButton(struct onscreenButton b) {
+  frameBuffer->fillRect(b._x, b._y, b._width, b._height, b._color);
+}
+
+bool checkButtonPress(struct onscreenButton b) {
+  struct point p = readTouch();
+  return checkButtonPress(b, p.x, p.x);
+}
+
+bool checkButtonPress(struct iconButton b) {
+  struct point p = readTouch();
+  return checkButtonPress(b, p.x, p.x);
+}
+
+bool checkButtonPress(struct iconButton b, int x, int y) {
+  if (x > b._x && x < b._x + b._width && y > b._y && y < b._y + b._height) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool checkButtonPress(struct onscreenButton b, int x, int y) {
+  if (x > b._x && x < b._x + b._width && y > b._y && y < b._y + b._height) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/********************************************************************
+                           SELECTION WINDOW
+ ********************************************************************/
+/* SelectionWindow Class
+  A simple Instanceable window which can have options dynamically added to it and returns
+  the option selected by the user, intended to simply option selection code.
+*/
+void SelectionWindow::drawOptionsWindow()
+{
+  // frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+  frameBuffer->fillRect(_x, _y, _width, _height, BACKGROUND_COLOR);
+
+  int maxOptions = _height / 8;
+  int scrollPosition = selection / maxOptions;
+
+  frameBuffer->setTextSize(1);
+  frameBuffer->setTextColor(INTERFACE_COLOR);
+
+  for (int a = scrollPosition * maxOptions; a < (scrollPosition + 1)*maxOptions; a++)
+  {
+    frameBuffer->setCursor(_x + 1, _y + (a - scrollPosition * maxOptions) * 8 + 1);
+
+    if (a == selection)
+    {
+      frameBuffer->setTextColor(BACKGROUND_COLOR);
+      frameBuffer->fillRect(_x + 1, _y + (a - scrollPosition * maxOptions) * 8, _width - 16, 8, INTERFACE_COLOR);
+    }
+    else
+    {
+      frameBuffer->setTextColor(INTERFACE_COLOR);
+      frameBuffer->fillRect(_x + 1, _y + (a - scrollPosition * maxOptions) * 8, _width - 16, 8, BACKGROUND_COLOR);
+    }
+    frameBuffer->print(getValue(options, FIELD_SEPARATOR, a));
+  }
+  frameBuffer->drawRect(_x, _y, _width, _height, INTERFACE_COLOR);
+  paintButtonFull(UpArrowButton);
+  paintButtonFull(okButton);
+  paintButtonFull(DownArrowButton);
+
+  tft.drawRGBBitmap(0, 0, frameBuffer->getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+}
+
+
+//focuses the selection window (essentially gives full control of the micro controller to this object)
+int SelectionWindow::focus()
+{
+
+  focused = true;
+  drawOptionsWindow();
+  pauseTouchAreas();
+
+  //don't allow the main thread to draw to the screen
+  //for the duration of the selection screen being available
+  //we need full control of UI Drawing.
+  //this should be called outside of the focus function
+  //  drawInLoop = false;
+
+  while (focused)
+  {
+    touch();
+    drawOptionsWindow();
+  }
+  //let the touch areas operate again
+  resumeTouchAreas();
+  return selection;
+}
+
+//adds option to the list, appending it to the options string with the delimiter
+int SelectionWindow::addOption(String s)
+{
+  options += FIELD_SEPARATOR + s;
+  totalOptions++;
+  return totalOptions - 1; //default "cancel" option is automatically included so we can't count that one
+}
+
+//touch handling, checks buttons and handles functionality associated with them
+void SelectionWindow::touch()
+{
+  //check if the screen is actually touched
+  if (!digitalRead(TOUCH_IRQ))
+  {
+    struct point p = readTouch();
+
+    if (checkButtonPress(UpArrowButton, p.x, p.y) && selection > 0)
+    {
+
+      selection--;
+      drawOptionsWindow();
+    }
+    if (checkButtonPress(okButton, p.x, p.y))
+    {
+      focused = false;
+    }
+    if (checkButtonPress(DownArrowButton, p.x, p.y) && selection < totalOptions - 1)
+    {
+      selection++;
+      drawOptionsWindow();
+    }
+
+  }
+}
+
+//constructor
+SelectionWindow::SelectionWindow(int x, int y, int width, int height)
+{
+  //set size and position of the window, we can only go so small so this is just a catch in case of trouble
+  if (height < 48 || width < SELECTION_WINDOW_BUTTON_WIDTH + 30)
+  {
+    _x = x;
+    _y = y;
+    _width = SELECTION_WINDOW_BUTTON_WIDTH + 30;
+    _height = 48;
+  }
+  else
+  {
+    _x = x;
+    _y = y;
+    _width = width;
+    _height = height;
+  }
+
+  int heightSpacing = (_height) / 3;
+  UpArrowButton = {_x + _width - SELECTION_WINDOW_BUTTON_WIDTH, _y, SELECTION_WINDOW_BUTTON_WIDTH, heightSpacing, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00000001 << 8) | 0b10000000, (0b00000011 << 8) | 0b11000000, (0b00000111 << 8) | 0b11100000, (0b00001111 << 8) | 0b11110000, (0b00011111 << 8) | 0b11111000, (0b00111111 << 8) | 0b11111100, (0b01111111 << 8) | 0b11111110, (0b11111111 << 8) | 0b11111111, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000}};
+  okButton = {_x + _width - SELECTION_WINDOW_BUTTON_WIDTH, heightSpacing + _y, SELECTION_WINDOW_BUTTON_WIDTH, heightSpacing, INTERFACE_COLOR, BACKGROUND_COLOR, "Ok"};
+  DownArrowButton = {_x + _width - SELECTION_WINDOW_BUTTON_WIDTH, _y + heightSpacing * 2, SELECTION_WINDOW_BUTTON_WIDTH, heightSpacing, INTERFACE_COLOR, BACKGROUND_COLOR, {(0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b00001111 << 8) | 0b11110000, (0b11111111 << 8) | 0b11111111, (0b01111111 << 8) | 0b11111110, (0b00111111 << 8) | 0b11111100, (0b00011111 << 8) | 0b11111000, (0b00001111 << 8) | 0b11110000, (0b00000111 << 8) | 0b11100000, (0b00000011 << 8) | 0b11000000, (0b00000001 << 8) | 0b10000000}};
+
+  //  //clear background and draw outline
+  //  frameBuffer->fillRect(_x, _y, _width, _height, BACKGROUND_COLOR);
+  //  frameBuffer->drawRect(_x, _y, _width, _height, INTERFACE_COLOR);
+  //
+  //init selection
+  selection = 0;
+  //
+  //  //draw buttons
+  //  paintButtonFull(DownArrowButton);
+  //  paintButtonFull(UpArrowButton);
+  //  paintButtonFull(okButton);
+
+  drawOptionsWindow();
+}
+
+//taken from stack overflow https://stackoverflow.com/questions/9072320/split-string-into-string-array
+String SelectionWindow::getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length() - 1;
+
+  for (int i = 0; i <= maxIndex && found <= index; i++)
+  {
+    if (data.charAt(i) == separator || i == maxIndex)
+    {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+    }
+  }
+
+  return  found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
+
 /********************************************************************
                               ICONS
  ********************************************************************/

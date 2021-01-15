@@ -234,12 +234,41 @@ void navigation() {
                               Settings
  ********************************************************************/
 void initSettings() {
-  navigation();
-  frameBuffer->setCursor(0, 100);
-  frameBuffer->println("Settings not supported yet");
+  //this entire function needs to more-or-less run on its own without the framework around it
+  pauseTouchAreas();
+  drawInLoop = false;
 
-  currentPage = (void*)initSettings;
+  printDebug("Entering Settings");
+  frameBuffer->setCursor(0, 100);
+
+  //create selection window of the required size to display on screen.
+  SelectionWindow w2 = SelectionWindow(0, 14, 160, 100);
+
+  //options for the selection window
+  w2.addOption("DayLights Savings");
+
+  int option = w2.focus() - 1;
+
+  switch (option) {
+    //configure daylights savings
+    case 0:
+      {
+        SelectionWindow w3 = SelectionWindow(0, 14, 160, 100);
+        w3.addOption("no");
+        w3.addOption("yes");
+        setDataField((byte)(w3.focus() - 1), DAYLIGHT_SAVINGS);
+      }
+      break;
+    default:
+      break;
+  }
+
+  drawInLoop = true;
+  printDebug("Exiting Settings");
+  resumeTouchAreas();
+  currentPage = (void*)initNavigation;
 }
+
 
 /********************************************************************
                             Notifications

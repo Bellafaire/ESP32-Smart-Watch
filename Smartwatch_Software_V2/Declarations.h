@@ -92,6 +92,10 @@
 Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 
+#define WINDOW_CHARACTER_WIDTH 6
+#define WINDOW_CHARACTER_HEIGHT 8
+#define WINDOW_FONT_SIZE 1
+
 #define BACKGROUND_COLOR ST77XX_BLACK
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR ST77XX_WHITE
@@ -119,6 +123,7 @@ int ERROR_COLOR = ST77XX_BLUE;
                   be performed inside the given function
  ********************************************************************/
 void * currentPage;
+boolean drawInLoop = true;
 
 /********************************************************************
                             TOUCH
@@ -164,16 +169,14 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define FIELD_SEPARATOR ';'
 #define FIELD_SEPARATOR_STRING ";"
 
+#define optionDivider '`' //change this to anything you don't think will be used
+#define SELECTION_WINDOW_BUTTON_WIDTH 20
 
 #define EEPROM_SIZE 512
 
 //EEPROM Data locations and information
 //eeprom allocations for data placement and their corrosponding string for display.
 #define DAYLIGHT_SAVINGS 0
-#define DAYLIGHT_SAVINGS_STRING "Daylight Savings"
-
-#define USE_ACCELEROMETER 1
-#define USE_ACCELEROMETER_STRING "Enable Acclerometer"
 
 /********************************************************************
                               BLE
@@ -208,6 +211,18 @@ struct touchArea {
 int touchAreaIdentifierCount = 1; //keeps track of the number of touch areas created
 static struct touchArea activeTouchAreas[MAX_TOUCH_AREAS];
 
+//old style of buttons that are used only for certain functions
+struct iconButton
+{
+  int _x, _y, _width, _height, _color, _backgroundColor;
+  uint16_t icon[16]; //16x16 icon (single color)
+};
+
+struct onscreenButton
+{
+  int _x, _y, _width, _height, _color, _backgroundColor;
+  String _text;
+};
 
 /********************************************************************
                               UI Elements
@@ -248,6 +263,28 @@ class RoundButton {
     void deactivate();
   private:
     int touchAreaID = 0;
+};
+
+/* a simple menu to allow a user to select from a list of choices, returns an integer for the selected value */
+class SelectionWindow {
+    int selection;
+    int sectionWidth;
+    boolean focused = false;
+    int _x, _y, _width, _height;
+    int totalOptions = 1;
+    String options = "Cancel";
+    struct iconButton UpArrowButton =   { 128, 0, 16, 48, INTERFACE_COLOR, BACKGROUND_COLOR,   {(0b00000001 << 8) | 0b10000000,  (0b00000011 << 8) | 0b11000000,  (0b00000111 << 8) | 0b11100000,  (0b00001111 << 8) | 0b11110000,  (0b00011111 << 8) | 0b11111000,  (0b00111111 << 8) | 0b11111100,  (0b01111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000}};
+    struct iconButton DownArrowButton =    { 128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR,  {(0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111110,  (0b00111111 << 8) | 0b11111100,  (0b00011111 << 8) | 0b11111000,  (0b00001111 << 8) | 0b11110000,  (0b00000111 << 8) | 0b11100000,  (0b00000011 << 8) | 0b11000000,  (0b00000001 << 8) | 0b10000000} };
+    struct onscreenButton okButton =  {128, 0, 32, 48, INTERFACE_COLOR, BACKGROUND_COLOR, "Ok"};
+
+  public:
+    SelectionWindow(int x, int y, int width, int height);  //constructor determines form/size
+    int addOption(String s); //adds option and returns option number
+    int focus(); //focuses the window, will return integer representitive of the selected option
+  private:
+    void drawOptionsWindow(); //draws the option's string to the screen
+    String getValue(String data, char separator, int index); //splits the options string
+    void touch(); //touch handler
 };
 
 //"Untitled.png" width=160 height=128
