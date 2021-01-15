@@ -60,7 +60,7 @@ void watchDog(void *pvParameters)
   {
     //    printDebug("***watchdog serviced***");
     if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
-      if (millis() > lastTouchTime + 20000
+      if (millis() > lastTouchTime + TAP_WAKE_TIME
           &&  readZAccel() < ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
         esp_sleep_enable_timer_wakeup(1);
         esp_deep_sleep_start();

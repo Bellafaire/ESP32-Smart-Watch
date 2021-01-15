@@ -99,13 +99,15 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 int ERROR_COLOR = ST77XX_BLUE;
 
 /********************************************************************
-                             SLEEP
+                          SLEEP and Wake
  ********************************************************************/
 //number of times per second the ESP32 will wake up to check the accelerometer
 #define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 10
 #define ACCELEROMETER_WAKEUP_THRESHOLD 2500
 #define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2100
-       
+
+#define TAP_WAKE_TIME 8000
+
 #define TIMER_SLEEP_TIME 1000000ULL / ACCELEROMETER_SLEEP_POLLING_PER_SECOND
 
 

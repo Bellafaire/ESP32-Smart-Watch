@@ -18,12 +18,12 @@
   SOFTWARE.
 ******************************************************************************/
 
-/* Pages are what the user ultimately engages the most with, each page should have an init() function 
- *  and a normal run function. The code is set up in such a way that for a page to be redrawn the programmer
- *  only needs to set the void pointer "currentPage" to the current function to be run on the screen. This way 
- *  pages have minimal interaction with eachother and can more-or-less be written independently. 
- * 
- */
+/* Pages are what the user ultimately engages the most with, each page should have an init() function
+    and a normal run function. The code is set up in such a way that for a page to be redrawn the programmer
+    only needs to set the void pointer "currentPage" to the current function to be run on the screen. This way
+    pages have minimal interaction with eachother and can more-or-less be written independently.
+
+*/
 
 
 
@@ -45,10 +45,10 @@ RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, hom
 int homeTouchArea;
 
 
-//initalizes the home page 
+//initalizes the home page
 void initHome() {
   printDebug("initializing home");
-  
+
   //re-init animation circles
   circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
   circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
@@ -79,7 +79,7 @@ void home() {
   if (connected && notificationData.length() < 10) {
     notificationData = sendBLE("/notifications", true); //gets current android notifications as a string
 
-    //if successful then parse out the time 
+    //if successful then parse out the time
     if (notificationData.length() > 10) {
       updateTimeFromNotificationData(notificationData);
     }
@@ -87,6 +87,13 @@ void home() {
 
   //draw the background image declared in Declarations.h
   frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+  //animate all the circles (the class will handle all of that for us as long as we call it)
+  circ5.animateAndDraw(frameBuffer);
+  circ4.animateAndDraw(frameBuffer);
+  circ3.animateAndDraw(frameBuffer);
+  circ2.animateAndDraw(frameBuffer);
+  circ1.animateAndDraw(frameBuffer);
 
   //draw time and date (final parameter indicates shadow distance)
   drawTime(3, 5, 2, 0xFFFF, 1);
@@ -104,13 +111,6 @@ void home() {
   //draw the notification data to the screen
   drawNotifications(notificationData, 0, 30, 0xFFFF);
 
-  //animate all the circles (the class will handle all of that for us as long as we call it)
-  circ5.animateAndDraw(frameBuffer);
-  circ4.animateAndDraw(frameBuffer);
-  circ3.animateAndDraw(frameBuffer);
-  circ2.animateAndDraw(frameBuffer);
-  circ1.animateAndDraw(frameBuffer);
-
   //display connection status on the innermost circle,
   //if we are connected also check the media playback status and use that to determine whether or not
   //we should display the media control button
@@ -120,7 +120,7 @@ void home() {
     if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
       boolean isPlaying = sendBLE("/isPlaying", true).substring(0, 4).equals("true");
       if (isPlaying) {
-        //spotify is playing so show the button. 
+        //spotify is playing so show the button.
         homeMediaButton.activate();
       }
       lastSongCheck = millis();
@@ -137,7 +137,7 @@ void home() {
 
 
 /* Quick and dirty animation to transition to the navigation page.
-we essentially expand one of the circles until it fills the entire screen
+  we essentially expand one of the circles until it fills the entire screen
 */
 void homeTransitionToNav() {
   for (int a = 0; a < 8; a++) {
@@ -169,7 +169,7 @@ void transitionToNav() {
 void initHomeMedia() {
   //set the page to homeMedia
   currentPage = (void*)homeMedia;
-  
+
   //clear all touch areas since we don't need them while the media controller is active
   deactivateAllTouchAreas();
 
@@ -210,7 +210,7 @@ void initNavigation() {
   currentPage = (void*)navigation;
 }
 
-//normal animations and stuff when navigation is active. 
+//normal animations and stuff when navigation is active.
 void navigation() {
   frameBuffer->fillScreen(0x0000);
   frameBuffer->setCursor(0, 0);
