@@ -131,24 +131,28 @@ void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite)
 
 void sendWrite(byte deviceAddr, byte location, int d)
 {
-  Wire.beginTransmission(BAT_MONITOR_ADDR);
+
+  Wire.beginTransmission(deviceAddr);
   Wire.write(location);
   Wire.write(d & 0x00FF);
   Wire.write(d >> 8);
   Wire.endTransmission();
+
 }
 
 int readRegister(byte deviceAddr, byte location)
 {
+
   Wire.beginTransmission(deviceAddr); // select device with "beginTransmission()"
   Wire.write(location);
   Wire.endTransmission();
-  Wire.requestFrom(deviceAddr, 2, true); //request battery percentage
+  Wire.requestFrom(deviceAddr, 2, true);
 
   int  a = Wire.read();
   a |= Wire.read() << 8;
 
   //  int a = Wire.read() << 8 | Wire.read();
+
   return a;
 }
 

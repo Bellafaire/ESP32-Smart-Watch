@@ -129,6 +129,7 @@ boolean drawInLoop = true;
                           Globals
  ********************************************************************/
 String notificationData = "";
+static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 /********************************************************************
                             TOUCH
@@ -266,6 +267,7 @@ class RoundButton {
   public:
     int x, y, radius;
     RoundButton(int _x, int _y, int _radius, uint16_t _icon[16], void* _action);
+    RoundButton(int _x, int _y, int _radius, uint8_t _icon[32], void* _action);
     RoundButton();
     void draw(GFXcanvas16 * buffer);
     void activate();

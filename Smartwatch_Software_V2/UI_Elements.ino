@@ -95,7 +95,7 @@ int getNumberOfLines(String data) {
 void drawNotifications(String notificationData, int x, int y, int color) {
   //count lines
   int lineCount = getNumberOfLines(notificationData);
-  
+
   //last 2 lines are not notification data, they're time and EOM terminator
   lineCount = lineCount - 1;
 
@@ -104,7 +104,7 @@ void drawNotifications(String notificationData, int x, int y, int color) {
 
   for (int a = 0; a < lineCount; a++) {
     String line = getValue(notificationData, '\n', a);
-    frameBuffer->println(getValue(line, ';', 0));
+    frameBuffer->println(getValue(line, FIELD_SEPARATOR, 0));
   }
 }
 
@@ -128,6 +128,21 @@ RoundButton::RoundButton(int _x, int _y, int _radius, uint16_t _icon[16], void* 
   //better ways to do this
   for (int a = 0; a < 16; a++) {
     icon[a] = _icon[a];
+  }
+}
+
+RoundButton::RoundButton(int _x, int _y, int _radius, uint8_t _icon[32], void* _action) {
+  x = _x;
+  y = _y;
+  radius = _radius;
+  action = _action;
+  touchAreaID = createTouchArea(_x - _radius, y - _radius , _radius * 2, _radius * 2, _action);
+
+  active = true;
+
+  //better ways to do this
+  for (int a = 0; a < 32; a += 2) {
+    icon[a / 2] = (_icon[a] << 8) | _icon[a + 1];
   }
 }
 
@@ -443,6 +458,12 @@ String SelectionWindow::getValue(String data, char separator, int index)
 
 /********************************************************************
                               ICONS
+
+       Some of the older ICONS use uint16_t, these were created
+       by hand and a lot of the functions support them. There are
+       some functions also support uint8_t arrays which can be created
+       using the online tool http://javl.github.io/image2cpp/ this is
+       the preferred method for all newer functions
  ********************************************************************/
 uint16_t HOME_ICON[] =  {  (0b00000000 << 8) | 0b00000000,  (0b00000000 << 8) | 0b00000000,  (0b00000001 << 8) | 0b10000000,  (0b00000011 << 8) | 0b11000000,  (0b00000111 << 8) | 0b11100000,  (0b00001111 << 8) | 0b11110000,  (0b00111111 << 8) | 0b11111100,  (0b01111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00111110 << 8) | 0b00111100,  (0b00000000 << 8) | 0b00000000};
 uint16_t NOTIFICATIONS_ICON[]  = { (0b00100001 << 8) | 0b10000100,    (0b01000111 << 8) | 0b11100010,    (0b10001100 << 8) | 0b00110001,    (0b10011000 << 8) | 0b00011001,    (0b10010000 << 8) | 0b00001001,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00110000 << 8) | 0b00001100,    (0b00100000 << 8) | 0b00000100,    (0b01100000 << 8) | 0b00000110,    (0b11000000 << 8) | 0b00000011,    (0b11000000 << 8) | 0b00000011,    (0b11111111 << 8) | 0b11111111,    (0b00000011 << 8) | 0b11000000  };
@@ -455,3 +476,4 @@ uint16_t UP_ARROW_ICON[]  = {(0b00000001 << 8) | 0b10000000,  (0b00000011 << 8) 
 uint16_t RIGHT_ARROW_ICON[]  =  {(0b00000000 << 8) | 0b10000000,  (0b00000000 << 8) | 0b11000000,  (0b00000000 << 8) | 0b11100000,  (0b00000000 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111000,  (0b11111111 << 8) | 0b11111100,  (0b11111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111110,  (0b11111111 << 8) | 0b11111100,  (0b11111111 << 8) | 0b11111000,  (0b00000000 << 8) | 0b11110000,  (0b00000000 << 8) | 0b11100000,  (0b00000000 << 8) | 0b11000000,  (0b00000000 << 8) | 0b10000000};
 uint16_t DOWN_ARROW_ICON[]  = {(0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111110,  (0b00111111 << 8) | 0b11111100,  (0b00011111 << 8) | 0b11111000,  (0b00001111 << 8) | 0b11110000,  (0b00000111 << 8) | 0b11100000,  (0b00000011 << 8) | 0b11000000,  (0b00000001 << 8) | 0b10000000};
 uint16_t LEFT_ARROW_ICON[]  = { (0b00000001 << 8) | 0b00000000,  (0b00000011 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00001111 << 8) | 0b00000000,  (0b00011111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b00011111 << 8) | 0b11111111,  (0b00001111 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00000011 << 8) | 0b00000000,  (0b00000001 << 8) | 0b00000000  };
+uint8_t CHECK_MARK_ICON[] = {0x00, 0x0e, 0x00, 0x1f, 0x00, 0x1f, 0x00, 0x3f, 0x00, 0x7e, 0x38, 0x7e, 0x7c, 0xfc, 0x7d, 0xf8, 0x7f, 0xf8, 0x3f, 0xf0, 0x3f, 0xe0, 0x1f, 0xe0, 0x0f, 0xc0, 0x0f, 0x80, 0x07, 0x00, 0x00, 0x00};

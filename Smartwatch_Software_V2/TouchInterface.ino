@@ -24,11 +24,11 @@ void TouchTask(void * pvParameters ) {
   printDebug("TouchTask Triggerred");
 
 
-    point p = readTouch();
-    printDebug("x:" + String(p.x) + " y:" + String(p.y));
+  point p = readTouch();
+  printDebug("x:" + String(p.x) + " y:" + String(p.y));
 
-    checkAllTouchAreas(p.x, p.y);
- 
+  checkAllTouchAreas(p.x, p.y);
+
   xTouch = NULL;
   vTaskDelete(NULL);
 }
@@ -89,9 +89,9 @@ void deactivateTouchArea(int identifier) {
 //deactivates all active touch areas
 void deactivateAllTouchAreas() {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
-    if (activeTouchAreas[a].identifier) {
-      activeTouchAreas[a].identifier = 0;
+    if (activeTouchAreas[a].identifier != 0) {
       printDebug("Deactivating touchArea " + String(activeTouchAreas[a].identifier));
+      activeTouchAreas[a].identifier = 0;
       break;
     }
   }
@@ -104,7 +104,7 @@ void checkAllTouchAreas(int x, int y) {
         && x <=  activeTouchAreas[a].x + activeTouchAreas[a].width
         && y >=  activeTouchAreas[a].y
         && y <=  activeTouchAreas[a].y +  activeTouchAreas[a].height
-        &&  activeTouchAreas[a].identifier) {
+        &&  activeTouchAreas[a].identifier != 0 ) {
       printDebug("Detected touch for touchEvent: " + String(activeTouchAreas[a].identifier) + " at x:" + String(x) + " y:" + String(y) );
       //call the action associated with this touch area
       ((void(*)())activeTouchAreas[a].action)();

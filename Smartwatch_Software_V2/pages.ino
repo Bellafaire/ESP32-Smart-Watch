@@ -33,7 +33,7 @@ AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 3
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
-RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton;
+RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton;
 
 
 /********************************************************************
@@ -270,8 +270,103 @@ void initSettings() {
 /********************************************************************
                             Notifications
  ********************************************************************/
-int notificationScrollPosition = 0; 
- 
+int notificationScrollPosition = 0;
+
 void initNotifications() {
-  navigation();
+  frameBuffer->fillScreen(BACKGROUND_COLOR);
+  notificationScrollPosition = 0;
+
+  deactivateAllTouchAreas();
+
+  upButton = RoundButton(SCREEN_WIDTH - 20, 15, 14, UP_ARROW_ICON, (void*)lastNotification);
+  okButton = RoundButton(SCREEN_WIDTH - 20, 45, 14, CHECK_MARK_ICON, (void*)showNotification);
+  downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextNotification);
+  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
+
+  leftButton = RoundButton(15, 15, 14, LEFT_ARROW_ICON, (void*)initNotifications);
+  leftButton.deactivate();
+
+  currentPage = (void*)notifications;
+}
+
+void showNotification() {
+
+  currentPage = (void*)notificationDisplay;
+
+  deactivateAllTouchAreas();
+
+  //activate the return button
+  leftButton.activate();
+
+}
+
+void notificationDisplay() {
+  frameBuffer->fillScreen(BACKGROUND_COLOR);
+  String line = getValue(notificationData, '\n', notificationScrollPosition);
+
+  frameBuffer->setTextColor(INTERFACE_COLOR);
+
+  //draw title field
+  frameBuffer->setCursor(35, 3);
+  frameBuffer->println(getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 0));
+
+  //draw subtitle field
+  frameBuffer->setCursor(35, 3 + WINDOW_CHARACTER_HEIGHT);
+  frameBuffer->println(getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 1));
+
+  //draw description
+  frameBuffer->setTextColor(GRAYED);
+  frameBuffer->setCursor(0, 35);
+  frameBuffer->println("Description");
+  frameBuffer->setTextColor(INTERFACE_COLOR);
+  frameBuffer->println(getValue(line, FIELD_SEPARATOR, 1));
+
+  //draw return button
+  leftButton.draw(frameBuffer);
+}
+
+void nextNotification() {
+  if (notificationScrollPosition < getNumberOfLines(notificationData) - 2) {
+    notificationScrollPosition++;
+  }
+}
+
+void lastNotification() {
+  if (notificationScrollPosition > 0) {
+    notificationScrollPosition--;
+  }
+}
+
+
+void notifications() {
+
+  //count lines
+  int lineCount = getNumberOfLines(notificationData);
+
+  //last 2 lines are not notification data, they're time and EOM terminator
+  lineCount = lineCount - 1;
+
+  for (int a = 0; a < lineCount; a++) {
+    //choose position for the current line
+    frameBuffer->setCursor(0, a * WINDOW_CHARACTER_HEIGHT);
+
+    //if the current item is selected then draw a white box behind it and make the text black
+    //if the current item is not selected then treat it normally
+    if (a == notificationScrollPosition) {
+      frameBuffer->fillRect(0, a * WINDOW_CHARACTER_HEIGHT, SCREEN_WIDTH, WINDOW_CHARACTER_HEIGHT , INTERFACE_COLOR);
+      frameBuffer->setTextColor(BACKGROUND_COLOR);
+    } else {
+      frameBuffer->fillRect(0, a * WINDOW_CHARACTER_HEIGHT,  SCREEN_WIDTH, WINDOW_CHARACTER_HEIGHT, BACKGROUND_COLOR);
+      frameBuffer->setTextColor(INTERFACE_COLOR);
+    }
+
+    //whole lot of string operations, we only really want the very first item.
+    String line = getValue(notificationData, '\n', a);
+    frameBuffer->println(getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 0));
+  }
+
+  okButton.draw(frameBuffer);
+  upButton.draw(frameBuffer);
+  homeButton.draw(frameBuffer);
+  downButton.draw(frameBuffer);
 }
