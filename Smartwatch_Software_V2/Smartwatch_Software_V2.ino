@@ -61,7 +61,7 @@ void watchDog(void *pvParameters)
     //    printDebug("***watchdog serviced***");
     if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
       if (millis() > lastTouchTime + 20000
-         ) {
+          &&  readZAccel() < ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
         esp_sleep_enable_timer_wakeup(1);
         esp_deep_sleep_start();
       }
@@ -91,15 +91,26 @@ void deviceSleep() {
       vTaskDelay(10);
     }
 
-    if(millis() >= disconnectTimeout){
+    if (millis() >= disconnectTimeout) {
       connected = false;
-      printDebug("Device disconnected improperly"); 
+      printDebug("Device disconnected improperly");
     }
+
+    eTaskState con = eTaskGetState(xConnect);
+    if (con == 0) {
+      printDebug("Deleting Bluetooth Task"); 
+      vTaskDelete(xConnect);
+    }
+
+
 
     printDebug("disconnected");
   }
 
-  printDebug("Going to sleep");
+  if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
+    printDebug("Going to sleep");
+  }
+
   Serial.flush();
 
   //put display to sleep
@@ -108,30 +119,23 @@ void deviceSleep() {
   esp_light_sleep_start();
 }
 
-void clearTask(TaskHandle_t handle) {
-  if (handle != NULL) {
-    vTaskDelete(handle);
-  }
-}
-
-
 void loop() {
   //do everything we need to on wakeup.
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
   //check the wakeup reason, if it's touch we go right into the main loop.
-  //if it's timer then we're checking whether the accelerometer is in the proper threshold region. 
+  //if it's timer then we're checking whether the accelerometer is in the proper threshold region.
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0
       || readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
-      if(readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD){
-        lastTouchTime = millis() - 14000; 
-      }
+    if (readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
+      lastTouchTime = millis() - 14000;
+    }
     onWakeup();
 
     //the current page is set by a void pointer, this pointer can be reassigned to new pages.
     //using this approach creating new pages should be much easier since they're more-or-less self contained
     //all pages draw to the framebuffer then the buffer is drawn at the end
-    //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100 
+    //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100
     while (millis() < lastTouchTime + 15000 || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
       ((void(*)())currentPage)();
       tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);

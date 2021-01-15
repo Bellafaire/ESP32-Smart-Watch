@@ -18,6 +18,9 @@
   SOFTWARE.
 ******************************************************************************/
 
+boolean bluetoothConnectionTaskLaunched = false;
+boolean doConnect = false;
+
 /* Callbacks */
 //callback called when an advertised device is found
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
@@ -54,15 +57,27 @@ void initBLE() {
   printDebug("initalizing BLE");
   pRemoteCharacteristic = NULL;
   //  myDevice = NULL;
-  //  pClient = NULL;
-  //  registeredForCallback = false;
+  pClient = NULL;
+  registeredForCallback = false;
 
 
   if (!connected) {
     printDebug("Finding Device");
-    xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , BLUETOOTH_CONNECTION_TASK_PRIORITY, &xConnect, 0 );
+    xTaskCreatePinnedToCore( formConnection, "BLUETOOTH_CONNECT_TASK", 4096, (void *) 1 , BLUETOOTH_CONNECTION_TASK_PRIORITY, &xConnect, 0 );
   }
 }
+
+
+void connectionTask(void * pvParameters ) {
+  printDebug("%%%%%%%%%%%%%%%%%%%%%%%% BLE TASK LAUNCHED %%%%%%%%%%%%%%%%%%%%%");
+
+  printDebug("%%% Attempting BLE Connection %%%");
+
+  formConnection((void*) 1);
+
+  printDebug("Connection Task going to sleep");
+}
+
 
 //Called from the
 void xFindDevice(void * pvParameters ) {
@@ -78,19 +93,20 @@ void xFindDevice(void * pvParameters ) {
 
   if (deviceFound) {
     printDebug("%%% Device Found %%%");
-    xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , BLUETOOTH_CONNECTION_TASK_PRIORITY, &xConnect, 0 );
+    formConnection((void*) 1 );
   } else {
     printDebug("%%%% Device Not Found %%%");
   }
 
-  vTaskDelete(NULL);
+  //  vTaskDelete(NULL);.
 }
+
 
 /* Opens connection to the server and allows us to access the characteristic that data
     is transmitted to, this should be called after xFindDevice completes, however it
     cannot be run in a seperate thread due to I2C
 */
-void formConnection(void * pvParameters) {
+void formConnection(void * pvParameters ) {
   //if for some this function is called before we find the device then we need to
   //do the scan again and make sure that we have a device
 
@@ -103,17 +119,15 @@ void formConnection(void * pvParameters) {
   }
 
   //create a client to communicate to the server through
-  if (!pClient) {
-    pClient = BLEDevice::createClient();
-    printDebug("...created client");
 
-    //set callbacks for client, if it disconnects we need to know,
-    //also we don't consider the device to be connected unless the client is connected
-    pClient->setClientCallbacks(new MyClientCallback());
-    printDebug("...set callback");
-  } else {
-    printDebug("...Using existing client");
-  }
+  pClient = BLEDevice::createClient();
+  printDebug("...created client");
+
+  //set callbacks for client, if it disconnects we need to know,
+  //also we don't consider the device to be connected unless the client is connected
+  pClient->setClientCallbacks(new MyClientCallback());
+  printDebug("...set callback");
+
 
 
   //check that device is found again
@@ -124,13 +138,15 @@ void formConnection(void * pvParameters) {
       printDebug("...client has formed connection");
     } else {
       printDebug("...ERROR: client has failed to form connection");
-      printDebug("...Attempting to find device again"); 
-      xFindDevice((void*) 1);
+      printDebug("...Attempting to find device again");
+      //      xFindDevice((void*) 1);
+      //      vTaskDelete(NULL);
       vTaskDelete(NULL);
     }
   } else {
     printDebug("...ERROR: myDevice was found to be null when attempting to connect to server");
 
+    //    vTaskDelete(NULL);
     vTaskDelete(NULL);
   }
 
@@ -140,7 +156,10 @@ void formConnection(void * pvParameters) {
   if (!pRemoteService) {
     pClient->disconnect();
     printDebug("%%%% Could not obtain remote service");
+    //    vTaskDelete(NULL);
     vTaskDelete(NULL);
+  } else {
+    printDebug("...Obtained remote Service");
   }
 
   //second verse same as the first, but for the characteristic
@@ -148,7 +167,10 @@ void formConnection(void * pvParameters) {
   if (!pRemoteCharacteristic) {
     pClient->disconnect();
     printDebug("%%%% Could not obtain remote characteristic");
+    //    vTaskDelete(NULL);
     vTaskDelete(NULL);
+  } else {
+    printDebug("...Obtained remote characteristic");
   }
 
   printDebug("...Bluetooth connection established");
