@@ -45,6 +45,25 @@
  *******************************************************************/
 #define RGB_TO_BGR565(r,g,b) (((b & 0x001F) << 11) + ((g & 0x003F) << 6) + ((r & 0x001F)))
 
+/********************************************************************
+                            Calendar
+ ********************************************************************/
+#define CALENDAR_TITLE 0 
+#define CALENDAR_DESCRIPTION 1 
+#define CALENDAR_START_DATE 2 
+#define CALENDAR_START_TIME 3 
+#define CALENDAR_END_TIME 4 
+#define CALENDAR_EVENT_LOCATION 5
+
+struct calendarEvent {
+  String title; 
+  String description; 
+  String date; 
+  int timeStart, timeEnd;  //minutes of day 
+  String time; 
+  String location; 
+  };
+
 
 /*******************************************************************
                        Hardware Pin Declarations
@@ -91,6 +110,9 @@
 #define SCREEN_HEIGHT 128
 Adafruit_ST7735 tft = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
 GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
+
+#define CHARACTER_WIDTH 6
+#define CHARACTER_HEIGHT 8
 
 #define WINDOW_CHARACTER_WIDTH 6
 #define WINDOW_CHARACTER_HEIGHT 8

@@ -33,7 +33,7 @@ AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 3
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
-RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton;
+RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton, calendarButton;
 
 
 /********************************************************************
@@ -193,6 +193,7 @@ void initNavigation() {
   homeButton = RoundButton(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 16, HOME_ICON, (void*)initHome);
   settingButton = RoundButton(25, 35, 16, SETTINGS_ICON, (void*)initSettings);
   notificationsButton = RoundButton(75, 35, 16, NOTIFICATIONS_ICON, (void*)initNotifications);
+  calendarButton = RoundButton(125, 35, 16, CALENDAR_ICON, (void*)initCalendar);
 
   currentPage = (void*)navigation;
 }
@@ -203,9 +204,6 @@ void navigation() {
   frameBuffer->setCursor(0, 0);
   frameBuffer->println("Navigation");
 
-  frameBuffer->setCursor(SCREEN_WIDTH - 36, SCREEN_HEIGHT - 75);
-  frameBuffer->println("Home");
-
   //draw the animation circles
   circ4.animateAndDraw(frameBuffer);
   circ3.animateAndDraw(frameBuffer);
@@ -215,6 +213,7 @@ void navigation() {
   homeButton.draw(frameBuffer);
   settingButton.draw(frameBuffer);
   notificationsButton.draw(frameBuffer);
+  calendarButton.draw(frameBuffer);
 }
 
 /********************************************************************
@@ -359,4 +358,113 @@ void notifications() {
   upButton.draw(frameBuffer);
   homeButton.draw(frameBuffer);
   downButton.draw(frameBuffer);
+}
+
+/********************************************************************
+                              CALENDAR
+ ********************************************************************/
+
+String calendarData = "";
+int calendarScrollPosition = 0;
+
+
+void initCalendar() {
+  calendarScrollPosition = 0;
+  frameBuffer->fillScreen(BACKGROUND_COLOR);
+
+  deactivateAllTouchAreas();
+
+  //buttons
+  upButton = RoundButton(SCREEN_WIDTH - 20, 15, 14, UP_ARROW_ICON, (void*)lastCalendar);
+  //  okButton = RoundButton(SCREEN_WIDTH - 20, 45, 14, CHECK_MARK_ICON, (void*)showNotification);
+  downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextCalendar);
+  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
+
+  //if we're connected then download the calendar data from the smartphone
+  if (connected) {
+    //this typo is going to bother me for awhile, but I don't want to open
+    //android studio to fix it
+    calendarData = sendBLE("/calender", true);
+
+    //onto the next page
+    currentPage = (void*) calendar;
+  } else {
+    initHome();
+  }
+}
+
+void nextCalendar() {
+  if (calendarScrollPosition < getNumberOfLines(calendarData) - 1) {
+    calendarScrollPosition++;
+    delay(250);
+  }
+}
+
+void lastCalendar() {
+  if (calendarScrollPosition > 0) {
+    calendarScrollPosition--;
+    delay(250);
+  }
+}
+
+//draws calendar information from smartphone
+void calendar() {
+  //draw the background image declared in Declarations.h
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+  int firstEventStart = 0;
+
+  //count lines
+  int lineCount = getNumberOfLines(calendarData);
+
+  for (int a = 0; a < lineCount; a++) {
+
+    //parsing data out of the calendar string
+    String line = getValue(calendarData, '\n', a);
+    struct calendarEvent ce = parseCalendarEvent(line);
+
+    //since "technically" the day starts at 0:00 we want the event viewer on the left
+    //to start at the first event and scale everything appropriately, so we record the
+    //start time
+    if (a == 0) {
+      firstEventStart = ce.timeStart;
+    }
+
+    //start position of the left hand nav and the height
+    //These equations are a mess but they work...
+    int startPos = ((ce.timeStart - firstEventStart) / ((24.0 - (firstEventStart / 60.0)) * 60.0)) * SCREEN_HEIGHT;
+    int height = ((ce.timeEnd  - ce.timeStart ) / ((24.0 - (firstEventStart / 60.0)) * 60.0)) * SCREEN_HEIGHT ;
+
+    //if the current calendar item is the selected one
+    if (a == calendarScrollPosition) {
+
+      //make it's navigation box stick out a bit more and turn slightly green
+      frameBuffer->fillRoundRect(0, startPos, 15, height, 3, 0xFF00);
+
+      //draw the title
+      frameBuffer->setCursor(20, 3);
+      frameBuffer->println(ce.title);
+
+      //draw the time
+      frameBuffer->setCursor(20, 15);
+      frameBuffer->println(ce.time);
+
+      //draw the description
+      frameBuffer->setTextColor(GRAYED);
+      frameBuffer->setCursor(20, 25);
+      frameBuffer->print("Description");
+      frameBuffer->setTextColor(INTERFACE_COLOR);
+      printInsideOf(20, 35, SCREEN_WIDTH - 40, SCREEN_HEIGHT, ce.description, frameBuffer);
+
+    } else {
+      //if this event is not the current event then just draw the nav item
+      // so the user can see that there is an event. 
+      frameBuffer->fillRoundRect(0, startPos, 10, height, 3, 0xF800);
+    }
+
+  }
+
+  //draw buttons. 
+  upButton.draw(frameBuffer);
+  downButton.draw(frameBuffer);
+  homeButton.draw(frameBuffer);
 }

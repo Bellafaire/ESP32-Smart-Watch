@@ -76,21 +76,87 @@ void  AnimationCircle::setSpeed(float newSpeed) {
   speed = newSpeed;
 }
 
+/********************************************************************
+                     Other Support Functions
+                support related functions for drawing
+ ********************************************************************/
+int getNumberOfLines(String data) {
+  int lineCount = 0;
+  for (int a = 0; a < data.length(); a++) {
+    if (data[a] == '\n') {
+      lineCount++;
+    }
+  }
+  return lineCount;
+}
+
+//prints to buffer inside of a given set of bounds, automatically handles wrapping the text within the area
+void printInsideOf(int x1, int y1, int x2, int y2, String data, GFXcanvas16 *buffer) {
+  
+  int charactersPrinted = 0;
+
+  //cursor trackers
+  int cursorX = x1;
+  int cursorY = y1;
+
+  //going one character at a time, we'll move the character everytime
+  //then check whether or not we're still within the bounds we set (or if there's more string left)
+  while (cursorY < y2 || charactersPrinted < data.length()) {
+
+    //set position and print current character
+    buffer->setCursor(cursorX, cursorY);
+    buffer->print(data[charactersPrinted]);
+
+    //next position
+    cursorX += CHARACTER_WIDTH;
+
+    //is the cursor now outside of the x bound? 
+    if (cursorX >= x2) {
+      cursorX = x1;
+      cursorY += CHARACTER_HEIGHT;
+    }
+
+    //track characters
+    charactersPrinted++;
+
+    //did we print a space? if we did we may want to wrap the cursor back 
+    //if the next word would be cut halfway through somehow. 
+    if (data[charactersPrinted] == ' ') {
+      
+      //count the number of characters that aren't a space
+      int nonSpaceCharacterCount = 0;
+
+      //start at current index + 1 (since current index is always a space)
+      //and figure out how many characters until the next space character
+      for (int a = charactersPrinted + 1; a < data.length(); a++) {
+        if (data[a] == ' ') {
+          break;
+        } else {
+          nonSpaceCharacterCount++;
+        }
+      }
+
+      //if we can't fit the entire word on this line then put it on the 
+      //next line so that it isn't cut halfway through
+      if (cursorX + nonSpaceCharacterCount * CHARACTER_WIDTH >= x2) {
+        cursorX = x1;
+        cursorY += CHARACTER_HEIGHT;
+
+        //skip over the space since it's been wrapped out. 
+        charactersPrinted++;
+      }
+    }
+  }
+
+}
+
 
 /********************************************************************
                           Notifications
          support related functions for drawing notifications
  ********************************************************************/
 
-int getNumberOfLines(String data) {
-  int lineCount = 0;
-  for (int a = 0; a < data.length(); a++) {
-    if (notificationData[a] == '\n') {
-      lineCount++;
-    }
-  }
-  return lineCount;
-}
+
 
 void drawNotifications(String notificationData, int x, int y, int color) {
   //count lines
@@ -108,6 +174,40 @@ void drawNotifications(String notificationData, int x, int y, int color) {
   }
 }
 
+/********************************************************************
+                             Calendar
+         support related functions for drawing calendar
+ ********************************************************************/
+
+struct calendarEvent parseCalendarEvent(String data) {
+  struct calendarEvent ret;
+  ret.title = getValue(data, FIELD_SEPARATOR, CALENDAR_TITLE);
+  ret.description = getValue(data, FIELD_SEPARATOR, CALENDAR_DESCRIPTION);
+  ret.date = getValue(data, FIELD_SEPARATOR, CALENDAR_START_DATE );
+  ret.timeStart  = parseMinutesOfDay(getValue(data, FIELD_SEPARATOR, CALENDAR_START_TIME ));
+  ret.timeEnd  = parseMinutesOfDay(getValue(data, FIELD_SEPARATOR, CALENDAR_END_TIME));
+  ret.location = getValue(data, FIELD_SEPARATOR, CALENDAR_EVENT_LOCATION);
+
+  ret.time = getValue(data, FIELD_SEPARATOR, CALENDAR_START_TIME) + " - " + getValue(data, FIELD_SEPARATOR, CALENDAR_END_TIME);
+  //  printDebug("Parsed calendar Event");
+  //  printDebug("...title = " + ret.title);
+  //  printDebug("...description = " + ret.description);
+  //  printDebug("...data = " + ret.date);
+  //  printDebug("...timeStart = " + String(ret.timeStart));
+  //  printDebug("...timeEnd = " + String(ret.timeEnd));
+  //  printDebug("...location = " + String(ret.location));
+
+  return ret;
+}
+
+int parseMinutesOfDay(String data) {
+  //  printDebug("Parsing time from:" + data);
+  int ret = 0;
+  ret += data.substring(0, 2).toInt() * 60;
+  ret += data.substring(3, 5).toInt();
+  ret += ((data[5] == 'P') ? 12 * 60 : 0);
+  return ret;
+}
 
 /********************************************************************
                               Buttons
@@ -477,3 +577,4 @@ uint16_t RIGHT_ARROW_ICON[]  =  {(0b00000000 << 8) | 0b10000000,  (0b00000000 <<
 uint16_t DOWN_ARROW_ICON[]  = {(0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b00001111 << 8) | 0b11110000,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111110,  (0b00111111 << 8) | 0b11111100,  (0b00011111 << 8) | 0b11111000,  (0b00001111 << 8) | 0b11110000,  (0b00000111 << 8) | 0b11100000,  (0b00000011 << 8) | 0b11000000,  (0b00000001 << 8) | 0b10000000};
 uint16_t LEFT_ARROW_ICON[]  = { (0b00000001 << 8) | 0b00000000,  (0b00000011 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00001111 << 8) | 0b00000000,  (0b00011111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b11111111 << 8) | 0b11111111,  (0b01111111 << 8) | 0b11111111,  (0b00111111 << 8) | 0b11111111,  (0b00011111 << 8) | 0b11111111,  (0b00001111 << 8) | 0b00000000,  (0b00000111 << 8) | 0b00000000,  (0b00000011 << 8) | 0b00000000,  (0b00000001 << 8) | 0b00000000  };
 uint8_t CHECK_MARK_ICON[] = {0x00, 0x0e, 0x00, 0x1f, 0x00, 0x1f, 0x00, 0x3f, 0x00, 0x7e, 0x38, 0x7e, 0x7c, 0xfc, 0x7d, 0xf8, 0x7f, 0xf8, 0x3f, 0xf0, 0x3f, 0xe0, 0x1f, 0xe0, 0x0f, 0xc0, 0x0f, 0x80, 0x07, 0x00, 0x00, 0x00};
+uint8_t CALENDAR_ICON[] = {0x10, 0x08, 0x7f, 0xfe, 0x90, 0x09, 0x80, 0x01, 0xff, 0xff, 0x80, 0x01, 0x8a, 0xa9, 0x80, 0x01, 0xaa, 0xa9, 0x80, 0x01, 0xaa, 0xa9, 0x80, 0x01, 0xaa, 0xa9, 0x80, 0x01, 0x7f, 0xfe, 0x00, 0x00};
