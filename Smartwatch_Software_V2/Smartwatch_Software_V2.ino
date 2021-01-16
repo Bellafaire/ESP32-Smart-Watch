@@ -23,6 +23,7 @@
 int batteryPercentage = 100;
 esp_sleep_wakeup_cause_t wakeup_reason;
 boolean deepSleepWake = true;
+boolean notificationsUpdated = false;
 boolean wasActive = false;
 RTC_DATA_ATTR int sleepCount = 0;
 
@@ -119,7 +120,7 @@ void deviceSleep() {
   //put display to sleep
   tft.enableSleep(true);
 
-  if (sleepCount < 10) {
+  if (sleepCount < 6) {
     sleepCount = wasActive ? sleepCount + 1 : sleepCount;
     esp_light_sleep_start();
   } else {
@@ -160,6 +161,19 @@ void loop() {
         ((void(*)())currentPage)();
         tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
       }
+
+      //if we're connected and haven't updated our notification data then lets do so
+      if (connected && !notificationsUpdated) {
+
+        //gets current android notifications as a string
+        notificationData = sendBLE("/notifications", true);
+
+        //if successful then parse out the time and register a successful notification acquisition
+        if (notificationData.length() > 10) {
+          updateTimeFromNotificationData(notificationData);
+          notificationsUpdated = true;
+        }
+      }
     }
   }
   deviceSleep();
@@ -168,7 +182,8 @@ void loop() {
 
 
 void onWakeup() {
-
+  //new wakeup so we'll want to update notifications next chance we get 
+  notificationsUpdated = false;
   getRTCTime();
   printRTCTime();
   //wake up display

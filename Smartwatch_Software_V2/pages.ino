@@ -72,16 +72,6 @@ long lastSongCheck = 0;
 //draws the home screen
 void home() {
 
-  //if we're connected and haven't updated our notification data then lets do so
-  if (connected && notificationData.length() < 10) {
-    notificationData = sendBLE("/notifications", true); //gets current android notifications as a string
-
-    //if successful then parse out the time
-    if (notificationData.length() > 10) {
-      updateTimeFromNotificationData(notificationData);
-    }
-  }
-
   //draw the background image declared in Declarations.h
   frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
 
