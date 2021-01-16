@@ -22,6 +22,9 @@
 
 int batteryPercentage = 100;
 esp_sleep_wakeup_cause_t wakeup_reason;
+boolean deepSleepWake = true;
+boolean wasActive = false;
+RTC_DATA_ATTR int sleepCount = 0;
 
 void setup() {
 #ifdef DEBUG
@@ -32,6 +35,8 @@ void setup() {
   initLCD();
   initBatMonitor();
   initTouch();
+
+
 
   //create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(    watchDog
@@ -66,6 +71,7 @@ void watchDog(void *pvParameters)
     vTaskDelay(500);
   }
 }
+
 
 
 void deviceSleep() {
@@ -113,13 +119,22 @@ void deviceSleep() {
   //put display to sleep
   tft.enableSleep(true);
 
-  esp_light_sleep_start();
+  if (sleepCount < 10) {
+    sleepCount = wasActive ? sleepCount + 1 : sleepCount;
+    esp_light_sleep_start();
+  } else {
+    sleepCount = 0;
+    printDebug("Deep Sleeping for restart");
+    esp_sleep_enable_timer_wakeup(1);
+    esp_deep_sleep_start();
+  }
 }
 
 void loop() {
   //do everything we need to on wakeup.
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
+  wasActive = false;
   //check the wakeup reason, if it's touch we go right into the main loop.
   //if it's timer then we're checking whether the accelerometer is in the proper threshold region.
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0
@@ -127,6 +142,8 @@ void loop() {
     if (readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
       lastTouchTime = millis() - (TAP_WAKE_TIME - 1000);
     }
+
+    wasActive = true;
 
     //do all the normal things we have to do when the device wakes up
     onWakeup();
@@ -140,15 +157,11 @@ void loop() {
       //specific elements need to bypass the loop thread drawing so that they can
       //have more direct control of the display for short periods of time.
       if (drawInLoop) {
-
         ((void(*)())currentPage)();
         tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
-
       }
     }
   }
-
-
   deviceSleep();
 
 }
