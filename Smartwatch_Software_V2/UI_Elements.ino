@@ -54,9 +54,9 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
     int xPos2 = x + (float) rotationRadius * sin((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
     int yPos2 = y + (float) rotationRadius * cos((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
 
-    buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
-    buffer->fillCircle(xPos, yPos, circleRadius, color);
-    buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
+//    buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
+//    buffer->fillCircle(xPos, yPos, circleRadius, color);
+//    buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
 
     buffer->fillCircle(xPos2, yPos2, circleRadius, color);
     buffer->drawCircle(xPos2, yPos2, circleRadius, ringColor);
@@ -90,9 +90,14 @@ int getNumberOfLines(String data) {
   return lineCount;
 }
 
+
+float distance(int x1, int y1, int x2, int y2) {
+  return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+}
+
 //prints to buffer inside of a given set of bounds, automatically handles wrapping the text within the area
 void printInsideOf(int x1, int y1, int x2, int y2, String data, GFXcanvas16 *buffer) {
-  
+
   int charactersPrinted = 0;
 
   //cursor trackers
@@ -110,7 +115,7 @@ void printInsideOf(int x1, int y1, int x2, int y2, String data, GFXcanvas16 *buf
     //next position
     cursorX += CHARACTER_WIDTH;
 
-    //is the cursor now outside of the x bound? 
+    //is the cursor now outside of the x bound?
     if (cursorX >= x2) {
       cursorX = x1;
       cursorY += CHARACTER_HEIGHT;
@@ -119,10 +124,10 @@ void printInsideOf(int x1, int y1, int x2, int y2, String data, GFXcanvas16 *buf
     //track characters
     charactersPrinted++;
 
-    //did we print a space? if we did we may want to wrap the cursor back 
-    //if the next word would be cut halfway through somehow. 
+    //did we print a space? if we did we may want to wrap the cursor back
+    //if the next word would be cut halfway through somehow.
     if (data[charactersPrinted] == ' ') {
-      
+
       //count the number of characters that aren't a space
       int nonSpaceCharacterCount = 0;
 
@@ -136,13 +141,13 @@ void printInsideOf(int x1, int y1, int x2, int y2, String data, GFXcanvas16 *buf
         }
       }
 
-      //if we can't fit the entire word on this line then put it on the 
+      //if we can't fit the entire word on this line then put it on the
       //next line so that it isn't cut halfway through
       if (cursorX + nonSpaceCharacterCount * CHARACTER_WIDTH >= x2) {
         cursorX = x1;
         cursorY += CHARACTER_HEIGHT;
 
-        //skip over the space since it's been wrapped out. 
+        //skip over the space since it's been wrapped out.
         charactersPrinted++;
       }
     }

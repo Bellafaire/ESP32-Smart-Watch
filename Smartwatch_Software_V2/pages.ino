@@ -26,12 +26,13 @@
 */
 
 
+//AnimationCircle:: AnimationCircle(int _x, int _y, int _rotationRadius, int _circleRadius, int _ringColor, int _color, float _speed, int _circleNumber)
 //animation circles, I kind of made these awhile ago as a cool visual element but now they're fairly essential to the entire UI design
-AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
-AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
-AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 2.5, 4);
-AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
-AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
+AnimationCircle circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 0), 3.5, 2);
+AnimationCircle circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 0), -3, 3);
+AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 0), 2.5, 4);
+AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 0), -2, 5);
+AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
 RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton, calendarButton;
 
@@ -47,11 +48,11 @@ void initHome() {
   printDebug("initializing home");
 
   //re-init animation circles
-  circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 20, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 3.5, 2);
-  circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 25, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -3, 3);
-  circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 31, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), 2.5, 4);
-  circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 3, RGB_TO_BGR565(10, 10, 10), RGB_TO_BGR565(0, 0, 0), -2, 5);
-  circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 3, RGB_TO_BGR565(150, 150, 150), RGB_TO_BGR565(0, 0, 255), 1.5, 6);
+  circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 15, 3, RING_COLOR, RING_COLOR, 3.5, 2);
+  circ2 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 22, 2, RING_COLOR, RING_COLOR, -3, 3);
+  circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 28, 2, RING_COLOR, RING_COLOR, 2.5, 4);
+  circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 34, 2, RING_COLOR, RING_COLOR, -2, 5);
+  circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 40, 3, RING_COLOR, 0xcbff00, 1.5, 6);
 
   //remove all previous touch areas, this should be done in every init function
   deactivateAllTouchAreas();
@@ -129,14 +130,14 @@ void home() {
 void homeTransitionToNav() {
   for (int a = 0; a < 8; a++) {
     home();
-    frameBuffer->fillCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, (int)(45.0 * ((float)a / 8.0)), 0x0000);
+
     circ5.animateAndDraw(frameBuffer);
     tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
   }
 
   for (int a = 0; a < 8; a++) {
     home();
-    frameBuffer->fillCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45 + a * (SCREEN_WIDTH / 8), 0x0000);
+
     circ5.setRadius(45 + a * (SCREEN_WIDTH / 8));
     circ5.animateAndDraw(frameBuffer);
     tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -200,7 +201,9 @@ void initNavigation() {
 
 //normal animations and stuff when navigation is active.
 void navigation() {
-  frameBuffer->fillScreen(0x0000);
+  //draw the background image declared in Declarations.h
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+
   frameBuffer->setCursor(0, 0);
   frameBuffer->println("Navigation");
 
@@ -262,7 +265,9 @@ void initSettings() {
 int notificationScrollPosition = 0;
 
 void initNotifications() {
-  frameBuffer->fillScreen(BACKGROUND_COLOR);
+  //draw the background image declared in Declarations.h
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+
   notificationScrollPosition = 0;
 
   deactivateAllTouchAreas();
@@ -290,7 +295,9 @@ void showNotification() {
 }
 
 void notificationDisplay() {
-  frameBuffer->fillScreen(BACKGROUND_COLOR);
+  //draw the background image declared in Declarations.h
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+
   String line = getValue(notificationData, '\n', notificationScrollPosition);
 
   frameBuffer->setTextColor(INTERFACE_COLOR);
@@ -328,7 +335,9 @@ void lastNotification() {
 
 
 void notifications() {
-
+  //draw the background image declared in Declarations.h
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
   //count lines
   int lineCount = getNumberOfLines(notificationData);
 
