@@ -153,7 +153,6 @@ void transitionToNav() {
 /* Home Media
    technically just an extension of home activated by tapping the play icon
 */
-
 void initHomeMedia() {
   //set the page to homeMedia
   currentPage = (void*)homeMedia;
@@ -167,13 +166,23 @@ void initHomeMedia() {
   homePreviousMediaButton = RoundButton(16, SCREEN_HEIGHT - 66, 16, MEDIA_LAST_ICON, (void*)lastSong);
   homePauseMediaButton = RoundButton(66, SCREEN_HEIGHT - 16, 16, MEDIA_PAUSE_ICON, (void*)pauseMusic);
 
+  updateCurrentSong();
+
   //create new touch area which is used to close the media controls, this is placed directly on top of the circles of the homescreen
   homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) initHome);
 }
 
 //draw the home Media controls, in this case it basically just adds to the home screen so we can basically just draw on top of the home function
 void homeMedia() {
+  updateCurrentSong();
+  
   home();
+
+  frameBuffer->fillRect(8, 8, SCREEN_WIDTH - 16, 3,3, BACKGROUND_COLOR);
+  frameBuffer->drawRect(8, 8, SCREEN_WIDTH - 16, 33, INTERFACE_COLOR);
+
+  printInsideOf(10, 10, SCREEN_WIDTH - 10, 45, currentSong, frameBuffer);
+
   homeNextMediaButton.draw(frameBuffer);
   homePreviousMediaButton.draw(frameBuffer);
   homePauseMediaButton.draw(frameBuffer);
@@ -337,7 +346,7 @@ void lastNotification() {
 void notifications() {
   //draw the background image declared in Declarations.h
   frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
- 
+
   //count lines
   int lineCount = getNumberOfLines(notificationData);
 

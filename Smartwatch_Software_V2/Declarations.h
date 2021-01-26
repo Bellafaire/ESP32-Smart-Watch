@@ -153,6 +153,8 @@ boolean drawInLoop = true;
                           Globals
  ********************************************************************/
 String notificationData = "";
+String currentSong = "";
+unsigned long lastSongUpdate = 0; 
 static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 /********************************************************************

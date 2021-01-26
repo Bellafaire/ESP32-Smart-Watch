@@ -232,3 +232,11 @@ void lastSong() {
     lastMediaCommandIssued = millis();
   }
 }
+
+void updateCurrentSong() {
+  if (lastSongUpdate + 500 < millis()) {
+    currentSong = sendBLE("/currentSong", true);
+    currentSong.replace("*", "");
+    lastSongUpdate = millis();
+  }
+}
