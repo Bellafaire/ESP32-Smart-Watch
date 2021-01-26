@@ -376,7 +376,6 @@ void initCalendar() {
 
   //buttons
   upButton = RoundButton(SCREEN_WIDTH - 20, 15, 14, UP_ARROW_ICON, (void*)lastCalendar);
-  //  okButton = RoundButton(SCREEN_WIDTH - 20, 45, 14, CHECK_MARK_ICON, (void*)showNotification);
   downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextCalendar);
   homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
 
@@ -384,7 +383,10 @@ void initCalendar() {
   if (connected) {
     //this typo is going to bother me for awhile, but I don't want to open
     //android studio to fix it
-    calendarData = sendBLE("/calender", true);
+    calendarData = sendBLE("/calendar", true);
+
+    printDebug("Calendar Data");
+    printDebug(calendarData);
 
     //onto the next page
     currentPage = (void*) calendar;
@@ -457,13 +459,13 @@ void calendar() {
 
     } else {
       //if this event is not the current event then just draw the nav item
-      // so the user can see that there is an event. 
+      // so the user can see that there is an event.
       frameBuffer->fillRoundRect(0, startPos, 10, height, 3, 0xF800);
     }
 
   }
 
-  //draw buttons. 
+  //draw buttons.
   upButton.draw(frameBuffer);
   downButton.draw(frameBuffer);
   homeButton.draw(frameBuffer);

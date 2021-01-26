@@ -170,7 +170,7 @@ void drawNotifications(String notificationData, int x, int y, int color) {
 
   for (int a = 0; a < lineCount; a++) {
     String line = getValue(notificationData, '\n', a);
-    frameBuffer->println(getValue(line, FIELD_SEPARATOR, 0));
+    frameBuffer->println(getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 0));
   }
 }
 
