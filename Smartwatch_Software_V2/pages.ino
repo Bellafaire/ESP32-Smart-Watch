@@ -175,10 +175,10 @@ void initHomeMedia() {
 //draw the home Media controls, in this case it basically just adds to the home screen so we can basically just draw on top of the home function
 void homeMedia() {
   updateCurrentSong();
-  
+
   home();
 
-  frameBuffer->fillRect(8, 8, SCREEN_WIDTH - 16, 3,3, BACKGROUND_COLOR);
+  frameBuffer->fillRect(8, 8, SCREEN_WIDTH - 16, 3, BACKGROUND_COLOR);
   frameBuffer->drawRect(8, 8, SCREEN_WIDTH - 16, 33, INTERFACE_COLOR);
 
   printInsideOf(10, 10, SCREEN_WIDTH - 10, 45, currentSong, frameBuffer);
@@ -324,7 +324,7 @@ void notificationDisplay() {
   frameBuffer->setCursor(0, 35);
   frameBuffer->println("Description");
   frameBuffer->setTextColor(INTERFACE_COLOR);
-  frameBuffer->println(getValue(line, FIELD_SEPARATOR, 1));
+  frameBuffer->println(getValue(line, FIELD_SEPARATOR, 5));
 
   //draw return button
   leftButton.draw(frameBuffer);
