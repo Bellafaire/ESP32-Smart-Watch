@@ -167,9 +167,6 @@ void drawNotifications(String notificationData, int x, int y, int color) {
   //count lines
   int lineCount = getNumberOfLines(notificationData);
 
-  //last 2 lines are not notification data, they're time and EOM terminator
-  lineCount = lineCount - 1;
-
   frameBuffer->setTextColor(color);
   frameBuffer->setCursor(x, y);
 

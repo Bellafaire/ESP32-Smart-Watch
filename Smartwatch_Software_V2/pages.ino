@@ -329,7 +329,7 @@ void notificationDisplay() {
 }
 
 void nextNotification() {
-  if (notificationScrollPosition < getNumberOfLines(notificationData) - 2) {
+  if (notificationScrollPosition < getNumberOfLines(notificationData)) {
     notificationScrollPosition++;
   }
 }
@@ -348,8 +348,6 @@ void notifications() {
   //count lines
   int lineCount = getNumberOfLines(notificationData);
 
-  //last 2 lines are not notification data, they're time and EOM terminator
-  lineCount = lineCount - 1;
 
   for (int a = 0; a < lineCount; a++) {
     //choose position for the current line

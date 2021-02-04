@@ -142,7 +142,9 @@ void loop() {
       if (connected && !notificationsUpdated) {
         //gets current android notifications as a string
         notificationData = sendBLE("/notifications");
-        notificationsUpdated = true;
+        if (notificationData.length() > 2) {
+          notificationsUpdated = true;
+        }
       }
       if (connected && !timeUpdated) {
         //gets current android notifications as a string
@@ -160,6 +162,7 @@ void onWakeup() {
   //new wakeup so we'll want to update notifications next chance we get
   notificationsUpdated = false;
   timeUpdated = false;
+
   getRTCTime();
   printRTCTime();
   //wake up display

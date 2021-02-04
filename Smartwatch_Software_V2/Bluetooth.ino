@@ -68,8 +68,10 @@ void initBLE() {
   pServer->setCallbacks(new cb());
 
   pService->start();
+  startBLEAdvertising();
+}
 
-
+void startBLEAdvertising() {
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
