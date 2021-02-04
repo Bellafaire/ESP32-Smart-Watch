@@ -96,15 +96,9 @@ void deviceSleep() {
   //put display to sleep
   tft.enableSleep(true);
 
-  if (sleepCount < 3) {
-    sleepCount = wasActive ? sleepCount + 1 : sleepCount;
-    esp_light_sleep_start();
-  } else {
-    sleepCount = 0;
-    printDebug("Deep Sleeping for restart");
-    esp_sleep_enable_timer_wakeup(1);
-    esp_deep_sleep_start();
-  }
+
+  sleepCount = wasActive ? sleepCount + 1 : sleepCount;
+  esp_light_sleep_start();
 }
 
 void loop() {

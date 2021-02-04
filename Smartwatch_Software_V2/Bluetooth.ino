@@ -20,7 +20,7 @@
 
 
 void addData(String data) {
-  //  Serial.println("Adding:" + data);
+  printDebug("Received:" + data);
   currentDataField += data;
 }
 
