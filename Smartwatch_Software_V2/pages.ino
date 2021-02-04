@@ -106,16 +106,14 @@ void home() {
     circ1.setColor(RGB_TO_BGR565(0, 255, 0));
 
     if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
-      boolean isPlaying = sendBLE("/isPlaying", true).substring(0, 4).equals("true");
+      boolean isPlaying = sendBLE("/isPlaying")[0] == '1';
       if (isPlaying) {
         //spotify is playing so show the button.
         homeMediaButton.activate();
       }
       lastSongCheck = millis();
     }
-  } else if (deviceFound) {
-    circ1.setColor(RGB_TO_BGR565(0, 0, 255));
-  } else {
+  }  else {
     circ1.setColor(RGB_TO_BGR565(255, 0, 0));
   }
 
@@ -178,7 +176,7 @@ void homeMedia() {
 
   home();
 
-  frameBuffer->fillRect(8, 8, SCREEN_WIDTH - 16, 3, BACKGROUND_COLOR);
+  frameBuffer->fillRect(8, 8, SCREEN_WIDTH - 16, 33, BACKGROUND_COLOR);
   frameBuffer->drawRect(8, 8, SCREEN_WIDTH - 16, 33, INTERFACE_COLOR);
 
   printInsideOf(10, 10, SCREEN_WIDTH - 10, 45, currentSong, frameBuffer);
@@ -401,7 +399,7 @@ void initCalendar() {
   if (connected) {
     //this typo is going to bother me for awhile, but I don't want to open
     //android studio to fix it
-    calendarData = sendBLE("/calendar", true);
+    calendarData = sendBLE("/calendar");
 
     printDebug("Calendar Data");
     printDebug(calendarData);

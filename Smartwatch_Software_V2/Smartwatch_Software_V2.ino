@@ -24,8 +24,10 @@ int batteryPercentage = 100;
 esp_sleep_wakeup_cause_t wakeup_reason;
 boolean deepSleepWake = true;
 boolean notificationsUpdated = false;
+boolean timeUpdated = false;
 boolean wasActive = false;
 RTC_DATA_ATTR int sleepCount = 0;
+
 
 void setup() {
 #ifdef DEBUG
@@ -37,7 +39,7 @@ void setup() {
   initBatMonitor();
   initTouch();
 
-
+  initBLE();
 
   //create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(    watchDog
@@ -81,39 +83,13 @@ void deviceSleep() {
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
   esp_sleep_enable_timer_wakeup(TIMER_SLEEP_TIME);
   digitalWrite(LCD_LED, LOW);
-  if (connected) {
 
-    BLEAddress devices = myDevice->getAddress();
-
-    if (esp_ble_gap_disconnect((uint8_t*)devices.getNative()) == ESP_OK) {
-      printDebug("%%%%%%%%%%%%%%% CLOSED BLE CLIENT CONNECTION %%%%%%%%%%%%%%%%%%");
-    }
-
-    unsigned long disconnectTimeout = millis() + 1000;
-
-    while (connected && millis() < disconnectTimeout) {
-      vTaskDelay(10);
-    }
-
-    if (millis() >= disconnectTimeout) {
-      connected = false;
-      printDebug("Device disconnected improperly");
-    }
-
-    eTaskState con = eTaskGetState(xConnect);
-    if (con == 0) {
-      printDebug("Deleting Bluetooth Task");
-      vTaskDelete(xConnect);
-    }
-
-
-
-    printDebug("disconnected");
-  }
 
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
     printDebug("Going to sleep");
   }
+
+  connected = false;
 
   Serial.flush();
 
@@ -164,15 +140,14 @@ void loop() {
 
       //if we're connected and haven't updated our notification data then lets do so
       if (connected && !notificationsUpdated) {
-
         //gets current android notifications as a string
-        notificationData = sendBLE("/notifications", true);
-
-        //if successful then parse out the time and register a successful notification acquisition
-        if (notificationData.length() > 10) {
-          updateTimeFromNotificationData(notificationData);
-          notificationsUpdated = true;
-        }
+        notificationData = sendBLE("/notifications");
+        notificationsUpdated = true;
+      }
+      if (connected && !timeUpdated) {
+        //gets current android notifications as a string
+        updateTimeFromTimeString(sendBLE("/time"));
+        timeUpdated = true;
       }
     }
   }
@@ -182,17 +157,16 @@ void loop() {
 
 
 void onWakeup() {
-  //new wakeup so we'll want to update notifications next chance we get 
+  //new wakeup so we'll want to update notifications next chance we get
   notificationsUpdated = false;
+  timeUpdated = false;
   getRTCTime();
   printRTCTime();
   //wake up display
   tft.enableSleep(false);
-  digitalWrite(LCD_LED, HIGH);
 
   //always start on the home page when waking up
   currentPage = (void*)initHome;
-  //initalizes BLE connection in seperate thread
-  //when connected will update the "connected" variable to true
-  initBLE();
+
+  digitalWrite(LCD_LED, HIGH);
 }

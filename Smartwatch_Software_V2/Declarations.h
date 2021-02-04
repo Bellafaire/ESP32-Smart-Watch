@@ -21,11 +21,15 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Wire.h>
-#include "BLEDevice.h"
 #include <EEPROM.h>
 #include <soc/rtc.h>
 #include <sys/time.h>
 #include <driver/adc.h>
+
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <BLE2902.h>
 
 /*******************************************************************
                               DEBUG
@@ -154,7 +158,7 @@ boolean drawInLoop = true;
  ********************************************************************/
 String notificationData = "";
 String currentSong = "";
-unsigned long lastSongUpdate = 0; 
+unsigned long lastSongUpdate = 0;
 static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 /********************************************************************
@@ -218,21 +222,25 @@ RTC_DATA_ATTR struct tm* timeinfo;
 /********************************************************************
                               BLE
  ********************************************************************/
-//BLE related variables
-//UUID's for the services used by the android app (change as you please if you're building this yourself, just match them in the android app)
-static BLEUUID serviceUUID("d3bde760-c538-11ea-8b6e-0800200c9a66");
-static BLEUUID    charUUID("d3bde760-c538-11ea-8b6e-0800200c9a67");
+//variables and defines used by BLEServer.ino
+String currentDataField;
+#define SERVICE_UUID        "5ac9bc5e-f8ba-48d4-8908-98b80b566e49"
+#define COMMAND_UUID        "bcca872f-1a3e-4491-b8ec-bfc93c5dd91a"
+BLECharacteristic *commandCharacteristic;
+BLEService *pService;
+BLEServer *pServer;
 
-//important variables used to establish BLE communication
-static BLERemoteCharacteristic* pRemoteCharacteristic;
-static BLEAdvertisedDevice* myDevice;
-static BLEClient*  pClient;
-static TaskHandle_t xConnect = NULL;
-static volatile boolean connected = false;
-static boolean registeredForCallback = false;
-static boolean deviceFound = false;
+//indicates connection state to the android device
+boolean connected = false;
 
-#define BLUETOOTH_CONNECTION_TASK_PRIORITY 3
+//indiciates whether or not a operation is currently in progress
+boolean operationInProgress = false;
+
+//function signitures
+String sendBLE(String command);
+void addData(String data);  //adds data to a current string, used within BLEServer.ino
+void initBLE(); //initializes the BLE connection by starting advertising.
+
 
 /********************************************************************
                           Touch Interface
