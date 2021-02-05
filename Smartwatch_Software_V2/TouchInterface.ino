@@ -27,7 +27,11 @@ void TouchTask(void * pvParameters ) {
   point p = readTouch();
   printDebug("x:" + String(p.x) + " y:" + String(p.y));
 
-  checkAllTouchAreas(p.x, p.y);
+if( useTouchAreas && lastTouchAction + TOUCH_ACTION_COOLDOWN < millis()){
+    checkAllTouchAreas(p.x, p.y);
+    lastTouchAction = millis();
+}
+
 
   xTouch = NULL;
   vTaskDelete(NULL);
@@ -104,7 +108,8 @@ void checkAllTouchAreas(int x, int y) {
         && x <=  activeTouchAreas[a].x + activeTouchAreas[a].width
         && y >=  activeTouchAreas[a].y
         && y <=  activeTouchAreas[a].y +  activeTouchAreas[a].height
-        &&  activeTouchAreas[a].identifier != 0 ) {
+        &&  activeTouchAreas[a].identifier != 0
+        ) {
       printDebug("Detected touch for touchEvent: " + String(activeTouchAreas[a].identifier) + " at x:" + String(x) + " y:" + String(y) );
       //call the action associated with this touch area
       ((void(*)())activeTouchAreas[a].action)();

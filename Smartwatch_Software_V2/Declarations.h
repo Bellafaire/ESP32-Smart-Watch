@@ -183,7 +183,7 @@ TaskHandle_t xTouch = NULL;
 //to support some legacy windows we need to give them full control of the touch screen.
 //since these are relatively minior UI elements that are important to functionality
 //this is alright, for the duration of their activity they must control the entire screen.
-boolean useTouchAreas = true;
+volatile boolean useTouchAreas = true;
 
 
 /********************************************************************
@@ -246,6 +246,9 @@ void initBLE(); //initializes the BLE connection by starting advertising.
                           Touch Interface
  ********************************************************************/
 #define MAX_TOUCH_AREAS 25
+#define TOUCH_ACTION_COOLDOWN 250
+
+unsigned long lastTouchAction = 0; 
 
 struct touchArea {
   int x, y, width, height;
