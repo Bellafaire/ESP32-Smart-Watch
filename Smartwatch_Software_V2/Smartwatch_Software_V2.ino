@@ -166,6 +166,10 @@ void onWakeup() {
   notificationsUpdated = false;
   timeUpdated = false;
 
+  //incase the device was shut down in the middle of a bluetooth operation since 
+  //the android device will not complete the operation and update the ESP32
+  operationInProgress = false;
+  
   getRTCTime();
   printRTCTime();
   //wake up display
