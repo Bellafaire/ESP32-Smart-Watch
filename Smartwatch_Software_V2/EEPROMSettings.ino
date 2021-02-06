@@ -28,7 +28,9 @@ void setDataField(byte data, int pos) {
 }
 
 byte readDataField(int pos) {
-  return (byte)EEPROM.read(pos);
+  byte data = (byte)EEPROM.read(pos); 
+  printDebug("Read datafield: " + String(pos) + " found value " + String(data)); 
+  return data;
 }
 
 void clearEEPROM() {

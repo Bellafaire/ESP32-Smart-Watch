@@ -54,9 +54,9 @@ void AnimationCircle::animateAndDraw(GFXcanvas16 *buffer) {
     int xPos2 = x + (float) rotationRadius * sin((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
     int yPos2 = y + (float) rotationRadius * cos((float)theta * PI / 180 + (2 * PI * (float)(a + 1 + (circleNumber % 2)) / (float)circleNumber));
 
-//    buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
-//    buffer->fillCircle(xPos, yPos, circleRadius, color);
-//    buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
+    //    buffer->drawLine(xPos, yPos, xPos2, yPos2, ringColor);
+    //    buffer->fillCircle(xPos, yPos, circleRadius, color);
+    //    buffer->drawCircle(xPos, yPos, circleRadius, ringColor);
 
     buffer->fillCircle(xPos2, yPos2, circleRadius, color);
     buffer->drawCircle(xPos2, yPos2, circleRadius, ringColor);
@@ -271,8 +271,10 @@ void   RoundButton::draw(GFXcanvas16 * buffer) {
 }
 
 void  RoundButton::activate() {
-  touchAreaID = createTouchArea(x - radius, y - radius , radius * 2, radius * 2, action);
-  active = true;
+  if (!isTouchAreaActive(touchAreaID)) {
+    touchAreaID = createTouchArea(x - radius, y - radius , radius * 2, radius * 2, action);
+    active = true;
+  }
 }
 void RoundButton::deactivate() {
   deactivateTouchArea(touchAreaID);

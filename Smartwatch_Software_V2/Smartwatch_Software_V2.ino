@@ -134,16 +134,25 @@ void loop() {
 
       //if we're connected and haven't updated our notification data then lets do so
       if (connected && !notificationsUpdated) {
-        //gets current android notifications as a string
-        notificationData = sendBLE("/notifications");
-        if (notificationData.length() > 2) {
+        //        //gets current android notifications as a string
+        //        notificationData = sendBLE("/notifications");
+        //        if (notificationData.length() > 2) {
+        //          notificationsUpdated = true;
+        //        }
+        boolean success = sendBLE("/notifications", &notificationData, false);
+        if (success) {
           notificationsUpdated = true;
+          printDebug("notifications updating");
         }
       }
       if (connected && !timeUpdated) {
         //gets current android notifications as a string
-        updateTimeFromTimeString(sendBLE("/time"));
-        timeUpdated = true;
+        String timeStr = "";
+        boolean success = sendBLE("/time", &timeStr, true);
+        if (success) {
+          updateTimeFromTimeString(timeStr);
+          timeUpdated = true;
+        }
       }
     }
   }

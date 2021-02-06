@@ -106,10 +106,13 @@ void home() {
     circ1.setColor(RGB_TO_BGR565(0, 255, 0));
 
     if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
-      boolean isPlaying = sendBLE("/isPlaying")[0] == '1';
-      if (isPlaying) {
+      String bleStr = "";
+      sendBLE("/isPlaying", &bleStr, true);
+      boolean isPlaying = bleStr[0] == '1';
+      if (isPlaying && currentPage == home && !homeMediaButton.isActive()) {
         //spotify is playing so show the button.
         homeMediaButton.activate();
+        
       }
       lastSongCheck = millis();
     }
@@ -393,15 +396,8 @@ void initCalendar() {
   downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextCalendar);
   homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
 
-  //if we're connected then download the calendar data from the smartphone
-  if (connected) {
-    //this typo is going to bother me for awhile, but I don't want to open
-    //android studio to fix it
-    calendarData = sendBLE("/calendar");
-
-    printDebug("Calendar Data");
-    printDebug(calendarData);
-
+  boolean success = sendBLE("/calendar", &calendarData, false);
+  if (success) {
     //onto the next page
     currentPage = (void*) calendar;
   } else {

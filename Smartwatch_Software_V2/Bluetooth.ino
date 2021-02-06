@@ -22,6 +22,9 @@
 void addData(String data) {
   printDebug("Received:" + data);
   currentDataField += data;
+  if (!blockingCommandInProgress) {
+    *bleReturnString = currentDataField;
+  }
 }
 
 class cb : public BLEServerCallbacks    {
@@ -81,21 +84,67 @@ void startBLEAdvertising() {
   BLEDevice::startAdvertising();
 }
 
-String sendBLE(String command) {
-  operationInProgress = true;
-  commandCharacteristic->setValue(command.c_str());
-  commandCharacteristic->notify();
+//sends BLE command and returns data to a specific string. This function can be blocking (if you need it to perform a specific action) or non-blocking
+//if you don't mind the data being used as its received.
+boolean sendBLE(String command, String* returnString, boolean blocking) {
+  if (connected && !operationInProgress) {
+    blockingCommandInProgress = blocking;
+    operationInProgress = true;
+    commandCharacteristic->setValue(command.c_str());
+    commandCharacteristic->notify();
 
-  printDebug("Sent BLE Command: " + command);
+    printDebug("Sent BLE Command: " + command);
 
-  currentDataField = "";
+    if (blockingCommandInProgress) {
 
-  unsigned long startTime = millis();
-  while (operationInProgress && (startTime + 2000 > millis()))
-    delay(25);
+      currentDataField = "";
 
-  return currentDataField;
+      unsigned long startTime = millis();
+      while (operationInProgress && (startTime + 2000 > millis()))
+        delay(25);
 
+      operationInProgress = false;
+      if (currentDataField.length() == 0) {
+        return false;
+      }  else {
+        *returnString = currentDataField;
+        return true;
+      }
+
+    } else {
+      currentDataField = "";
+      bleReturnString = returnString;
+      *returnString = currentDataField;
+
+      unsigned long startTime = millis();
+      while (currentDataField.length() == 0 && (startTime + 200 > millis()))
+        delay(25);
+
+      if (currentDataField.length() == 0) {
+        operationInProgress = false;
+        return false;
+      }  else {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+boolean sendBLE(String command) {
+  if (connected && !operationInProgress) {
+    operationInProgress = true;
+    commandCharacteristic->setValue(command.c_str());
+    commandCharacteristic->notify();
+
+    printDebug("Sent BLE Command: " + command);
+    unsigned long startTime = millis();
+    while (operationInProgress && (startTime + 200 > millis()))
+      delay(25);
+    return !operationInProgress;
+  }
+  return false;
 }
 
 
@@ -132,7 +181,7 @@ void lastSong() {
 
 void updateCurrentSong() {
   if (lastSongUpdate + 500 < millis()) {
-    currentSong = sendBLE("/currentSong");
+    sendBLE("/currentSong", &currentSong, false);
     lastSongUpdate = millis();
   }
 }

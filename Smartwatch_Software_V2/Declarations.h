@@ -217,13 +217,15 @@ RTC_DATA_ATTR struct tm* timeinfo;
 
 //EEPROM Data locations and information
 //eeprom allocations for data placement and their corrosponding string for display.
-#define DAYLIGHT_SAVINGS 0
+#define DAYLIGHT_SAVINGS 1
 
 /********************************************************************
                               BLE
  ********************************************************************/
 //variables and defines used by BLEServer.ino
 String currentDataField;
+boolean blockingCommandInProgress = false;
+String* bleReturnString;
 #define SERVICE_UUID        "5ac9bc5e-f8ba-48d4-8908-98b80b566e49"
 #define COMMAND_UUID        "bcca872f-1a3e-4491-b8ec-bfc93c5dd91a"
 BLECharacteristic *commandCharacteristic;
@@ -237,7 +239,8 @@ boolean connected = false;
 boolean operationInProgress = false;
 
 //function signitures
-String sendBLE(String command);
+//String sendBLE(String command);
+boolean sendBLE(String command, String* returnString, boolean blocking);
 void addData(String data);  //adds data to a current string, used within BLEServer.ino
 void initBLE(); //initializes the BLE connection by starting advertising.
 
@@ -248,7 +251,7 @@ void initBLE(); //initializes the BLE connection by starting advertising.
 #define MAX_TOUCH_AREAS 25
 #define TOUCH_ACTION_COOLDOWN 250
 
-unsigned long lastTouchAction = 0; 
+unsigned long lastTouchAction = 0;
 
 struct touchArea {
   int x, y, width, height;
