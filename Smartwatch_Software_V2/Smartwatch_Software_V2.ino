@@ -35,6 +35,7 @@ void setup() {
 #endif
   EEPROM.begin(EEPROM_SIZE);
   Wire.begin(I2C_SDA, I2C_SCL, 100000);
+  pinMode(CHG_STAT, INPUT);
   initLCD();
   initBatMonitor();
   initTouch();

@@ -256,7 +256,7 @@ int getBatteryPercentage() {
 }
 
 /********************************************************************
-                          Battery Monitor
+                          Accelerometer
  ********************************************************************/
 
 int readXAccel() {
@@ -278,3 +278,11 @@ int readZAccel() {
   adc2_get_raw((adc2_channel_t) Z_ACCEL_ADC_CH, ADC_WIDTH_BIT_12, &read_raw);
   return read_raw;
 }
+
+/********************************************************************
+                          Battery Charger
+ ********************************************************************/
+
+ boolean isCharging(){
+  return !digitalRead(CHG_STAT);
+ }

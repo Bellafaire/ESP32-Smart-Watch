@@ -92,7 +92,12 @@ void home() {
   frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4, 5 );
   frameBuffer->println(String(batteryPercentage) + "%");
 
-  frameBuffer->setTextColor(0xFFFF);
+  if (isCharging()) {
+    frameBuffer->setTextColor(RGB_TO_BGR565(0, 255, 0));
+  }
+  else {
+    frameBuffer->setTextColor(0xFFFF);
+  }
   frameBuffer->setCursor(SCREEN_WIDTH - 6 * 4 - 1, 5 - 1);
   frameBuffer->println(String(batteryPercentage) + "%");
 
