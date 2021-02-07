@@ -112,7 +112,7 @@ void home() {
       if (isPlaying && currentPage == home && !homeMediaButton.isActive()) {
         //spotify is playing so show the button.
         homeMediaButton.activate();
-        
+
       }
       lastSongCheck = millis();
     }
@@ -383,11 +383,12 @@ void notifications() {
 
 String calendarData = "";
 int calendarScrollPosition = 0;
-
+boolean calendarDataObtained = false;
 
 void initCalendar() {
   calendarScrollPosition = 0;
   frameBuffer->fillScreen(BACKGROUND_COLOR);
+  calendarDataObtained = false;
 
   deactivateAllTouchAreas();
 
@@ -397,12 +398,11 @@ void initCalendar() {
   homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
 
   boolean success = sendBLE("/calendar", &calendarData, false);
-  if (success) {
-    //onto the next page
-    currentPage = (void*) calendar;
-  } else {
-    initHome();
-  }
+  if (success)
+    calendarDataObtained = true;
+
+  //onto the next page
+  currentPage = (void*) calendar;
 }
 
 void nextCalendar() {
@@ -421,6 +421,11 @@ void lastCalendar() {
 
 //draws calendar information from smartphone
 void calendar() {
+  if (!calendarDataObtained) {
+    boolean success = sendBLE("/calendar", &calendarData, false);
+    if (success)
+      calendarDataObtained = true;
+  }
   //draw the background image declared in Declarations.h
   frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
   int firstEventStart = 0;
