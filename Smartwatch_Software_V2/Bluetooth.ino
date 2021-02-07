@@ -46,6 +46,7 @@ class ccb : public BLECharacteristicCallbacks  {
     void onRead(BLECharacteristic* pCharacteristic) {
       //      Serial.println("Characteristic Read");
       operationInProgress = false;
+      printDebug("Complete Received String:\n" + currentDataField);
     }
 };
 
