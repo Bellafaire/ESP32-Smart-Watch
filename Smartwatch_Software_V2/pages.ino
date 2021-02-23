@@ -43,6 +43,10 @@ RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, hom
 int homeTouchArea;
 
 
+void switchToHome(){
+  currentPage = (void*)initHome;
+}
+
 //initalizes the home page
 void initHome() {
   printDebug("initializing home");
@@ -59,7 +63,7 @@ void initHome() {
 
   //create touch area for going to the navigation page
   homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) transitionToNav);
-  homeMediaButton = RoundButton(16, SCREEN_HEIGHT - 16, 16, MEDIA_PLAY_ICON, (void*)initHomeMedia);
+  homeMediaButton = RoundButton(16, SCREEN_HEIGHT - 16, 16, MEDIA_PLAY_ICON, (void*)switchToHomeMedia);
   homeMediaButton.deactivate();
 
   //set current page to home, initialization is complete so we're good to start drawing the normal home page
@@ -130,6 +134,8 @@ void home() {
 }
 
 
+
+
 /* Quick and dirty animation to transition to the navigation page.
   we essentially expand one of the circles until it fills the entire screen
 */
@@ -156,6 +162,10 @@ void transitionToNav() {
   currentPage = (void*)homeTransitionToNav;
 }
 
+void switchToHomeMedia(){
+  currentPage = (void*)initHomeMedia;
+}
+
 /* Home Media
    technically just an extension of home activated by tapping the play icon
 */
@@ -175,7 +185,7 @@ void initHomeMedia() {
   updateCurrentSong();
 
   //create new touch area which is used to close the media controls, this is placed directly on top of the circles of the homescreen
-  homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) initHome);
+  homeTouchArea = createTouchArea(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 100, 100, (void*) switchToHome);
 }
 
 //draw the home Media controls, in this case it basically just adds to the home screen so we can basically just draw on top of the home function
@@ -206,10 +216,10 @@ void initNavigation() {
   deactivateAllTouchAreas();
 
   //create homeButton
-  homeButton = RoundButton(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 16, HOME_ICON, (void*)initHome);
-  settingButton = RoundButton(25, 35, 16, SETTINGS_ICON, (void*)initSettings);
-  notificationsButton = RoundButton(75, 35, 16, NOTIFICATIONS_ICON, (void*)initNotifications);
-  calendarButton = RoundButton(125, 35, 16, CALENDAR_ICON, (void*)initCalendar);
+  homeButton = RoundButton(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 16, HOME_ICON, (void*)switchToHome);
+  settingButton = RoundButton(25, 35, 16, SETTINGS_ICON, (void*)switchToSettings);
+  notificationsButton = RoundButton(75, 35, 16, NOTIFICATIONS_ICON, (void*)switchToNotifications);
+  calendarButton = RoundButton(125, 35, 16, CALENDAR_ICON, (void*)switchToCalendar);
 
   currentPage = (void*)navigation;
 }
@@ -237,6 +247,10 @@ void navigation() {
 /********************************************************************
                               Settings
  ********************************************************************/
+void switchToSettings(){
+  currentPage = (void*)initSettings; 
+}
+ 
 void initSettings() {
   //this entire function needs to more-or-less run on its own without the framework around it
   pauseTouchAreas();
@@ -279,6 +293,10 @@ void initSettings() {
  ********************************************************************/
 int notificationScrollPosition = 0;
 
+void switchToNotifications(){
+  currentPage = (void*)initNotifications; 
+}
+
 void initNotifications() {
   //draw the background image declared in Declarations.h
   frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -290,9 +308,9 @@ void initNotifications() {
   upButton = RoundButton(SCREEN_WIDTH - 20, 15, 14, UP_ARROW_ICON, (void*)lastNotification);
   okButton = RoundButton(SCREEN_WIDTH - 20, 45, 14, CHECK_MARK_ICON, (void*)showNotification);
   downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextNotification);
-  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
+  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)switchToHome);
 
-  leftButton = RoundButton(15, 15, 14, LEFT_ARROW_ICON, (void*)initNotifications);
+  leftButton = RoundButton(15, 15, 14, LEFT_ARROW_ICON, (void*)switchToNotifications);
   leftButton.deactivate();
 
   currentPage = (void*)notifications;
@@ -390,6 +408,10 @@ String calendarData = "";
 int calendarScrollPosition = 0;
 boolean calendarDataObtained = false;
 
+void switchToCalendar(){
+  currentPage = (void*)initCalendar; 
+}
+
 void initCalendar() {
   calendarScrollPosition = 0;
   frameBuffer->fillScreen(BACKGROUND_COLOR);
@@ -400,7 +422,7 @@ void initCalendar() {
   //buttons
   upButton = RoundButton(SCREEN_WIDTH - 20, 15, 14, UP_ARROW_ICON, (void*)lastCalendar);
   downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextCalendar);
-  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)initHome);
+  homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)switchToHome);
 
   boolean success = sendBLE("/calendar", &calendarData, false);
   if (success)

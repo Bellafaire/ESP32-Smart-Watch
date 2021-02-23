@@ -231,6 +231,7 @@ String* bleReturnString;
 BLECharacteristic *commandCharacteristic;
 BLEService *pService;
 BLEServer *pServer;
+TaskHandle_t xBLE = NULL;
 
 //indicates connection state to the android device
 boolean connected = false;

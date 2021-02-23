@@ -50,7 +50,11 @@ class ccb : public BLECharacteristicCallbacks  {
     }
 };
 
-void initBLE() {
+
+void BLE(void *pvParameters)
+{
+  
+  (void) pvParameters;
   BLEDevice::init("ESP32 Smartwatch");
   pServer = BLEDevice::createServer();
   pService = pServer->createService(SERVICE_UUID);
@@ -73,6 +77,18 @@ void initBLE() {
 
   pService->start();
   startBLEAdvertising();
+
+  vTaskDelete(NULL);
+}
+
+void initBLE() {
+  xTaskCreatePinnedToCore(   BLE,
+                             "BLE_START",
+                             32 * 1024,
+                             (void *) 1 ,
+                             2,
+                             &xBLE,
+                             0);
 }
 
 void startBLEAdvertising() {

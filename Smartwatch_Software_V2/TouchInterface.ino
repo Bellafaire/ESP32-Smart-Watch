@@ -72,6 +72,15 @@ int createTouchArea(int x, int y, int width, int height, void* action) {
   return ta.identifier;
 }
 
+void printActiveTouchAreas(){
+  for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
+    if (activeTouchAreas[a].identifier != 0) {
+      printDebug("Touch Area " + String(activeTouchAreas[a].identifier) + " is Active");
+      break;
+    }
+  }
+}
+
 boolean isTouchAreaActive(int id) {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (activeTouchAreas[a].identifier == id) {
@@ -107,7 +116,6 @@ void deactivateAllTouchAreas() {
     if (activeTouchAreas[a].identifier != 0) {
       printDebug("Deactivating touchArea " + String(activeTouchAreas[a].identifier));
       activeTouchAreas[a].identifier = 0;
-      break;
     }
   }
 }
@@ -121,7 +129,7 @@ void checkAllTouchAreas(int x, int y) {
         && y <=  activeTouchAreas[a].y +  activeTouchAreas[a].height
         &&  activeTouchAreas[a].identifier != 0
        ) {
-      printDebug("Detected touch for touchEvent: " + String(activeTouchAreas[a].identifier) + " at x:" + String(x) + " y:" + String(y) );
+      printDebug("Detected touch for touchEvent: " + String(activeTouchAreas[a].identifier) + " at x:" + String(x) + " y:" + String(y) + " At Index " + String(a) );
       //call the action associated with this touch area
       ((void(*)())activeTouchAreas[a].action)();
     }
