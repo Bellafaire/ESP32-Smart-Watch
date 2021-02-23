@@ -424,6 +424,7 @@ void initCalendar() {
   downButton = RoundButton(SCREEN_WIDTH - 20, 75 , 14, DOWN_ARROW_ICON, (void*)nextCalendar);
   homeButton = RoundButton(SCREEN_WIDTH - 20, 105, 14, HOME_ICON, (void*)switchToHome);
 
+
   boolean success = sendBLE("/calendar", &calendarData, false);
   if (success)
     calendarDataObtained = true;

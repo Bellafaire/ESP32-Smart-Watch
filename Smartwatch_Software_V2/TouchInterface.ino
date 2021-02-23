@@ -67,12 +67,12 @@ int createTouchArea(int x, int y, int width, int height, void* action) {
     }
   }
 
-  printDebug("Registered touch area: " + String(ta.identifier)); 
+  printDebug("Registered touch area: " + String(ta.identifier));
 
   return ta.identifier;
 }
 
-void printActiveTouchAreas(){
+void printActiveTouchAreas() {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (activeTouchAreas[a].identifier != 0) {
       printDebug("Touch Area " + String(activeTouchAreas[a].identifier) + " is Active");
@@ -115,8 +115,8 @@ void deactivateAllTouchAreas() {
   for (int a = 0; a < MAX_TOUCH_AREAS; a++) {
     if (activeTouchAreas[a].identifier != 0) {
       printDebug("Deactivating touchArea " + String(activeTouchAreas[a].identifier));
-      activeTouchAreas[a].identifier = 0;
     }
+    activeTouchAreas[a].identifier = 0;
   }
 }
 
