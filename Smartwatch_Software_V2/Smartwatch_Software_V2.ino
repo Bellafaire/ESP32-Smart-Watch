@@ -90,14 +90,16 @@ void deviceSleep() {
     printDebug("Going to sleep");
   }
 
-  connected = false;
 
   Serial.flush();
 
   //put display to sleep
   tft.enableSleep(true);
 
-
+  if(wasActive && !connected){
+     esp_deep_sleep_start();
+  }
+  connected = false;
   sleepCount = wasActive ? sleepCount + 1 : sleepCount;
   esp_light_sleep_start();
 }
