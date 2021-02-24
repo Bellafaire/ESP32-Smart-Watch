@@ -96,8 +96,8 @@ void deviceSleep() {
   //put display to sleep
   tft.enableSleep(true);
 
-  if(wasActive && !connected){
-     esp_deep_sleep_start();
+  if (wasActive && !connected) {
+    esp_deep_sleep_start();
   }
   connected = false;
   sleepCount = wasActive ? sleepCount + 1 : sleepCount;
@@ -105,17 +105,12 @@ void deviceSleep() {
 }
 
 void loop() {
-  //do everything we need to on wakeup.
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-
   wasActive = false;
+
   //check the wakeup reason, if it's touch we go right into the main loop.
   //if it's timer then we're checking whether the accelerometer is in the proper threshold region.
-  if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0
-      || readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
-    if (readZAccel() > ACCELEROMETER_WAKEUP_THRESHOLD) {
-      lastTouchTime = millis() - (TAP_WAKE_TIME - 1000);
-    }
+  if (wakeupCheck()) {
+    lastTouchTime = millis() - (TAP_WAKE_TIME - 1000);
 
     wasActive = true;
 
@@ -160,7 +155,41 @@ void loop() {
     }
   }
   deviceSleep();
+}
 
+//checks wakeup conditions and determines whether or not to activate the watch.
+boolean wakeupCheck() {
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+
+  //read accelerometer once, less ADC reads will speed things up slightly. 
+  int yAccel = readYAccel();
+  int zAccel = readZAccel();
+
+  //wakeup 
+  boolean accelerometer_wakeup = false;
+
+  //check for dip, if dip then update the dip recognized variable with the current time
+  if (ACCEL_Y_DIP < yAccel + DIP_THRESHOLD_VALUE
+      &&  ACCEL_Y_DIP > yAccel - DIP_THRESHOLD_VALUE
+      && ACCEL_Z_DIP < zAccel + DIP_THRESHOLD_VALUE
+      && ACCEL_Z_DIP > zAccel - DIP_THRESHOLD_VALUE) {
+    //store last time
+    lastDipRecognized = millis();
+  }
+
+  //check if the watch is now vertical, and whether or not a dip action was recognized within the threshold previously stated. 
+  if (ACCEL_Y_VERT < yAccel + DIP_THRESHOLD_VALUE
+      &&  ACCEL_Y_VERT > yAccel - DIP_THRESHOLD_VALUE
+      && ACCEL_Z_VERT < zAccel + DIP_THRESHOLD_VALUE
+      && ACCEL_Z_VERT > zAccel - DIP_THRESHOLD_VALUE
+      && millis() - lastDipRecognized < DIP_ACTION_LENGTH) {
+    accelerometer_wakeup = true;
+  }
+
+  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()));
+
+  //if the accelerometer condition was recognized or user touched the screen then wakeup the device. 
+  return wakeup_reason == ESP_SLEEP_WAKEUP_EXT0 || accelerometer_wakeup;
 }
 
 
@@ -169,10 +198,10 @@ void onWakeup() {
   notificationsUpdated = false;
   timeUpdated = false;
 
-  //incase the device was shut down in the middle of a bluetooth operation since 
+  //incase the device was shut down in the middle of a bluetooth operation since
   //the android device will not complete the operation and update the ESP32
   operationInProgress = false;
-  
+
   getRTCTime();
   printRTCTime();
   //wake up display

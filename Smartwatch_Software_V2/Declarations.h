@@ -135,8 +135,30 @@ int ERROR_COLOR = ST77XX_BLUE;
  ********************************************************************/
 //number of times per second the ESP32 will wake up to check the accelerometer
 #define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 10
-#define ACCELEROMETER_WAKEUP_THRESHOLD 2700
+
 #define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2100
+
+#define ACCELEROMETER_MAX_VALUE 4096
+#define ACCELEROMETER_MIN_VALUE 0
+
+//accelerometer value when the watch screen is perpendicular to the ground (screen facing away from body)
+#define ACCEL_Y_DIP 2250
+#define ACCEL_Z_DIP 1930
+
+//accelerometer value when the watch is facing upwards, level with the ground
+#define ACCEL_Y_VERT 1800
+#define ACCEL_Z_VERT 2260
+
+//threshold of the above values that will register a dip condition
+#define DIP_THRESHOLD 0.03
+#define DIP_THRESHOLD_VALUE (ACCELEROMETER_MAX_VALUE - ACCELEROMETER_MIN_VALUE) * DIP_THRESHOLD
+
+//time within which the dip accelerometer wakeup must be performed to activate the device
+#define DIP_ACTION_LENGTH 500 
+
+//millis() continues to work through light sleep, so we record the time
+//that a dip was recognized as a time. 
+unsigned long lastDipRecognized = 0;
 
 #define TAP_WAKE_TIME 3000
 
