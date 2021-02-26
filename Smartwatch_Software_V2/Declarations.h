@@ -35,7 +35,7 @@
                               DEBUG
  *******************************************************************/
 //prints debug information to the serial terminal when declared
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define printDebug(a) Serial.println(a)

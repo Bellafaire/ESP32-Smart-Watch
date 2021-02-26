@@ -26,7 +26,7 @@ boolean deepSleepWake = true;
 boolean notificationsUpdated = false;
 boolean timeUpdated = false;
 boolean wasActive = false;
-RTC_DATA_ATTR int sleepCount = 0;
+int sleepCount = 0;
 
 
 void setup() {
@@ -100,7 +100,7 @@ void deviceSleep() {
     esp_deep_sleep_start();
   }
   connected = false;
-  sleepCount = wasActive ? sleepCount + 1 : sleepCount;
+  sleepCount++;
   esp_light_sleep_start();
 }
 
@@ -161,11 +161,11 @@ void loop() {
 boolean wakeupCheck() {
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
-  //read accelerometer once, less ADC reads will speed things up slightly. 
+  //read accelerometer once, less ADC reads will speed things up slightly.
   int yAccel = readYAccel();
   int zAccel = readZAccel();
 
-  //wakeup 
+  //wakeup
   boolean accelerometer_wakeup = false;
 
   //check for dip, if dip then update the dip recognized variable with the current time
@@ -177,7 +177,7 @@ boolean wakeupCheck() {
     lastDipRecognized = millis();
   }
 
-  //check if the watch is now vertical, and whether or not a dip action was recognized within the threshold previously stated. 
+  //check if the watch is now vertical, and whether or not a dip action was recognized within the threshold previously stated.
   if (ACCEL_Y_VERT < yAccel + DIP_THRESHOLD_VALUE
       &&  ACCEL_Y_VERT > yAccel - DIP_THRESHOLD_VALUE
       && ACCEL_Z_VERT < zAccel + DIP_THRESHOLD_VALUE
@@ -188,8 +188,8 @@ boolean wakeupCheck() {
 
   //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()));
 
-  //if the accelerometer condition was recognized or user touched the screen then wakeup the device. 
-  return wakeup_reason == ESP_SLEEP_WAKEUP_EXT0 || accelerometer_wakeup;
+  //if the accelerometer condition was recognized or user touched the screen then wakeup the device.
+  return ((wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) || accelerometer_wakeup) && (sleepCount != 0);
 }
 
 
@@ -209,6 +209,5 @@ void onWakeup() {
 
   //always start on the home page when waking up
   currentPage = (void*)initHome;
-
   digitalWrite(LCD_LED, HIGH);
 }

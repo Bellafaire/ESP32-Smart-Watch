@@ -33,7 +33,7 @@ void initLCD() {
   tft.setRotation(3);
   tft.fillScreen(BACKGROUND_COLOR);
   pinMode(LCD_LED, OUTPUT);
-  digitalWrite(LCD_LED, HIGH);
+//  digitalWrite(LCD_LED, HIGH);
 }
 
 
