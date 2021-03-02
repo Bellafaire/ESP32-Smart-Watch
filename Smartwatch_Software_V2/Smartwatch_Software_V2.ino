@@ -159,34 +159,62 @@ void loop() {
 
 //checks wakeup conditions and determines whether or not to activate the watch.
 boolean wakeupCheck() {
+
+  //kind of a convoluted algorithim to attempt to filter any movements that aren't what we want.
+  //this function checks for touch wakeup and for accelerometer wakeup, the accelerometer wakeup being the more complicated
+  //what we want is the user to "dip" their wrist down (turn the watch so the screen is facing opposite their body perpendicular to the ground)
+  //then bring the watch up to a level position. This entire action must be completed within the timespan of DIP_ACTION_LENGTH the
+  //watch must then remain level for at least VERTICAL_ACTION_LENGTH in order for an accelerometer wakeup to be activated.
+  //the threshold, accelerometer, timing, and other control variables are present in the Declarations.h file under the "SLEEP and Wake" section
+
+  //get the wakeup reason, if it's a touch interrupt we'll know from this
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
-  //read accelerometer once, less ADC reads will speed things up slightly.
+  //read accelerometer once, less ADC reads will speed things up slightly. (not polling the ADC for every if statement)
   int yAccel = readYAccel();
   int zAccel = readZAccel();
 
-  //wakeup
+  //wakeup value to be returned
   boolean accelerometer_wakeup = false;
 
-  //check for dip, if dip then update the dip recognized variable with the current time
+  //first we check for the dip, if it's values are recognized within the given threshold then the
+  //user may be starting the wakeup process.
   if (ACCEL_Y_DIP < yAccel + DIP_THRESHOLD_VALUE
       &&  ACCEL_Y_DIP > yAccel - DIP_THRESHOLD_VALUE
       && ACCEL_Z_DIP < zAccel + DIP_THRESHOLD_VALUE
       && ACCEL_Z_DIP > zAccel - DIP_THRESHOLD_VALUE) {
-    //store last time
+
+    //store the time we last saw the dip, we rely on timing heavily in determining the dip action
     lastDipRecognized = millis();
   }
 
-  //check if the watch is now vertical, and whether or not a dip action was recognized within the threshold previously stated.
+  //now check if the user has the watch horizontal within the given threshold.
+  //also check whether or not the timer is already running (dip has been active for a certain time)
+  //if so we want to let the timer run longer since it may be that the action is in progress.
   if (ACCEL_Y_VERT < yAccel + DIP_THRESHOLD_VALUE
       &&  ACCEL_Y_VERT > yAccel - DIP_THRESHOLD_VALUE
       && ACCEL_Z_VERT < zAccel + DIP_THRESHOLD_VALUE
       && ACCEL_Z_VERT > zAccel - DIP_THRESHOLD_VALUE
-      && millis() - lastDipRecognized < DIP_ACTION_LENGTH) {
+      && millis() - verticalStarted > DIP_ACTION_LENGTH) {
+
+    //if detected and not running save the time the watch started being level.
+    verticalStarted = millis();
+  }
+
+  //now check the timers again, if the last dip was under the required timing value and the watch has been vertical
+  //for the required timing value but still less than the required time for the dip action then wake the device up.
+  //also check that the vertical action happened AFTER the dip, otherwise we'd be turning the screen on when the user looked away from it
+  if ( ((millis() - lastDipRecognized) < DIP_ACTION_LENGTH)
+       && ((millis() - verticalStarted) > VERTICAL_ACTION_LENGTH)
+       && ((millis() - verticalStarted) < DIP_ACTION_LENGTH)
+       && lastDipRecognized < verticalStarted) {
+
+    //set wakeup condition
     accelerometer_wakeup = true;
   }
 
-  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()));
+  //debug spam
+  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " lastDip:" + String(millis() - lastDipRecognized) + " verticalStarted:" + String(millis() - verticalStarted));
 
   //if the accelerometer condition was recognized or user touched the screen then wakeup the device.
   return ((wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) || accelerometer_wakeup) && (sleepCount != 0);

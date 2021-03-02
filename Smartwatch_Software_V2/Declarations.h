@@ -35,7 +35,7 @@
                               DEBUG
  *******************************************************************/
 //prints debug information to the serial terminal when declared
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define printDebug(a) Serial.println(a)
@@ -143,22 +143,27 @@ int ERROR_COLOR = ST77XX_BLUE;
 
 //accelerometer value when the watch screen is perpendicular to the ground (screen facing away from body)
 #define ACCEL_Y_DIP 2250
-#define ACCEL_Z_DIP 1930
+#define ACCEL_Z_DIP 1800
 
 //accelerometer value when the watch is facing upwards, level with the ground
 #define ACCEL_Y_VERT 1800
 #define ACCEL_Z_VERT 2260
 
 //threshold of the above values that will register a dip condition
+//the threshold should be adjusted to suit the desired sensitivity, there's not really a method to it just try out some values.
 #define DIP_THRESHOLD 0.03
 #define DIP_THRESHOLD_VALUE (ACCELEROMETER_MAX_VALUE - ACCELEROMETER_MIN_VALUE) * DIP_THRESHOLD
 
 //time within which the dip accelerometer wakeup must be performed to activate the device
-#define DIP_ACTION_LENGTH 500 
+#define DIP_ACTION_LENGTH 1000
+
+//amount of time the device has to remain vertical in order to wake up from sleep
+#define VERTICAL_ACTION_LENGTH 500 
 
 //millis() continues to work through light sleep, so we record the time
 //that a dip was recognized as a time. 
 unsigned long lastDipRecognized = 0;
+unsigned long verticalStarted = 0; 
 
 #define TAP_WAKE_TIME 3000
 
