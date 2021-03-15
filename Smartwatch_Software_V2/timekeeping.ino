@@ -44,7 +44,8 @@ void updateTimeFromTimeString(String timeString) {
   tim.tm_mday = (String(timeString[9]) + String(timeString[10])).toInt();
 
   //time of day
-  tim.tm_hour = (String(timeString[0]) + String(timeString[1])).toInt() + readDataField(DAYLIGHT_SAVINGS);
+
+  tim.tm_hour = (String(timeString[0]) + String(timeString[1])).toInt() ;
   tim.tm_min = (String(timeString[3]) + String(timeString[4])).toInt();
   tim.tm_sec = (String(timeString[6]) + String(timeString[7])).toInt();
 
