@@ -25,6 +25,12 @@ void addData(String data) {
   if (!blockingCommandInProgress) {
     *bleReturnString = currentDataField;
   }
+  //this is kind of a fringe case where the app can sometimes bug out
+  //not sure what causes it but either way if we're not receiving data 
+  //the operation is over anyway.
+  if(data.length() == 0){
+    operationInProgress = false;
+  }
 }
 
 class cb : public BLEServerCallbacks    {
