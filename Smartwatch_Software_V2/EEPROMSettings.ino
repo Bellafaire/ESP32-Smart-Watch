@@ -18,18 +18,18 @@
   SOFTWARE.
 ******************************************************************************/
 /* Certain settings are best stored in EEPROM since we'll want to retain them regardless
- *  provided these settings aren't modified too often there shouldn't be any issues with the
- *  hardware side of things. The locations for various settings are defined in the declarations.h 
- *  file */
+    provided these settings aren't modified too often there shouldn't be any issues with the
+    hardware side of things. The locations for various settings are defined in the declarations.h
+    file */
 void setDataField(byte data, int pos) {
-  EEPROM.write(data, pos);
+  EEPROM.write(pos, data);
   EEPROM.commit();
   printDebug("Set datafield " + String(pos) + " to " + data);
 }
 
 byte readDataField(int pos) {
-  byte data = (byte)EEPROM.read(pos); 
-  printDebug("Read datafield: " + String(pos) + " found value " + String(data)); 
+  byte data = (byte)EEPROM.read(pos);
+  printDebug("Read datafield: " + String(pos) + " found value " + String(data));
   return data;
 }
 
@@ -39,4 +39,11 @@ void clearEEPROM() {
   }
   EEPROM.commit();
   printDebug("EEPROM Cleared");
+}
+
+void loadEEPROMSettings() {
+  SETTING_DAYLIGHT_SAVINGS = readDataField(DAYLIGHT_SAVINGS);
+  SETTING_WAKEUP_TYPE = readDataField(WAKEUP_TYPE);
+
+  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE));
 }

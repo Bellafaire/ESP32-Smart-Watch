@@ -32,8 +32,16 @@ void initLCD() {
   tft.initR(INITR_GREENTAB);   // initialize a ST7735S chip, green tab
   tft.setRotation(3);
   tft.fillScreen(BACKGROUND_COLOR);
-  pinMode(LCD_LED, OUTPUT);
-//  digitalWrite(LCD_LED, HIGH);
+  //  pinMode(LCD_LED, OUTPUT);
+  //  digitalWrite(LCD_LED, HIGH);
+
+  ledcSetup(LCD_BACKLIGHT_PWM_CHAN, 300, 8);
+  ledcAttachPin(LCD_LED, LCD_BACKLIGHT_PWM_CHAN);
+}
+
+//this really only exists for readability elsewhere in the code.
+void setBacklight(byte brightness) {
+  ledcWrite(LCD_BACKLIGHT_PWM_CHAN, brightness);
 }
 
 
@@ -69,7 +77,7 @@ void IRAM_ATTR TOUCH_ISR()
 
   lastTouchTime = millis();
   if (!xTouch) {
-      xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8*1024, (void *) 1 , 2, &xTouch, 1 );
+    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8 * 1024, (void *) 1 , 2, &xTouch, 1 );
   }
 
 }
@@ -283,6 +291,6 @@ int readZAccel() {
                           Battery Charger
  ********************************************************************/
 
- boolean isCharging(){
+boolean isCharging() {
   return !digitalRead(CHG_STAT);
- }
+}

@@ -130,11 +130,13 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16 (SCREEN_WIDTH, SCREEN_HEIGHT);
 #define RING_COLOR RGB_TO_BGR565(0,165,113)
 int ERROR_COLOR = ST77XX_BLUE;
 
+#define LCD_BACKLIGHT_PWM_CHAN 0
+
 /********************************************************************
                           SLEEP and Wake
  ********************************************************************/
 //number of times per second the ESP32 will wake up to check the accelerometer
-#define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 10
+#define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 5
 
 #define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2100
 
@@ -151,14 +153,14 @@ int ERROR_COLOR = ST77XX_BLUE;
 
 //threshold of the above values that will register a dip condition
 //the threshold should be adjusted to suit the desired sensitivity, there's not really a method to it just try out some values.
-#define DIP_THRESHOLD 0.03
+#define DIP_THRESHOLD 0.05
 #define DIP_THRESHOLD_VALUE (ACCELEROMETER_MAX_VALUE - ACCELEROMETER_MIN_VALUE) * DIP_THRESHOLD
 
 //time within which the dip accelerometer wakeup must be performed to activate the device
-#define DIP_ACTION_LENGTH 1000
+#define DIP_ACTION_LENGTH 1400
 
 //amount of time the device has to remain vertical in order to wake up from sleep
-#define VERTICAL_ACTION_LENGTH 500 
+#define VERTICAL_ACTION_LENGTH 800 
 
 //millis() continues to work through light sleep, so we record the time
 //that a dip was recognized as a time. 
@@ -245,14 +247,25 @@ RTC_DATA_ATTR struct tm* timeinfo;
 //EEPROM Data locations and information
 //eeprom allocations for data placement and their corrosponding string for display.
 #define DAYLIGHT_SAVINGS 1
+#define WAKEUP_TYPE 2
+
+//variables that are pulled from the eeprom on wakeup
+byte SETTING_DAYLIGHT_SAVINGS = 0; 
+byte SETTING_WAKEUP_TYPE = 0; 
+
+
+//wakeup type defines
+#define WAKEUP_TOUCH_ONLY 0
+#define WAKEUP_ACCELEROMETER 1
+#define WAKEUP_ACCELEROMTER_DISPLAY_TIME 2
 
 /********************************************************************
                               BLE
  ********************************************************************/
 //variables and defines used by BLEServer.ino
-String currentDataField;
-boolean blockingCommandInProgress = false;
-String* bleReturnString;
+static String currentDataField;
+static boolean blockingCommandInProgress = false;
+static String* bleReturnString;
 #define SERVICE_UUID        "5ac9bc5e-f8ba-48d4-8908-98b80b566e49"
 #define COMMAND_UUID        "bcca872f-1a3e-4491-b8ec-bfc93c5dd91a"
 BLECharacteristic *commandCharacteristic;
@@ -261,10 +274,10 @@ BLEServer *pServer;
 TaskHandle_t xBLE = NULL;
 
 //indicates connection state to the android device
-boolean connected = false;
+static boolean connected = false;
 
 //indiciates whether or not a operation is currently in progress
-boolean operationInProgress = false;
+static boolean operationInProgress = false;
 
 //function signitures
 //String sendBLE(String command);

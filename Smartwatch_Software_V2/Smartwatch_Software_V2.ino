@@ -27,7 +27,9 @@ boolean notificationsUpdated = false;
 boolean timeUpdated = false;
 boolean wasActive = false;
 int sleepCount = 0;
-
+boolean displayTimeOnly = false;
+int backlightBrightness = 0;
+unsigned long wakeStart = 0;
 
 void setup() {
 #ifdef DEBUG
@@ -41,6 +43,8 @@ void setup() {
   initTouch();
 
   initBLE();
+
+  loadEEPROMSettings();
 
   //create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(    watchDog
@@ -82,15 +86,22 @@ void deviceSleep() {
   batteryPercentage = getBatteryPercentage();
   //re-enable touch wakeup
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
-  esp_sleep_enable_timer_wakeup(TIMER_SLEEP_TIME);
-  digitalWrite(LCD_LED, LOW);
 
+  //touch only doesn't require occasional wakeup, lets not waste power on it
+  if (SETTING_WAKEUP_TYPE != WAKEUP_TOUCH_ONLY) {
+    esp_sleep_enable_timer_wakeup(TIMER_SLEEP_TIME);
+  }
+
+  setBacklight(0);
 
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
     printDebug("Going to sleep");
   }
 
-
+  //kill running tasks
+  if (xTouch != NULL) {
+    vTaskDelete(xTouch);
+  }
   Serial.flush();
 
   //put display to sleep
@@ -110,7 +121,9 @@ void loop() {
   //check the wakeup reason, if it's touch we go right into the main loop.
   //if it's timer then we're checking whether the accelerometer is in the proper threshold region.
   if (wakeupCheck()) {
+    backlightBrightness = 0;
     lastTouchTime = millis() - (TAP_WAKE_TIME - 1000);
+    wakeStart = millis();
 
     wasActive = true;
 
@@ -121,7 +134,9 @@ void loop() {
     //using this approach creating new pages should be much easier since they're more-or-less self contained
     //all pages draw to the framebuffer then the buffer is drawn at the end
     //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100
-    while (millis() < lastTouchTime + TAP_WAKE_TIME || readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) {
+    while (millis() < lastTouchTime + TAP_WAKE_TIME || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD)) {
+      //fade the backlight on
+      setBacklight(constrain(map((millis() - wakeStart), 0, 3000, 0, 255), 0, 255));
 
       //specific elements need to bypass the loop thread drawing so that they can
       //have more direct control of the display for short periods of time.
@@ -130,26 +145,23 @@ void loop() {
         tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
       }
 
-      //if we're connected and haven't updated our notification data then lets do so
-      if (connected && !notificationsUpdated) {
-        //        //gets current android notifications as a string
-        //        notificationData = sendBLE("/notifications");
-        //        if (notificationData.length() > 2) {
-        //          notificationsUpdated = true;
-        //        }
-        boolean success = sendBLE("/notifications", &notificationData, false);
-        if (success) {
-          notificationsUpdated = true;
-          printDebug("notifications updating");
+      if ((currentPage != (void*)initTimeOnly) && (currentPage != (void*)timeOnly)) {
+        //if we're connected and haven't updated our notification data then lets do so
+        if (connected && !notificationsUpdated) {
+          boolean success = sendBLE("/notifications", &notificationData, false);
+          if (success) {
+            notificationsUpdated = true;
+            printDebug("notifications updating");
+          }
         }
-      }
-      if (connected && !timeUpdated) {
-        //gets current android notifications as a string
-        String timeStr = "";
-        boolean success = sendBLE("/time", &timeStr, true);
-        if (success) {
-          updateTimeFromTimeString(timeStr);
-          timeUpdated = true;
+        if (connected && !timeUpdated) {
+          //gets current android notifications as a string
+          String timeStr = "";
+          boolean success = sendBLE("/time", &timeStr, true);
+          if (success) {
+            updateTimeFromTimeString(timeStr);
+            timeUpdated = true;
+          }
         }
       }
     }
@@ -157,8 +169,27 @@ void loop() {
   deviceSleep();
 }
 
+
+//byte SETTING_DAYLIGHT_SAVINGS = 0;
+//byte SETTING_WAKEUP_TYPE = 0;
+//
+//
+////wakeup type defines
+//#define WAKEUP_TOUCH_ONLY 0
+//#define WAKEUP_ACCELEROMETER 1
+//#define WAKEUP_ACCELEROMTER_DISPLAY_TIME 2
+
+
 //checks wakeup conditions and determines whether or not to activate the watch.
 boolean wakeupCheck() {
+  //get the wakeup reason, if it's a touch interrupt we'll know from this
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+
+  displayTimeOnly = false;
+
+  //read accelerometer once, less ADC reads will speed things up slightly. (not polling the ADC for every if statement)
+  int yAccel = readYAccel();
+  int zAccel = readZAccel();
 
   //kind of a convoluted algorithim to attempt to filter any movements that aren't what we want.
   //this function checks for touch wakeup and for accelerometer wakeup, the accelerometer wakeup being the more complicated
@@ -166,13 +197,6 @@ boolean wakeupCheck() {
   //then bring the watch up to a level position. This entire action must be completed within the timespan of DIP_ACTION_LENGTH the
   //watch must then remain level for at least VERTICAL_ACTION_LENGTH in order for an accelerometer wakeup to be activated.
   //the threshold, accelerometer, timing, and other control variables are present in the Declarations.h file under the "SLEEP and Wake" section
-
-  //get the wakeup reason, if it's a touch interrupt we'll know from this
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-
-  //read accelerometer once, less ADC reads will speed things up slightly. (not polling the ADC for every if statement)
-  int yAccel = readYAccel();
-  int zAccel = readZAccel();
 
   //wakeup value to be returned
   boolean accelerometer_wakeup = false;
@@ -214,11 +238,29 @@ boolean wakeupCheck() {
   }
 
   //debug spam
-  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " lastDip:" + String(millis() - lastDipRecognized) + " verticalStarted:" + String(millis() - verticalStarted));
+  //    printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " lastDip:" + String(millis() - lastDipRecognized) + " verticalStarted:" + String(millis() - verticalStarted));
 
   //if the accelerometer condition was recognized or user touched the screen then wakeup the device.
-  return ((wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) || accelerometer_wakeup) && (sleepCount != 0);
+
+  switch (SETTING_WAKEUP_TYPE) {
+    case WAKEUP_TOUCH_ONLY:
+      return (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0);
+      break;
+    case WAKEUP_ACCELEROMETER:
+      return ((wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) || accelerometer_wakeup) && (sleepCount != 0);
+      break;
+    case WAKEUP_ACCELEROMTER_DISPLAY_TIME:
+      if (wakeup_reason != ESP_SLEEP_WAKEUP_EXT0) {
+        displayTimeOnly = true;
+      }
+      return ((wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) || accelerometer_wakeup) && (sleepCount != 0);
+      break;
+    default:
+      break;
+  }
+  return false;
 }
+
 
 
 void onWakeup() {
@@ -235,7 +277,11 @@ void onWakeup() {
   //wake up display
   tft.enableSleep(false);
 
-  //always start on the home page when waking up
-  currentPage = (void*)initHome;
-  digitalWrite(LCD_LED, HIGH);
+  if (displayTimeOnly) {
+    currentPage = (void*)initTimeOnly;
+  } else {
+    //always start on the home page when waking up
+    currentPage = (void*)initHome;
+  }
+
 }

@@ -38,12 +38,30 @@ RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, hom
 
 
 /********************************************************************
+                              Time Only
+ ********************************************************************/
+void initTimeOnly() {
+  //remove all previous touch areas, this should be done in every init function
+  deactivateAllTouchAreas();
+  createTouchArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (void*) switchToHome);
+  currentPage = (void*)timeOnly;
+}
+
+void timeOnly() {
+  frameBuffer->fillScreen(0x0000);
+  drawTime(12, 30, 2, 0xFFFF, 1);
+  drawDateCentered(50, 1);
+}
+
+
+
+/********************************************************************
                                  HOME
  ********************************************************************/
 int homeTouchArea;
 
 
-void switchToHome(){
+void switchToHome() {
   currentPage = (void*)initHome;
 }
 
@@ -114,7 +132,7 @@ void home() {
   if (connected) {
     circ1.setColor(RGB_TO_BGR565(0, 255, 0));
 
-    if (lastSongCheck + SONG_CHECK_INTERVAL < millis()) {
+    if (lastSongCheck + SONG_CHECK_INTERVAL < millis() && notificationsUpdated && timeUpdated) {
       String bleStr = "";
       sendBLE("/isPlaying", &bleStr, true);
       boolean isPlaying = bleStr[0] == '1';
@@ -162,7 +180,7 @@ void transitionToNav() {
   currentPage = (void*)homeTransitionToNav;
 }
 
-void switchToHomeMedia(){
+void switchToHomeMedia() {
   currentPage = (void*)initHomeMedia;
 }
 
@@ -247,10 +265,10 @@ void navigation() {
 /********************************************************************
                               Settings
  ********************************************************************/
-void switchToSettings(){
-  currentPage = (void*)initSettings; 
+void switchToSettings() {
+  currentPage = (void*)initSettings;
 }
- 
+
 void initSettings() {
   //this entire function needs to more-or-less run on its own without the framework around it
   pauseTouchAreas();
@@ -264,6 +282,7 @@ void initSettings() {
 
   //options for the selection window
   w2.addOption("DayLights Savings");
+  w2.addOption("Accelerometer");
 
   int option = w2.focus() - 1;
 
@@ -277,10 +296,20 @@ void initSettings() {
         setDataField((byte)(w3.focus() - 1), DAYLIGHT_SAVINGS);
       }
       break;
+    case 1:
+      {
+        SelectionWindow w3 = SelectionWindow(0, 14, 160, 100);
+        w3.addOption("Touch Only");
+        w3.addOption("Wake");
+        w3.addOption("Display Time");
+        setDataField((byte)(w3.focus() - 1), WAKEUP_TYPE);
+      }
     default:
       break;
   }
-
+  //reload settings from eeprom
+  loadEEPROMSettings();
+  
   drawInLoop = true;
   printDebug("Exiting Settings");
   resumeTouchAreas();
@@ -293,8 +322,8 @@ void initSettings() {
  ********************************************************************/
 int notificationScrollPosition = 0;
 
-void switchToNotifications(){
-  currentPage = (void*)initNotifications; 
+void switchToNotifications() {
+  currentPage = (void*)initNotifications;
 }
 
 void initNotifications() {
@@ -408,8 +437,8 @@ String calendarData = "";
 int calendarScrollPosition = 0;
 boolean calendarDataObtained = false;
 
-void switchToCalendar(){
-  currentPage = (void*)initCalendar; 
+void switchToCalendar() {
+  currentPage = (void*)initCalendar;
 }
 
 void initCalendar() {
