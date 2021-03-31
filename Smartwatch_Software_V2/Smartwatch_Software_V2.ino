@@ -137,7 +137,7 @@ void loop() {
     //stays awake for 15 if touched or until the z axis no longer meets the threshold - 100
     while (millis() < lastTouchTime + TAP_WAKE_TIME || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD)) {
       //fade the backlight on
-      setBacklight(constrain(map((millis() - wakeStart), 0, 3000, 0, 255), 0, 255));
+      setBacklight(constrain(map((millis() - wakeStart), 0, 3000, 0, SETTING_SCREEN_BRIGHTNESS), 10, SETTING_SCREEN_BRIGHTNESS));
 
       //specific elements need to bypass the loop thread drawing so that they can
       //have more direct control of the display for short periods of time.

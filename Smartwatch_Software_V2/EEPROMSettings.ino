@@ -44,6 +44,6 @@ void clearEEPROM() {
 void loadEEPROMSettings() {
   SETTING_DAYLIGHT_SAVINGS = readDataField(DAYLIGHT_SAVINGS);
   SETTING_WAKEUP_TYPE = readDataField(WAKEUP_TYPE);
-
-  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE));
+  SETTING_SCREEN_BRIGHTNESS = map(readDataField(SCREEN_BRIGHTNESS), 0, 100, 0, 255);
+  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS));
 }

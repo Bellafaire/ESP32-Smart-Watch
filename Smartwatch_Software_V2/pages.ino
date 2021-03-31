@@ -283,6 +283,7 @@ void initSettings() {
   //options for the selection window
   w2.addOption("DayLights Savings");
   w2.addOption("Accelerometer");
+  w2.addOption("Screen Brightness");
 
   int option = w2.focus() - 1;
 
@@ -293,7 +294,11 @@ void initSettings() {
         SelectionWindow w3 = SelectionWindow(0, 14, 160, 100);
         w3.addOption("no");
         w3.addOption("yes");
-        setDataField((byte)(w3.focus() - 1), DAYLIGHT_SAVINGS);
+
+        byte ret = (byte)(w3.focus());
+        if (ret != 0) {
+          setDataField(ret - 1, DAYLIGHT_SAVINGS);
+        }
       }
       break;
     case 1:
@@ -302,14 +307,29 @@ void initSettings() {
         w3.addOption("Touch Only");
         w3.addOption("Wake");
         w3.addOption("Display Time");
-        setDataField((byte)(w3.focus() - 1), WAKEUP_TYPE);
+        byte ret = (byte)(w3.focus());
+        if (ret != 0) {
+          setDataField(ret - 1, WAKEUP_TYPE);
+        }
+      }
+    case 2:
+      {
+        SelectionWindow w3 = SelectionWindow(0, 14, 160, 100);
+        for (int a = 10; a <= 100; a += 10) {
+          w3.addOption(String(a) + "%");
+        }
+
+        byte ret = (byte)(w3.focus());
+        if (ret != 0) {
+          setDataField(ret* 10, SCREEN_BRIGHTNESS);
+        }
       }
     default:
       break;
   }
   //reload settings from eeprom
   loadEEPROMSettings();
-  
+
   drawInLoop = true;
   printDebug("Exiting Settings");
   resumeTouchAreas();

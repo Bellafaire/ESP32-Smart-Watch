@@ -249,10 +249,12 @@ RTC_DATA_ATTR struct tm* timeinfo;
 //eeprom allocations for data placement and their corrosponding string for display.
 #define DAYLIGHT_SAVINGS 1
 #define WAKEUP_TYPE 2
+#define SCREEN_BRIGHTNESS 3
 
 //variables that are pulled from the eeprom on wakeup
 byte SETTING_DAYLIGHT_SAVINGS = 0;
 byte SETTING_WAKEUP_TYPE = 0;
+byte SETTING_SCREEN_BRIGHTNESS = 0; 
 
 
 //wakeup type defines
