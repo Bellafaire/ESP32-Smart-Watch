@@ -48,7 +48,7 @@ void initTimeOnly() {
 }
 
 void timeOnly() {
-  frameBuffer->fillScreen(0x0000);
+  frameBuffer->drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
   drawTime(12, 30, 2, 0xFFFF, 1);
   drawDateCentered(50, 1);
 }

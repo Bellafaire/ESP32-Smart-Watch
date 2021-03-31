@@ -102,6 +102,7 @@ void deviceSleep() {
   if (xTouch != NULL) {
     vTaskDelete(xTouch);
   }
+
   Serial.flush();
 
   //put display to sleep
