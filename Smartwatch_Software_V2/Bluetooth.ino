@@ -29,7 +29,7 @@ void addData(String data) {
   //not sure what causes it but either way if we're not receiving data 
   //the operation is over anyway.
   if(data.length() == 0){
-    operationInProgress = false;
+//    operationInProgress = false;
   }
 }
 
@@ -124,7 +124,7 @@ boolean sendBLE(String command, String* returnString, boolean blocking) {
       *returnString = currentDataField;
 
       unsigned long startTime = millis();
-      while (currentDataField.length() == 0 && (startTime + 200 > millis()))
+      while ((currentDataField.length() == 0) && (startTime + 1000 > millis()))
         delay(25);
 
       if (currentDataField.length() == 0) {
