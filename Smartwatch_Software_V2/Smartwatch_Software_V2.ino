@@ -171,77 +171,58 @@ void loop() {
 }
 
 
-//byte SETTING_DAYLIGHT_SAVINGS = 0;
-//byte SETTING_WAKEUP_TYPE = 0;
-//
-//
-////wakeup type defines
-//#define WAKEUP_TOUCH_ONLY 0
-//#define WAKEUP_ACCELEROMETER 1
-//#define WAKEUP_ACCELEROMTER_DISPLAY_TIME 2
-
+int accelWakeupState = 0;
 
 //checks wakeup conditions and determines whether or not to activate the watch.
 boolean wakeupCheck() {
   //get the wakeup reason, if it's a touch interrupt we'll know from this
   wakeup_reason = esp_sleep_get_wakeup_cause();
-
   displayTimeOnly = false;
 
   //read accelerometer once, less ADC reads will speed things up slightly. (not polling the ADC for every if statement)
   int yAccel = readYAccel();
   int zAccel = readZAccel();
 
-  //kind of a convoluted algorithim to attempt to filter any movements that aren't what we want.
-  //this function checks for touch wakeup and for accelerometer wakeup, the accelerometer wakeup being the more complicated
-  //what we want is the user to "dip" their wrist down (turn the watch so the screen is facing opposite their body perpendicular to the ground)
-  //then bring the watch up to a level position. This entire action must be completed within the timespan of DIP_ACTION_LENGTH the
-  //watch must then remain level for at least VERTICAL_ACTION_LENGTH in order for an accelerometer wakeup to be activated.
-  //the threshold, accelerometer, timing, and other control variables are present in the Declarations.h file under the "SLEEP and Wake" section
 
-  //wakeup value to be returned
-  boolean accelerometer_wakeup = false;
-
-  //first we check for the dip, if it's values are recognized within the given threshold then the
-  //user may be starting the wakeup process.
-  if (ACCEL_Y_DIP < yAccel + DIP_THRESHOLD_VALUE
-      &&  ACCEL_Y_DIP > yAccel - DIP_THRESHOLD_VALUE
-      && ACCEL_Z_DIP < zAccel + DIP_THRESHOLD_VALUE
-      && ACCEL_Z_DIP > zAccel - DIP_THRESHOLD_VALUE) {
-
-    //store the time we last saw the dip, we rely on timing heavily in determining the dip action
-    lastDipRecognized = millis();
+  /*accelerometer wakeup algorithim implements a state machine in order to determine when to wakeup
+    S0 -> S1 - watch is perpendicular to the ground
+    S1 -> S2 - watch is perpendicular to the ground
+    S2 -> S3 - watch is perpendicular to the ground (Stay in state 3 as long as watch is in this position)
+    S3 -> S4 - either watch screen is facing up or watch screen is neither up or down.
+    S4 -> S5 - watch is facing up
+    S5 -> S6 - watch is facing up
+    S6 -> S7 - watch is facing up
+    S7 - activation of watch from accelerometer data.
+    State machine goes to S0 if the conditions to move to the next state are not met.
+  */
+  //check for dip (if user is holding wrist out so screen is perpendicular to the ground)
+  if (accelWakeupState < 3 &&
+      isDown(yAccel, zAccel)) {
+    accelWakeupState++;
+  }
+  else if (isDown(yAccel, zAccel)) {
+    //do nothing, we want to stay in this state for now.
+  }
+  //basically we're trying to catch if the user flicks their wrist up, sometimes the watch
+  //can come out of sleep in a way that it misinterprets the flick motion
+  else if (!isDown(yAccel, zAccel) && !isUp(yAccel, zAccel) && accelWakeupState == 3) {
+    accelWakeupState++;
+  }
+  //check if watch screen is facing straight up
+  else if (accelWakeupState >= 3 &&
+           isUp(yAccel, zAccel)
+          ) {
+    accelWakeupState++;
+  } else {
+    accelWakeupState = 0;
   }
 
-  //now check if the user has the watch horizontal within the given threshold.
-  //also check whether or not the timer is already running (dip has been active for a certain time)
-  //if so we want to let the timer run longer since it may be that the action is in progress.
-  if (ACCEL_Y_VERT < yAccel + DIP_THRESHOLD_VALUE
-      &&  ACCEL_Y_VERT > yAccel - DIP_THRESHOLD_VALUE
-      && ACCEL_Z_VERT < zAccel + DIP_THRESHOLD_VALUE
-      && ACCEL_Z_VERT > zAccel - DIP_THRESHOLD_VALUE
-      && millis() - verticalStarted > DIP_ACTION_LENGTH) {
+  boolean accelerometer_wakeup = accelWakeupState > 6;
 
-    //if detected and not running save the time the watch started being level.
-    verticalStarted = millis();
-  }
 
-  //now check the timers again, if the last dip was under the required timing value and the watch has been vertical
-  //for the required timing value but still less than the required time for the dip action then wake the device up.
-  //also check that the vertical action happened AFTER the dip, otherwise we'd be turning the screen on when the user looked away from it
-  if ( ((millis() - lastDipRecognized) < DIP_ACTION_LENGTH)
-       && ((millis() - verticalStarted) > VERTICAL_ACTION_LENGTH)
-       && ((millis() - verticalStarted) < DIP_ACTION_LENGTH)
-       && lastDipRecognized < verticalStarted) {
+  //debug spam, use if working on this algorithim
+  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " state:" + String(accelWakeupState) );
 
-    //set wakeup condition
-    accelerometer_wakeup = true;
-  }
-
-  //debug spam
-  //    printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " lastDip:" + String(millis() - lastDipRecognized) + " verticalStarted:" + String(millis() - verticalStarted));
-
-  //if the accelerometer condition was recognized or user touched the screen then wakeup the device.
 
   switch (SETTING_WAKEUP_TYPE) {
     case WAKEUP_TOUCH_ONLY:
@@ -261,7 +242,6 @@ boolean wakeupCheck() {
   }
   return false;
 }
-
 
 
 void onWakeup() {
