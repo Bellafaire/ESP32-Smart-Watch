@@ -58,7 +58,7 @@ int rapidTouchCount = 0;
 */
 void IRAM_ATTR TOUCH_ISR()
 {
-//  printDebug("TouchInterrupt");
+  //  printDebug("TouchInterrupt");
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
 
@@ -81,12 +81,12 @@ void IRAM_ATTR TOUCH_ISR()
   }
 
   lastTouchTime = millis();
-  if (xTouch != NULL) {
+  if (xTouch == NULL) {
+    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 16 * 1024, (void *) 1 , 2, &xTouch, 1 );
+  }else{
     vTaskDelete(xTouch);
+    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 16 * 1024, (void *) 1 , 2, &xTouch, 1 );
   }
-  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 16 * 1024, (void *) 1 , 2, &xTouch, 1 );
-
-
 }
 
 //init touch IC
@@ -118,7 +118,7 @@ struct point readTouch() {
     int xval = readRegister(TOUCH_ADDR, 0b11010010) >> 8;
     int yval = readRegister(TOUCH_ADDR, 0b11000010) >> 8;
 
-    //map touch screen readings to loaded EEPROM calibration data 
+    //map touch screen readings to loaded EEPROM calibration data
     p.x = map(xval, SETTING_X_MIN, SETTING_X_MAX, 0, SCREEN_WIDTH);
     p.y = map(yval, SETTING_Y_MIN, SETTING_Y_MAX, 0, SCREEN_HEIGHT);
 
@@ -148,7 +148,7 @@ struct point readTouchRaw() {
 
   p.x = xval;
   p.y = yval;
- 
+
   return p;
 }
 
