@@ -34,7 +34,7 @@ AnimationCircle circ3 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 3
 AnimationCircle circ4 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 38, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 0), -2, 5);
 AnimationCircle circ5 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 45, 2, RING_COLOR, RGB_TO_BGR565(0, 0, 255), 1.5, 6);
 
-RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton, calendarButton;
+RoundButton homeButton, settingButton, notificationsButton, homeMediaButton, homeNextMediaButton, homePreviousMediaButton, homePauseMediaButton, upButton, downButton, okButton, leftButton, calendarButton, calculatorButton;
 
 
 /********************************************************************
@@ -238,6 +238,7 @@ void initNavigation() {
   settingButton = RoundButton(25, 35, 16, SETTINGS_ICON, (void*)switchToSettings);
   notificationsButton = RoundButton(75, 35, 16, NOTIFICATIONS_ICON, (void*)switchToNotifications);
   calendarButton = RoundButton(125, 35, 16, CALENDAR_ICON, (void*)switchToCalendar);
+  calculatorButton = RoundButton(25, 75, 16, CALCULATOR_ICON, (void*)switchToCalculator);
 
   currentPage = (void*)navigation;
 }
@@ -260,6 +261,7 @@ void navigation() {
   settingButton.draw(frameBuffer);
   notificationsButton.draw(frameBuffer);
   calendarButton.draw(frameBuffer);
+  calculatorButton.draw(frameBuffer);
 }
 
 /********************************************************************
@@ -270,7 +272,7 @@ void switchToSettings() {
 }
 
 void initSettings() {
- 
+
   //this entire function needs to more-or-less run on its own without the framework around it
   pauseTouchAreas();
   drawInLoop = false;
@@ -323,15 +325,15 @@ void initSettings() {
 
         byte ret = (byte)(w3.focus());
         if (ret != 0) {
-          setDataField(ret* 10, SCREEN_BRIGHTNESS);
+          setDataField(ret * 10, SCREEN_BRIGHTNESS);
         }
       }
       break;
     default:
       break;
   }
-  
-    //reload settings from eeprom
+
+  //reload settings from eeprom
   loadEEPROMSettings();
 
   drawInLoop = true;
@@ -565,4 +567,187 @@ void calendar() {
   upButton.draw(frameBuffer);
   downButton.draw(frameBuffer);
   homeButton.draw(frameBuffer);
+}
+
+
+/********************************************************************
+                              Calculator
+ ********************************************************************/
+#define CALCULATOR_BUTTON_PADDING 4
+#define CALCULATOR_BUTTON_COLUMNS 5
+#define CALCULATOR_BUTTON_ROWS 4
+
+#define CALCULATION_BOX_HEIGHT 16
+
+boolean calculatorButtonsGenerated = false;
+boolean enteringFirstOperand = true;
+String firstOperand = "";
+String secondOperand = "";
+String calculatorOperation = "";
+
+void switchToCalculator() {
+  printDebug("Switching to calculator");
+  currentPage = (void*) initCalculator;
+}
+
+void initCalculator() {
+  //this entire page needs to more-or-less run on its own without the framework around it
+  deactivateAllTouchAreas();
+  currentPage = (void*) calculator;
+}
+
+void calculator() {
+  drawCalculator();
+}
+
+
+String calculatorButtonLabels[CALCULATOR_BUTTON_COLUMNS * CALCULATOR_BUTTON_ROWS] = {
+  "7", "8", "9", "/", "X",
+  "4", "5", "6", "*", "",
+  "1", "2", "3", "-", "C",
+  "0", ".", "", "+", "="
+};
+
+onscreenButton calculatorButtons[CALCULATOR_BUTTON_COLUMNS * CALCULATOR_BUTTON_ROWS] =
+{
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "},
+  {0, 0, 0, 0, INTERFACE_COLOR, BACKGROUND_COLOR, " "}
+};
+
+
+void drawCalculator() {
+  //if we haven't generated the buttons yet then we should do that now, generating the buttons
+  //saves us a lot of trouble fiddling with exact placements and allows for the code to work
+  //on different screen sizes
+  if (!calculatorButtonsGenerated) {
+    int xSpacePerButton = (SCREEN_WIDTH ) / CALCULATOR_BUTTON_COLUMNS;
+    int ySpacePerButton = (SCREEN_HEIGHT  - CALCULATION_BOX_HEIGHT - CALCULATOR_BUTTON_PADDING  ) / CALCULATOR_BUTTON_ROWS;
+
+    for (int a = 0; a < CALCULATOR_BUTTON_COLUMNS; a++) {
+      for (int b = 0; b < CALCULATOR_BUTTON_ROWS; b++) {
+        //        calculatorButtons[(a * CALCULATOR_BUTTON_COLUMNS) + b] = {xSpacePerButton * a, ySpacePerButton * b + CALCULATION_BOX_HEIGHT, xSpacePerButton, ySpacePerButton, INTERFACE_COLOR, BACKGROUND_COLOR, calculatorButtonLabels[(a * CALCULATOR_BUTTON_COLUMNS) + b]};
+        if (!calculatorButtonLabels[(b * CALCULATOR_BUTTON_COLUMNS) + a].equals("")) {
+          calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._x = xSpacePerButton * a ;
+          calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._y = ySpacePerButton * b + CALCULATION_BOX_HEIGHT + CALCULATOR_BUTTON_PADDING;
+          calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._width =  xSpacePerButton - CALCULATOR_BUTTON_PADDING;
+          calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._height = ySpacePerButton - CALCULATOR_BUTTON_PADDING;
+          calculatorButtons[(b * CALCULATOR_BUTTON_COLUMNS) + a]._text = calculatorButtonLabels[(b * CALCULATOR_BUTTON_COLUMNS) + a];
+        }
+      }
+    }
+    calculatorButtonsGenerated = true;
+  }
+
+  frameBuffer -> drawRGBBitmap(0, 0, background, SCREEN_WIDTH, SCREEN_HEIGHT);
+  frameBuffer-> fillRect(0, 0, SCREEN_WIDTH - CALCULATOR_BUTTON_PADDING, CALCULATION_BOX_HEIGHT, BACKGROUND_COLOR);
+  frameBuffer-> drawRect(0, 0, SCREEN_WIDTH - CALCULATOR_BUTTON_PADDING, CALCULATION_BOX_HEIGHT, INTERFACE_COLOR);
+
+  String output = firstOperand + " " + calculatorOperation + " " + secondOperand;
+
+  frameBuffer->setCursor(SCREEN_WIDTH - output.length() * 6 - CALCULATOR_BUTTON_PADDING, (CALCULATION_BOX_HEIGHT - 6) / 2);
+  frameBuffer->setTextSize(0);
+  frameBuffer->print(output);
+
+  for (int a = 0; a < CALCULATOR_BUTTON_COLUMNS * CALCULATOR_BUTTON_ROWS; a++) {
+    //don't draw blank buttons, these are open slots that aren't being used
+    paintButtonFull(calculatorButtons[a]);
+  }
+}
+
+void calculatorTouchHandler(struct point p) {
+  for (int a = 0;  a < CALCULATOR_BUTTON_COLUMNS * CALCULATOR_BUTTON_ROWS; a++) {
+    if (checkButtonPress(calculatorButtons[a], p.x, p.y)) {
+      printDebug("Calculator, User pressed: " + calculatorButtonLabels[a]); 
+      //check whether or not the button pressed was an operation or a number, if it's an operation
+      //we have other things that need to be done
+      if (calculatorButtonLabels[a].equals("C") ||
+          calculatorButtonLabels[a].equals("/") ||
+          calculatorButtonLabels[a].equals("*") ||
+          calculatorButtonLabels[a].equals("-") ||
+          calculatorButtonLabels[a].equals("+") ||
+          calculatorButtonLabels[a].equals("X") ||
+          calculatorButtonLabels[a].equals("=")
+         ) {
+        switch (calculatorButtonLabels[a][0]) {
+          case 'C':
+            //clear the string data
+            firstOperand = "";
+            secondOperand = "";
+            calculatorOperation = "";
+            enteringFirstOperand = true;
+            break;
+          case 'X':
+            switchToHome();
+            break;
+          case '=':
+            calculatorCalculate();
+            break;
+          default:
+            calculatorOperation = calculatorButtonLabels[a];
+            enteringFirstOperand = false;
+            break;
+        }
+      } else {
+        if (enteringFirstOperand) {
+          firstOperand = firstOperand + calculatorButtonLabels[a];
+        } else {
+          secondOperand = secondOperand + calculatorButtonLabels[a];
+        }
+      }
+    }
+  }
+}
+
+void calculatorCalculate() {
+  double first = firstOperand.toDouble();
+  double second = secondOperand.toDouble();
+  double result = 0;
+  boolean error = false;
+  switch (calculatorOperation[0]) {
+    case '+':
+      result = first + second;
+      break;
+    case '-':
+      result = first - second;
+      break;
+    case '*':
+      result = first * second;
+      break;
+    case '/':
+      if (second != 0) {
+        result = first / second;
+      } else {
+        error = true;
+      }
+      break;
+    default:
+      error = true;
+      break;
+  }
+
+  if (error) {
+    firstOperand = "NaN";
+  } else {
+    firstOperand = String(result, 4);
+  }
+  secondOperand = "";
+  calculatorOperation = "";
 }

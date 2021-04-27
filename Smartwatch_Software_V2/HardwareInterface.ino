@@ -76,9 +76,8 @@ void IRAM_ATTR TOUCH_ISR()
   }
 
   lastTouchTime = millis();
-  if (!xTouch) {
-    xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8 * 1024, (void *) 1 , 2, &xTouch, 1 );
-  }
+  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8 * 1024, (void *) 1 , 2, &xTouch, 1 );
+
 
 }
 
