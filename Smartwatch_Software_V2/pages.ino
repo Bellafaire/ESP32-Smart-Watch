@@ -287,6 +287,7 @@ void initSettings() {
   w2.addOption("DayLights Savings");
   w2.addOption("Accelerometer");
   w2.addOption("Screen Brightness");
+  w2.addOption("Calibrate Touch");
 
   int option = w2.focus() - 1;
 
@@ -303,6 +304,7 @@ void initSettings() {
           setDataField(ret - 1, DAYLIGHT_SAVINGS);
         }
       }
+      currentPage = (void*)initNavigation;
       break;
     case 1:
       {
@@ -315,6 +317,7 @@ void initSettings() {
           setDataField(ret - 1, WAKEUP_TYPE);
         }
       }
+      currentPage = (void*)initNavigation;
       break;
     case 2:
       {
@@ -328,8 +331,13 @@ void initSettings() {
           setDataField(ret * 10, SCREEN_BRIGHTNESS);
         }
       }
+      currentPage = (void*)initNavigation;
       break;
+    case 3:
+      switchToCalibration();
+    break;
     default:
+      currentPage = (void*)initNavigation;
       break;
   }
 
@@ -339,7 +347,6 @@ void initSettings() {
   drawInLoop = true;
   printDebug("Exiting Settings");
   resumeTouchAreas();
-  currentPage = (void*)initNavigation;
 }
 
 
@@ -755,3 +762,149 @@ void calculatorCalculate() {
   secondOperand = "";
   calculatorOperation = "";
 }
+
+/********************************************************************
+                              CALIBRATION
+      Allows the user to automatically calibrate their touch screen
+      by touching some points. This helps with scaling to different
+      touch screens and accounts for variations between any two resistive
+      touch screens.
+ ********************************************************************/
+//calibration state controls which dot is active for the user to press
+//and determines when it's possible to save the resulting calibration data 
+int calibrationState = 0; 
+point calibrationPoints[4]; 
+unsigned long calibrationCompleteTime;
+
+//switches current page
+void switchToCalibration() {
+  printDebug("Switching to Calibration");
+  currentPage = (void*) initCalibration;
+}
+
+//initalizes the calibration screen
+void initCalibration(){
+  deactivateAllTouchAreas();
+  calibrationState = 0; 
+
+  //create touch area that covers all possible touch values.
+  createTouchArea(-32768, -32768, 65535, 65535, (void*) calibrationAction);
+  
+  currentPage = (void*) calibration;
+}
+
+void calibrationAction(){
+  point p = readTouchRaw();
+  printDebug("Calibration Values xraw:" + String(p.x) + " yraw:" + String(p.y));
+  if(calibrationState < 4){
+    calibrationPoints[calibrationState] = p;
+
+    printDebug("Raw Data Points:");
+    for(int a = 0; a < 4; a++){
+      printDebug(String(a) + " x:" + String(calibrationPoints[a].x)+ " y:" + String(calibrationPoints[a].y));
+    }
+    calibrationState++; 
+  }else{
+    //anything we need to handle when calibration is done 
+  }
+}
+
+
+//calibrate at 4 points
+void calibration(){
+  if(calibrationState <= 4){
+    frameBuffer-> fillScreen(0xFFFF);
+    frameBuffer->setTextColor(0x0000);
+    frameBuffer->setCursor(10, SCREEN_HEIGHT/2-3); 
+    frameBuffer->println("TouchScreen Calibration");
+
+    //depending on the state we place the "calibration touch point" at different locations on the screen
+    //the state determines where the point is and stores its data in the appropriate location when touched
+    switch(calibrationState){
+      case 0: 
+        frameBuffer->drawCircle(10,10,5,RGB_TO_BGR565(255,0,0));
+        frameBuffer->drawCircle(10,10,1,RGB_TO_BGR565(255,0,0));
+      break;
+      case 1: 
+        frameBuffer->drawCircle(SCREEN_WIDTH-10,10,5,RGB_TO_BGR565(255,0,0));
+        frameBuffer->drawCircle(SCREEN_WIDTH-10,10,1,RGB_TO_BGR565(255,0,0));
+      break;
+      case 2: 
+        frameBuffer->drawCircle(10,SCREEN_HEIGHT - 10,5,RGB_TO_BGR565(255,0,0));
+        frameBuffer->drawCircle(10,SCREEN_HEIGHT - 10,1,RGB_TO_BGR565(255,0,0));
+      break;
+      case 3:
+        frameBuffer->drawCircle(SCREEN_WIDTH-10, SCREEN_HEIGHT - 10, 5,RGB_TO_BGR565(255,0,0));
+        frameBuffer->drawCircle(SCREEN_WIDTH-10, SCREEN_HEIGHT - 10, 1,RGB_TO_BGR565(255,0,0));
+      break;
+      case 4:
+      //do calibration calculations, it's basically just a direct mapping
+      SETTING_X_MIN = map(0, 10, SCREEN_WIDTH-10, (calibrationPoints[0].x + calibrationPoints[2].x)/2, (calibrationPoints[1].x + calibrationPoints[3].x)/2  );
+      SETTING_X_MAX = map(SCREEN_WIDTH, 10, SCREEN_WIDTH-10, (calibrationPoints[0].x + calibrationPoints[2].x)/2, (calibrationPoints[1].x + calibrationPoints[3].x)/2 );
+
+      SETTING_Y_MIN = map(0,  10, SCREEN_HEIGHT-10,(calibrationPoints[0].y + calibrationPoints[1].y)/2, (calibrationPoints[2].y + calibrationPoints[3].y)/2);
+      SETTING_Y_MAX = map(SCREEN_HEIGHT, 10, SCREEN_HEIGHT-10, (calibrationPoints[0].y + calibrationPoints[1].y)/2, (calibrationPoints[2].y + calibrationPoints[3].y)/2 );
+
+      //print the debug values 
+      printDebug("Calibration Values Obtained: ");
+      printDebug("   xmin:" + String(SETTING_X_MIN));
+      printDebug("   xmax:" + String(SETTING_X_MAX));
+      printDebug("   ymin:" + String(SETTING_Y_MIN));
+      printDebug("   ymax:" + String(SETTING_Y_MAX));
+
+
+      
+      deactivateAllTouchAreas();   
+      //create a home button that can be pressed to exit the calibration screen     
+      homeButton = RoundButton(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 16, CHECK_MARK_ICON, (void*)confirmCalibration);
+      calibrationCompleteTime = millis();
+      calibrationState++;
+      break;
+    }  
+  }else{
+    frameBuffer-> fillScreen(0xFFFF);
+    
+    //calibration is complete. let the user draw on the screen to establish that the calibration is correct
+    //the user has 10 seconds to confirm the calibration before calibration restarts. 
+    homeButton.draw(frameBuffer);
+
+    frameBuffer->setTextColor(0x0000);
+    frameBuffer->setCursor(10, SCREEN_HEIGHT/2-3); 
+    frameBuffer->println("Confirm Calibration");
+    frameBuffer->println("  Restarting Calibration \n  in " + String(10 - (millis() - calibrationCompleteTime)/1000));
+
+    if((millis() - calibrationCompleteTime) > 10000){
+        currentPage = (void*) initCalibration;
+    }
+
+    point p = readTouch();
+    frameBuffer->fillCircle(p.x, p.y, 3, RGB_TO_BGR565(255,0,0));
+  }
+}
+
+//only when the user taps the check mark will the device save the calibration setting. 
+//the goal here is to prevent a case where someone messed up calibration and can no longer use their device
+//properly. 
+void confirmCalibration(){
+      //load into EEPROM
+      setDataField(SETTING_X_MIN >> 8, X_MIN);
+      setDataField(SETTING_X_MIN & 0x00FF , X_MIN +1);
+
+      setDataField(SETTING_X_MAX >> 8, X_MAX);
+      setDataField(SETTING_X_MAX & 0x00FF , X_MAX +1);
+
+      setDataField(SETTING_Y_MIN >> 8, Y_MIN);
+      setDataField(SETTING_Y_MIN & 0x00FF , Y_MIN +1);    
+
+      setDataField(SETTING_Y_MAX >> 8, Y_MAX);
+      setDataField(SETTING_Y_MAX & 0x00FF , Y_MAX +1);      
+
+      //now that the data is set in the EEPROM reload it so that it's in the normal memory
+      loadEEPROMSettings();
+      switchToHome();
+}
+
+
+
+
+

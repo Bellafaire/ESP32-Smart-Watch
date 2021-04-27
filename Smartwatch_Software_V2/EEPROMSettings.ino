@@ -45,5 +45,19 @@ void loadEEPROMSettings() {
   SETTING_DAYLIGHT_SAVINGS = readDataField(DAYLIGHT_SAVINGS);
   SETTING_WAKEUP_TYPE = readDataField(WAKEUP_TYPE);
   SETTING_SCREEN_BRIGHTNESS = map(readDataField(SCREEN_BRIGHTNESS), 0, 100, 0, 255);
-  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS));
+  
+  //read touch calibration data 
+  SETTING_X_MAX = (readDataField(X_MAX) << 8) | readDataField(X_MAX +1);
+  SETTING_X_MIN = (readDataField(X_MIN) << 8) | readDataField(X_MIN +1);
+  SETTING_Y_MAX = (readDataField(Y_MAX) << 8) | readDataField(Y_MAX +1);
+  SETTING_Y_MIN = (readDataField(Y_MIN) << 8) | readDataField(Y_MIN +1);
+  
+  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) 
+  + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) 
+  + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS)
+  + "\n XMAX: " + String(SETTING_X_MAX)
+  + "\n XMIN: " + String(SETTING_X_MIN)
+  + "\n YMAX: " + String(SETTING_Y_MAX)
+  + "\n YMIN: " + String(SETTING_Y_MIN)    
+  );
 }

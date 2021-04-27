@@ -67,6 +67,10 @@ void IRAM_ATTR TOUCH_ISR()
       Serial.println("**** Rapid Touch shutdown registered ****");
       Serial.flush();
 #endif
+
+      //clear calibration data after rapid touch
+      CLEAR_TOUCH_CALIBRATION = true;
+
       //rapid touch is meant to restart, using deep sleep we can essentially go back to
       //the same state we would get from a cold restart
       esp_sleep_enable_timer_wakeup(1);
@@ -80,7 +84,7 @@ void IRAM_ATTR TOUCH_ISR()
   if (xTouch != NULL) {
     vTaskDelete(xTouch);
   }
-  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8 * 1024, (void *) 1 , 2, &xTouch, 1 );
+  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 16 * 1024, (void *) 1 , 2, &xTouch, 1 );
 
 
 }
@@ -114,17 +118,37 @@ struct point readTouch() {
     int xval = readRegister(TOUCH_ADDR, 0b11010010) >> 8;
     int yval = readRegister(TOUCH_ADDR, 0b11000010) >> 8;
 
-    //for calibrating touch screen
-//    printDebug("Raw Touch Screen Readings - x:" + String(xval) + " y:" + String(yval));
+    //map touch screen readings to loaded EEPROM calibration data 
+    p.x = map(xval, SETTING_X_MIN, SETTING_X_MAX, 0, SCREEN_WIDTH);
+    p.y = map(yval, SETTING_Y_MIN, SETTING_Y_MAX, 0, SCREEN_HEIGHT);
 
-    p.x = map(xval, X_MIN, X_MAX, 0, SCREEN_WIDTH);
-    p.y = map(yval, Y_MIN, Y_MAX, SCREEN_HEIGHT, 0);
+    //for calibrating touch screen
+    printDebug("Raw - x:" + String(xval) + " y:" + String(yval) + " Mapped - x:" + String(p.x) + " y:" + String(p.y));
   }
   else
   {
     p.x = -1;
     p.y = -1;
   }
+  return p;
+}
+
+//read touch returns raw values
+struct point readTouchRaw() {
+  struct point p;
+  //since we already have a readRegister function for the 16 bit battery monitor we just reuse it here
+  //and shift the result to the right. the values read from the touch controller are then
+  //mapped according to the values defined in declarations.h
+
+  int xval = readRegister(TOUCH_ADDR, 0b11010010) >> 8;
+  int yval = readRegister(TOUCH_ADDR, 0b11000010) >> 8;
+
+  //for calibrating touch screen
+  //printDebug("Raw Touch Screen Readings - x:" + String(xval) + " y:" + String(yval));
+
+  p.x = xval;
+  p.y = yval;
+ 
   return p;
 }
 

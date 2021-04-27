@@ -55,8 +55,18 @@ void setup() {
                               ,  NULL
                               ,  1);
 
-  //the currentPage variable controls which page is currently being displayed.
-  currentPage = (void*)initHome;
+    currentPage = (void*)initHome;
+
+  if(CLEAR_TOUCH_CALIBRATION){
+    //rapid touch shutdown also clears calibration data. This is to prevent a case where the calibration
+    //was messed up and resulted in the device being unuseable.
+    for(int a = X_MAX; a < Y_MIN + 2; a++){
+      setDataField(0, a);
+      loadEEPROMSettings();
+    }
+  }
+
+
 }
 
 
@@ -270,8 +280,14 @@ void onWakeup() {
   if (displayTimeOnly) {
     currentPage = (void*)initTimeOnly;
   } else {
-    //always start on the home page when waking up
-    currentPage = (void*)initHome;
+    //check whether we have calibration data for a screen, a fresh ESP32 would not have any data so that needs
+    //to be acquired immediately before the device can be used. 
+    if((SETTING_X_MAX == SETTING_X_MIN) || (SETTING_Y_MAX == SETTING_Y_MIN)){
+      currentPage = (void*)initCalibration; 
+    }else{
+      //the currentPage variable controls which page is currently being displayed.
+      currentPage = (void*)initHome;
+    }
   }
 
 }

@@ -190,6 +190,8 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 /********************************************************************
                             TOUCH
  ********************************************************************/
+RTC_DATA_ATTR boolean CLEAR_TOUCH_CALIBRATION = false;
+
 struct point
 {
   int x = -1;
@@ -197,12 +199,6 @@ struct point
 };
 
 volatile unsigned long lastTouchTime = 0;
-
-//Touch Calibration
-#define X_MAX 237
-#define X_MIN 18
-#define Y_MAX 180
-#define Y_MIN 12
 
 TaskHandle_t xTouch = NULL;
 
@@ -239,6 +235,9 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define optionDivider '`' //change this to anything you don't think will be used
 #define SELECTION_WINDOW_BUTTON_WIDTH 20
 
+/********************************************************************
+                           EEPROM SETTINGS
+ ********************************************************************/
 #define EEPROM_SIZE 512
 
 //EEPROM Data locations and information
@@ -246,11 +245,20 @@ RTC_DATA_ATTR struct tm* timeinfo;
 #define DAYLIGHT_SAVINGS 1
 #define WAKEUP_TYPE 2
 #define SCREEN_BRIGHTNESS 3
+#define X_MAX 4
+#define X_MIN 6
+#define Y_MAX 8
+#define Y_MIN 10
+
 
 //variables that are pulled from the eeprom on wakeup
 byte SETTING_DAYLIGHT_SAVINGS = 0;
 byte SETTING_WAKEUP_TYPE = 0;
 byte SETTING_SCREEN_BRIGHTNESS = 0;
+uint16_t SETTING_X_MAX = 0; 
+uint16_t SETTING_Y_MAX = 0; 
+uint16_t SETTING_X_MIN = 0; 
+uint16_t SETTING_Y_MIN = 0; 
 
 
 //wakeup type defines
