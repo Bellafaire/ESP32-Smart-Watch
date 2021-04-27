@@ -199,10 +199,10 @@ struct point
 volatile unsigned long lastTouchTime = 0;
 
 //Touch Calibration
-#define X_MAX 233
-#define X_MIN 19
-#define Y_MAX 230
-#define Y_MIN 14
+#define X_MAX 237
+#define X_MIN 18
+#define Y_MAX 180
+#define Y_MIN 12
 
 TaskHandle_t xTouch = NULL;
 

@@ -106,8 +106,15 @@ struct point readTouch() {
     //since we already have a readRegister function for the 16 bit battery monitor we just reuse it here
     //and shift the result to the right. the values read from the touch controller are then
     //mapped according to the values defined in declarations.h
-    p.x = map(readRegister(TOUCH_ADDR, 0b11010010) >> 8, X_MIN, X_MAX, 0, SCREEN_WIDTH);
-    p.y = map(readRegister(TOUCH_ADDR, 0b11000010) >> 8, Y_MIN, Y_MAX, SCREEN_HEIGHT, 0);
+
+    int xval = readRegister(TOUCH_ADDR, 0b11010010) >> 8;
+    int yval = readRegister(TOUCH_ADDR, 0b11000010) >> 8;
+
+    //for calibrating touch screen
+    printDebug("Raw Touch Screen Readings - x:" + String(xval) + " y:" + String(yval));
+
+    p.x = map(xval, X_MIN, X_MAX, 0, SCREEN_WIDTH);
+    p.y = map(yval, Y_MIN, Y_MAX, SCREEN_HEIGHT, 0);
   }
   else
   {
