@@ -58,7 +58,7 @@ int rapidTouchCount = 0;
 */
 void IRAM_ATTR TOUCH_ISR()
 {
-  printDebug("TouchInterrupt");
+//  printDebug("TouchInterrupt");
   if (millis() - lastTouchTime < 200) {
     rapidTouchCount++;
 
@@ -80,7 +80,7 @@ void IRAM_ATTR TOUCH_ISR()
   if (xTouch != NULL) {
     vTaskDelete(xTouch);
   }
-  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 16 * 1024, (void *) 1 , 3, &xTouch, 1 );
+  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 8 * 1024, (void *) 1 , 2, &xTouch, 1 );
 
 
 }

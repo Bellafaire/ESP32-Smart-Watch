@@ -165,6 +165,11 @@ void loop() {
           }
         }
       }
+
+      //printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) );
+
+      //give some time to other freertos tasks running outside of the main loop
+      vTaskDelay(10);
     }
   }
   deviceSleep();
@@ -222,7 +227,7 @@ boolean wakeupCheck() {
     accelWakeupState = 0;
   }
   //debug spam, use if working on this algorithim
-//    printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " state:" + String(accelWakeupState) );
+  //    printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " state:" + String(accelWakeupState) );
 
 
   switch (SETTING_WAKEUP_TYPE) {
@@ -256,7 +261,7 @@ void onWakeup() {
 
   //clear the calculator active flag if it was set to true
   calculatorActive = false;
-  
+
   getRTCTime();
   printRTCTime();
   //wake up display
