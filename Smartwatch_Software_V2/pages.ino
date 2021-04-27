@@ -270,6 +270,7 @@ void switchToSettings() {
 }
 
 void initSettings() {
+ 
   //this entire function needs to more-or-less run on its own without the framework around it
   pauseTouchAreas();
   drawInLoop = false;
@@ -312,6 +313,7 @@ void initSettings() {
           setDataField(ret - 1, WAKEUP_TYPE);
         }
       }
+      break;
     case 2:
       {
         SelectionWindow w3 = SelectionWindow(0, 14, 160, 100);
@@ -324,10 +326,12 @@ void initSettings() {
           setDataField(ret* 10, SCREEN_BRIGHTNESS);
         }
       }
+      break;
     default:
       break;
   }
-  //reload settings from eeprom
+  
+    //reload settings from eeprom
   loadEEPROMSettings();
 
   drawInLoop = true;

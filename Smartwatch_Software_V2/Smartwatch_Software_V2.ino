@@ -218,10 +218,11 @@ boolean wakeupCheck() {
   }
 
   boolean accelerometer_wakeup = accelWakeupState > 6;
-
-
+  if (accelerometer_wakeup) {
+    accelWakeupState = 0;
+  }
   //debug spam, use if working on this algorithim
-  //  printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " state:" + String(accelWakeupState) );
+//    printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) + " state:" + String(accelWakeupState) );
 
 
   switch (SETTING_WAKEUP_TYPE) {
