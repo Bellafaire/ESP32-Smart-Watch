@@ -254,6 +254,9 @@ void onWakeup() {
   //the android device will not complete the operation and update the ESP32
   operationInProgress = false;
 
+  //clear the calculator active flag if it was set to true
+  calculatorActive = false;
+  
   getRTCTime();
   printRTCTime();
   //wake up display

@@ -26,15 +26,15 @@ void TouchTask(void * pvParameters ) {
   point p = readTouch();
   printDebug("x:" + String(p.x) + " y:" + String(p.y));
 
+//if you want to see a small circle everywhere you touch uncomment this, its useful sometimes 
+//  tft.drawCircle(p.x, p.y, 2, TEXT_COLOR);
 
-  tft.drawCircle(p.x, p.y, 2, TEXT_COLOR);
-
-  if ( useTouchAreas && lastTouchAction + TOUCH_ACTION_COOLDOWN < millis()) {
+  if ( useTouchAreas && lastTouchAction + TOUCH_ACTION_COOLDOWN < millis() && !calculatorActive) {
     checkAllTouchAreas(p.x, p.y);
     lastTouchAction = millis();
   }
   //calculator is a pull-over so there's a bit of adapting to add to it.
-  else if (currentPage == (void*) calculator) {
+  else if (calculatorActive) {
     calculatorTouchHandler(p);
     lastTouchAction = millis();
   }

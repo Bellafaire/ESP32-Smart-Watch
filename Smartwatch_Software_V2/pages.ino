@@ -593,11 +593,13 @@ void switchToCalculator() {
 void initCalculator() {
   //this entire page needs to more-or-less run on its own without the framework around it
   deactivateAllTouchAreas();
+  calculatorActive = true;
   currentPage = (void*) calculator;
 }
 
 void calculator() {
   drawCalculator();
+  vTaskDelay(100);
 }
 
 
@@ -673,9 +675,10 @@ void drawCalculator() {
 }
 
 void calculatorTouchHandler(struct point p) {
+  printDebug("Checking calculator buttons for: x-" + String(p.x) + " y-" + String(p.y));
   for (int a = 0;  a < CALCULATOR_BUTTON_COLUMNS * CALCULATOR_BUTTON_ROWS; a++) {
     if (checkButtonPress(calculatorButtons[a], p.x, p.y)) {
-      printDebug("Calculator, User pressed: " + calculatorButtonLabels[a]); 
+      printDebug("Calculator, User pressed: " + calculatorButtonLabels[a]);
       //check whether or not the button pressed was an operation or a number, if it's an operation
       //we have other things that need to be done
       if (calculatorButtonLabels[a].equals("C") ||
@@ -695,6 +698,7 @@ void calculatorTouchHandler(struct point p) {
             enteringFirstOperand = true;
             break;
           case 'X':
+            calculatorActive = false;
             switchToHome();
             break;
           case '=':

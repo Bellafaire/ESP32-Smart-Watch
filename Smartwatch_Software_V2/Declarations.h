@@ -315,6 +315,9 @@ struct onscreenButton
   String _text;
 };
 
+//special case variables
+boolean calculatorActive = false;
+
 /********************************************************************
                               UI Elements
  ********************************************************************/
