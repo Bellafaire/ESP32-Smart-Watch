@@ -53,14 +53,14 @@ void setup() {
                               ,  NULL
                               ,  3  // Priority
                               ,  NULL
-                              ,  1);
+                              ,  0);
 
-    currentPage = (void*)initHome;
+  currentPage = (void*)initHome;
 
-  if(CLEAR_TOUCH_CALIBRATION){
+  if (CLEAR_TOUCH_CALIBRATION) {
     //rapid touch shutdown also clears calibration data. This is to prevent a case where the calibration
     //was messed up and resulted in the device being unuseable.
-    for(int a = X_MAX; a < Y_MIN + 2; a++){
+    for (int a = X_MAX; a < Y_MIN + 2; a++) {
       setDataField(0, a);
       loadEEPROMSettings();
     }
@@ -90,6 +90,12 @@ void watchDog(void *pvParameters)
   }
 }
 
+void updateDisplay(void *pvParameters)
+{
+  (void) pvParameters;
+  tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+  vTaskDelete(NULL);
+}
 
 
 void deviceSleep() {
@@ -106,11 +112,6 @@ void deviceSleep() {
 
   if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0) {
     printDebug("Going to sleep");
-  }
-
-  //kill running tasks
-  if (xTouch != NULL) {
-    vTaskDelete(xTouch);
   }
 
   Serial.flush();
@@ -153,7 +154,15 @@ void loop() {
       //have more direct control of the display for short periods of time.
       if (drawInLoop) {
         ((void(*)())currentPage)();
-        tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
+        xTaskCreatePinnedToCore(    updateDisplay
+                                    ,  "display"
+                                    ,  48 * 1024 // Stack size
+                                    ,  NULL
+                                    ,  2  // Priority
+                                    ,  NULL
+                                    ,  0);
+        //give some time to other freertos tasks running outside of the main loop
+        vTaskDelay(10);
       }
 
       if ((currentPage != (void*)initTimeOnly) && (currentPage != (void*)timeOnly)) {
@@ -177,9 +186,6 @@ void loop() {
       }
 
       //printDebug("X: " + String(readXAccel()) + " Y: " + String(readYAccel()) + " Z: " + String(readZAccel()) + " millis(): " + String(millis()) );
-
-      //give some time to other freertos tasks running outside of the main loop
-      vTaskDelay(10);
     }
   }
   deviceSleep();
@@ -281,10 +287,10 @@ void onWakeup() {
     currentPage = (void*)initTimeOnly;
   } else {
     //check whether we have calibration data for a screen, a fresh ESP32 would not have any data so that needs
-    //to be acquired immediately before the device can be used. 
-    if((SETTING_X_MAX == SETTING_X_MIN) || (SETTING_Y_MAX == SETTING_Y_MIN)){
-      currentPage = (void*)initCalibration; 
-    }else{
+    //to be acquired immediately before the device can be used.
+    if ((SETTING_X_MAX == SETTING_X_MIN) || (SETTING_Y_MAX == SETTING_Y_MIN)) {
+      currentPage = (void*)initCalibration;
+    } else {
       //the currentPage variable controls which page is currently being displayed.
       currentPage = (void*)initHome;
     }

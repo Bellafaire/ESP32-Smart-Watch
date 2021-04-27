@@ -21,6 +21,7 @@
 /* Checks a touch event and triggers any required actions,
   this task is called within the touch interrupt defined in HardwareInterface.ino */
 void TouchTask(void * pvParameters ) {
+  unsigned long touchTaskStart = micros();
   printDebug("TouchTask Triggerred");
 
   point p = readTouch();
@@ -37,8 +38,7 @@ void TouchTask(void * pvParameters ) {
     }
     lastTouchAction = millis();
   }
-
-
+  printDebug("TouchTask completed in: " + String(micros() - touchTaskStart) + "us, currently running: ");
   xTouch = NULL;
   vTaskDelete(NULL);
 }
