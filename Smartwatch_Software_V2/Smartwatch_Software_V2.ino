@@ -100,6 +100,7 @@ void updateDisplay(void *pvParameters)
 
 void deviceSleep() {
   batteryPercentage = getBatteryPercentage();
+ 
   //re-enable touch wakeup
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 

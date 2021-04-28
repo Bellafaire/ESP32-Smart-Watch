@@ -150,7 +150,16 @@ struct point readTouchRaw() {
 
 /********************************************************************
                                I2C
+    I2C interfacing, abstracts away I2C slightly to make surrounding
+    Code easier to work with.
  ********************************************************************/
+
+//since apparently the I2C peripheral on the ESP32 is very-not-thread-safe this 
+//boolean is toggled during every operation, this prevents a different thread from 
+//attempting to use the I2C peripheral when an operation is incomplete. It's mildly inconvinent 
+//but better than the device randomly crashing. 
+static boolean I2C_OPERATION_IN_PROGRESS = false;
+
 void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite)
 {
   int Attempt = 0;
@@ -166,29 +175,40 @@ void WriteAndVerifyRegister(char RegisterAddress, int RegisterValueToWrite)
 
 void sendWrite(byte deviceAddr, byte location, int d)
 {
-
-  Wire.beginTransmission(deviceAddr);
-  Wire.write(location);
-  Wire.write(d & 0x00FF);
-  Wire.write(d >> 8);
-  Wire.endTransmission();
+  if (!I2C_OPERATION_IN_PROGRESS) {
+    I2C_OPERATION_IN_PROGRESS = true;
+    Wire.beginTransmission(deviceAddr);
+    Wire.write(location);
+    Wire.write(d & 0x00FF);
+    Wire.write(d >> 8);
+    Wire.endTransmission();
+    I2C_OPERATION_IN_PROGRESS = false;
+  } else {
+    printDebug("I2C Process FAILED, Peripheral in use. Could not write data");
+  }
 
 }
 
 int readRegister(byte deviceAddr, byte location)
 {
+  if (!I2C_OPERATION_IN_PROGRESS) {
+    I2C_OPERATION_IN_PROGRESS = true;
+    Wire.beginTransmission(deviceAddr); // select device with "beginTransmission()"
+    Wire.write(location);
+    Wire.endTransmission();
+    Wire.requestFrom(deviceAddr, 2, true);
 
-  Wire.beginTransmission(deviceAddr); // select device with "beginTransmission()"
-  Wire.write(location);
-  Wire.endTransmission();
-  Wire.requestFrom(deviceAddr, 2, true);
+    int  a = Wire.read();
+    a |= Wire.read() << 8;
 
-  int  a = Wire.read();
-  a |= Wire.read() << 8;
-
-  //  int a = Wire.read() << 8 | Wire.read();
-
-  return a;
+    //  int a = Wire.read() << 8 | Wire.read();
+    
+    I2C_OPERATION_IN_PROGRESS = false;
+    return a;
+  } else {
+    printDebug("I2C Process FAILED, Peripheral in use. Could not read data");
+    return -1;
+  }
 }
 
 /********************************************************************
