@@ -30,6 +30,7 @@ int sleepCount = 0;
 boolean displayTimeOnly = false;
 int backlightBrightness = 0;
 unsigned long wakeStart = 0;
+boolean frameReady = false;
 
 void setup() {
 #ifdef DEBUG
@@ -93,6 +94,7 @@ void watchDog(void *pvParameters)
 void updateDisplay(void *pvParameters)
 {
   (void) pvParameters;
+  while (!frameReady);
   tft.drawRGBBitmap (0, 0, frameBuffer -> getBuffer (), SCREEN_WIDTH, SCREEN_HEIGHT);
   vTaskDelete(NULL);
 }
@@ -100,7 +102,7 @@ void updateDisplay(void *pvParameters)
 
 void deviceSleep() {
   batteryPercentage = getBatteryPercentage();
- 
+
   //re-enable touch wakeup
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); //1 = High, 0 = Low
 
@@ -154,7 +156,9 @@ void loop() {
       //specific elements need to bypass the loop thread drawing so that they can
       //have more direct control of the display for short periods of time.
       if (drawInLoop) {
+        frameReady = false;
         ((void(*)())currentPage)();
+        frameReady = true;
         xTaskCreatePinnedToCore(    updateDisplay
                                     ,  "display"
                                     ,  48 * 1024 // Stack size
