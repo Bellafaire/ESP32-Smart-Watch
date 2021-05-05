@@ -59,7 +59,7 @@ void timeOnly() {
                                  HOME
  ********************************************************************/
 int homeTouchArea;
-
+boolean songCheck = false;
 
 void switchToHome() {
   currentPage = (void*)initHome;
@@ -68,6 +68,8 @@ void switchToHome() {
 //initalizes the home page
 void initHome() {
   printDebug("initializing home");
+
+  songCheck = false;
 
   //re-init animation circles
   circ1 = AnimationCircle(SCREEN_WIDTH - 25, SCREEN_HEIGHT - 25, 15, 3, RING_COLOR, RING_COLOR, 3.5, 2);
@@ -131,20 +133,13 @@ void home() {
   //we should display the media control button
   if (connected) {
     circ1.setColor(RGB_TO_BGR565(0, 255, 0));
-
-    if (lastSongCheck + SONG_CHECK_INTERVAL < millis() && notificationsUpdated && timeUpdated) {
-      String bleStr = "";
-      sendBLE("/isPlaying", &bleStr, true);
-      boolean isPlaying = bleStr[0] == '1';
-      if (isPlaying && currentPage == home && !homeMediaButton.isActive()) {
-        //spotify is playing so show the button.
-        homeMediaButton.activate();
-
-      }
-      lastSongCheck = millis();
-    }
   }  else {
     circ1.setColor(RGB_TO_BGR565(255, 0, 0));
+  }
+
+  if (spotifyIsPlaying()) {
+    homeMediaButton.activate();
+
   }
 
   //draw the media play button (if the button is deactivated then the button will not be drawn)

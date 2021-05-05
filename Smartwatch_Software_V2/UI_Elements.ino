@@ -172,8 +172,16 @@ void drawNotifications(String notificationData, int x, int y, int color) {
 
   for (int a = 0; a < lineCount; a++) {
     String line = getValue(notificationData, '\n', a);
-    frameBuffer->println(getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 0));
+    String notificationAppName = getValue(getValue(line, FIELD_SEPARATOR, 0), ',', 0);
+
+    if(notificationAppName.indexOf("Spotify") == -1){
+        frameBuffer->println(notificationAppName);
+    }
   }
+}
+
+boolean spotifyIsPlaying(){
+  return (notificationData.indexOf("Spotify") != -1);
 }
 
 /********************************************************************
