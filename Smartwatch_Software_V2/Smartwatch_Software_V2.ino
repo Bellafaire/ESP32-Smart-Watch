@@ -167,7 +167,7 @@ void loop() {
                                     ,  NULL
                                     ,  0);
         //give some time to other freertos tasks running outside of the main loop
-        vTaskDelay(10);
+        vTaskDelay(30);
       }
 
       if ((currentPage != (void*)initTimeOnly) && (currentPage != (void*)timeOnly)) {
