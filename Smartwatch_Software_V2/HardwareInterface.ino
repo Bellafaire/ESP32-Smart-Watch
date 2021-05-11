@@ -101,6 +101,17 @@ void initTouch()
   initTouchAreas();
 }
 
+//activates touch interrupt
+void activateTouch(){
+   attachInterrupt(TOUCH_IRQ, TOUCH_ISR, FALLING);
+}
+
+//deactivates touch interrupt
+void deactivateTouch(){
+  detachInterrupt(TOUCH_IRQ);
+}
+
+
 //read touch
 struct point readTouch() {
   struct point p;

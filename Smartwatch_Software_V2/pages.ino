@@ -129,8 +129,6 @@ void home() {
   drawNotifications(notificationData, 0, 30, 0xFFFF);
 
   //display connection status on the innermost circle,
-  //if we are connected also check the media playback status and use that to determine whether or not
-  //we should display the media control button
   if (connected) {
     circ1.setColor(RGB_TO_BGR565(0, 255, 0));
   }  else {

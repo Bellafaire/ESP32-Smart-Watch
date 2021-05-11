@@ -122,6 +122,8 @@ void deviceSleep() {
   //put display to sleep
   tft.enableSleep(true);
 
+  deactivateTouch();
+
   if (wasActive && !connected) {
     esp_deep_sleep_start();
   }
@@ -275,6 +277,8 @@ void onWakeup() {
   //new wakeup so we'll want to update notifications next chance we get
   notificationsUpdated = false;
   timeUpdated = false;
+
+  activateTouch();
 
   //incase the device was shut down in the middle of a bluetooth operation since
   //the android device will not complete the operation and update the ESP32
