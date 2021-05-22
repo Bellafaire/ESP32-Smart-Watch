@@ -126,7 +126,7 @@ void home() {
   frameBuffer->println(String(batteryPercentage) + "%");
 
   //draw the notification data to the screen
-  drawNotifications(notificationData, 0, 30, 0xFFFF);
+  drawNotifications(notificationData, 0, 35, 0xFFFF);
 
   //display connection status on the innermost circle,
   if (connected) {
