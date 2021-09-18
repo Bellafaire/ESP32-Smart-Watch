@@ -67,7 +67,18 @@ void setup() {
     }
   }
 
-
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+  if (!(wakeup_reason == ESP_SLEEP_WAKEUP_TIMER)) {
+    //grab the time and notifications
+    unsigned long bluetooth_start_connection = millis();
+    while (!timeUpdated && (millis() - bluetooth_start_connection) < 10000) {
+      if (connected) {
+        if (getTimeFromBLE()) {
+          break;
+        }
+      }
+    }
+  }
 }
 
 
@@ -182,13 +193,7 @@ void loop() {
           }
         }
         if (connected && !timeUpdated) {
-          //gets current android notifications as a string
-          String timeStr = "";
-          boolean success = sendBLE("/time", &timeStr, true);
-          if (success) {
-            updateTimeFromTimeString(timeStr);
-            timeUpdated = true;
-          }
+          getTimeFromBLE();
         }
       }
 
@@ -272,6 +277,28 @@ boolean wakeupCheck() {
   return false;
 }
 
+boolean getTimeFromBLE() {
+  if (connected) {
+    if (!timeUpdated) {
+      //gets current android notifications as a string
+      String timeStr = "";
+      boolean success = sendBLE("/time", &timeStr, true);
+      if (success) {
+        updateTimeFromTimeString(timeStr);
+        timeUpdated = true;
+      } else {
+        return false;
+      }
+    } else {
+      printDebug("Time already updated");
+    }
+  } else {
+    printDebug("BLE Not connected");
+    return false;
+  }
+  return true;
+}
+
 
 void onWakeup() {
   //new wakeup so we'll want to update notifications next chance we get
@@ -287,8 +314,12 @@ void onWakeup() {
   //clear the calculator active flag if it was set to true
   calculatorActive = false;
 
+  printDebug("Starting Advertisement");
+  startBLEAdvertising();
+
   getRTCTime();
   printRTCTime();
+
   //wake up display
   tft.enableSleep(false);
 
