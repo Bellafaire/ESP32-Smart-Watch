@@ -68,7 +68,6 @@ void setup() {
   }
 
   wakeup_reason = esp_sleep_get_wakeup_cause();
-  if (!(wakeup_reason == ESP_SLEEP_WAKEUP_TIMER)) {
     //grab the time and notifications
     unsigned long bluetooth_start_connection = millis();
     while (!timeUpdated && (millis() - bluetooth_start_connection) < 10000) {
@@ -78,7 +77,6 @@ void setup() {
         }
       }
     }
-  }
 }
 
 
@@ -136,6 +134,8 @@ void deviceSleep() {
   deactivateTouch();
 
   if (wasActive && !connected) {
+    //using deep sleep here as a soft reset. It effectively clears the BLE stack and allows for connections again 
+    esp_sleep_enable_timer_wakeup(5); 
     esp_deep_sleep_start();
   }
   connected = false;
