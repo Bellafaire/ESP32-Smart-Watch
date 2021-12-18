@@ -26,6 +26,7 @@ esp_sleep_wakeup_cause_t wakeup_reason;
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
 
+
 void setup()
 {
 #ifdef DEBUG
@@ -46,7 +47,7 @@ void setup()
 
   loadEEPROMSettings();
 
-  //create "watchdog task" to put the device in deepsleep if something goes wrong
+  // create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
   setHomePage();
 }
@@ -61,15 +62,74 @@ void getNotifications()
   }
 }
 
+boolean wakeupCheck()
+{
+  return (millis() - lastTouchTime) < 10000;
+}
+
+void deviceSleep()
+{
+  batteryPercentage = getBatteryPercentage();
+  digitalWrite(LCD_LED, LOW);
+  // re-enable touch wakeup
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
+
+  if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0)
+  {
+    printDebug("Going to sleep");
+  }
+
+  Serial.flush();
+
+  // put display to sleep
+  tft.enableSleep(true);
+
+  deactivateTouch();
+
+  connected = false;
+  esp_light_sleep_start();
+}
+
+void onWakeup()
+{
+  setHomePage();
+  // wake up display
+  tft.enableSleep(false);
+  digitalWrite(LCD_LED, HIGH);
+
+  // new wakeup so we'll want to update notifications next chance we get
+  notificationsUpdated = false;
+  timeUpdated = false;
+
+  activateTouch();
+
+  printDebug("Starting Advertisement");
+  startBLEAdvertising();
+
+  getRTCTime();
+}
+
 void loop()
 {
-  drawFrame();
-
-  if (connected)
+  if (wakeupCheck())
   {
-    if (!timeUpdated)
-      getTimeFromBLE();
-    else if (!notificationsUpdated)
-      getNotifications();
+    drawFrame();
+
+    if (connected)
+    {
+      if (!timeUpdated)
+        getTimeFromBLE();
+      else if (!notificationsUpdated)
+        getNotifications();
+    }
+  }
+  else
+  {
+    deviceSleep();
+
+    //the program halts until this point so we know that there was a touch
+    //if this line is being executed since the ESP32 has been woken up.
+    lastTouchTime = millis();
+    onWakeup();
   }
 }

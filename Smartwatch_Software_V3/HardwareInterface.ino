@@ -107,7 +107,7 @@ void IRAM_ATTR TOUCH_ISR()
   {
     vTaskDelete(xTouch);
   }
-  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 1024, (void *)1, 2, NULL, 1);
+  xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4*1024, (void *)1, 2, NULL, 1);
 }
 
 //init touch IC
