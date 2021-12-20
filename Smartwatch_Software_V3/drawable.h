@@ -12,6 +12,7 @@ public:
     int gety();
     int getWidth();
     int getHeight();
+    int setDims(int x, int y, int width, int height); 
     boolean isTouched(int x, int y);
     void setTouchable(boolean val);
     void registerCallback(void (*cb)());

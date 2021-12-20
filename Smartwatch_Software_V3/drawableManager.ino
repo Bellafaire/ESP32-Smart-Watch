@@ -1,20 +1,15 @@
+/********************************************************************
+                        Drawable manager
+ ********************************************************************/
 
-// manages drawables as a queue
-#define MAX_DRAWABLES 32
-
-#define SWIPE_RIGHT 2
-#define SWIPE_UP 1
-#define SWIPE_LEFT 4
-#define SWIPE_DOWN 3
-
-#define SWIPE_DISTANCE_THRESHOLD 60
-
+// variables for swiping
 point swipe_start;
 point swipe_end;
 int last_touch_state = 1;
 
 int current_drawables = 0;
 Drawable *drawableItems[MAX_DRAWABLES];
+void (*swipeCallbacks[4])();
 
 void registerDrawable(Drawable *visual)
 {
@@ -27,6 +22,18 @@ void registerDrawable(Drawable *visual)
     {
         printDebug("Drawables error: number of drawables not supported!!!!");
     }
+}
+
+void setSwipeAction(int dir, void (*cb)())
+{
+    swipeCallbacks[dir] = cb;
+    printDebug("Registered callback for swipe direction " + String(dir));
+}
+
+void clearSwipeActions()
+{
+    for (int a = 0; a < 4; a++)
+        swipeCallbacks[a] = nullptr;
 }
 
 void drawFrame()
@@ -77,16 +84,17 @@ void checkTouch()
         {
             // determine direction
             double theta = atan2(swipe.y, swipe.x) + PI;
-            swipe_dir = round(2 * theta / PI);
+            swipe_dir = round(2 * theta / PI) - 1;
             printDebug("Swipe detected in direction " + String(swipe_dir) + " from theta of " + String(theta, 2) + " start (" + String(swipe_start.x) + "," + String(swipe_start.y) + ") End (" + String(swipe_end.x) + "," + String(swipe_end.y) + ")");
 
-            //now do something with the swipe detection!
+            if (swipeCallbacks[swipe_dir] != nullptr && swipe_dir >= 0)
+                swipeCallbacks[swipe_dir]();
         }
     }
     else
     {
-        //keep saving the swipe. when the screen is no longer touched we want the last value
-        //that's what we'll use to calculate the swipe direction.
+        // keep saving the swipe. when the screen is no longer touched we want the last value
+        // that's what we'll use to calculate the swipe direction.
         swipe_end = p;
     }
 

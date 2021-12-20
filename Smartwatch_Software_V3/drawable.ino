@@ -18,6 +18,14 @@ Drawable::Drawable(int x, int y, int width, int height, GFXcanvas16 *buffer_ptr,
     _type = type;
 }
 
+int Drawable::setDims(int x, int y, int width, int height)
+{
+    _x = x;
+    _y = y;
+    _width = width;
+    _height = height;
+}
+
 void Drawable::draw()
 {
     if (_touched)
