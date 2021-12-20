@@ -26,7 +26,6 @@ esp_sleep_wakeup_cause_t wakeup_reason;
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
 
-
 void setup()
 {
 #ifdef DEBUG
@@ -50,6 +49,7 @@ void setup()
   // create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
   setHomePage();
+  updateTime();
 }
 
 void getNotifications()
@@ -64,7 +64,8 @@ void getNotifications()
 
 boolean wakeupCheck()
 {
-  return (millis() - lastTouchTime) < 10000;
+  return ((millis() - lastTouchTime) < 3000)
+  || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD);
 }
 
 void deviceSleep()
@@ -72,12 +73,8 @@ void deviceSleep()
   batteryPercentage = getBatteryPercentage();
   digitalWrite(LCD_LED, LOW);
   // re-enable touch wakeup
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
 
-  if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT0)
-  {
-    printDebug("Going to sleep");
-  }
+  printDebug("Going to sleep");
 
   Serial.flush();
 
@@ -87,12 +84,14 @@ void deviceSleep()
   deactivateTouch();
 
   connected = false;
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
   esp_light_sleep_start();
 }
 
 void onWakeup()
 {
   setHomePage();
+
   // wake up display
   tft.enableSleep(false);
   digitalWrite(LCD_LED, HIGH);
@@ -107,6 +106,7 @@ void onWakeup()
   startBLEAdvertising();
 
   getRTCTime();
+    updateTime();
 }
 
 void loop()
@@ -117,9 +117,7 @@ void loop()
 
     if (connected)
     {
-      if (!timeUpdated)
-        getTimeFromBLE();
-      else if (!notificationsUpdated)
+      if (!notificationsUpdated)
         getNotifications();
     }
   }
@@ -127,8 +125,8 @@ void loop()
   {
     deviceSleep();
 
-    //the program halts until this point so we know that there was a touch
-    //if this line is being executed since the ESP32 has been woken up.
+    // the program halts until this point so we know that there was a touch
+    // if this line is being executed since the ESP32 has been woken up.
     lastTouchTime = millis();
     onWakeup();
   }

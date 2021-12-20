@@ -5,7 +5,7 @@ class Background : public Drawable
 {
 public:
     Background(const uint16_t *img, GFXcanvas16 *buffer_ptr)
-        : Drawable(0, 0, 160, 128, buffer_ptr)
+        : Drawable(0, 0, 160, 128, buffer_ptr, "Background")
     {
         _img = img;
     }
@@ -26,7 +26,7 @@ class Time : public Drawable
 {
 public:
     Time(int x, int y, GFXcanvas16 *buffer_ptr)
-        : Drawable(x, y, 32, 16, buffer_ptr)
+        : Drawable(x, y, 32, 16, buffer_ptr, "Time Display")
     {
         mjd_set_timezone_est();
     }
@@ -108,7 +108,7 @@ class NotificationPrinter : public Drawable
 {
 public:
     NotificationPrinter(int x, int y, int width, int height, String *notificationData, GFXcanvas16 *buffer_ptr)
-        : Drawable(x, y, width, height, buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr,"Notification Area")
     {
         data = notificationData;
     }

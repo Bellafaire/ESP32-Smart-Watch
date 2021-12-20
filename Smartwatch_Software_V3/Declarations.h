@@ -147,7 +147,7 @@ int ERROR_COLOR = ST77XX_BLUE;
 //number of times per second the ESP32 will wake up to check the accelerometer
 #define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 4
 
-#define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2100
+#define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2000
 
 #define ACCELEROMETER_MAX_VALUE 4096
 #define ACCELEROMETER_MIN_VALUE 0
@@ -186,6 +186,11 @@ unsigned long lastSongUpdate = 0;
                             TOUCH
  ********************************************************************/
 RTC_DATA_ATTR boolean CLEAR_TOUCH_CALIBRATION = false;
+
+
+//defines whether or not touch handling will occur in as a result of the touch handling ISR or 
+//happen in the main thread. 
+// #define USE_TOUCH_HANDLING_TASK 
 
 struct point
 {
