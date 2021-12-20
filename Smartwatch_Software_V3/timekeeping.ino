@@ -117,9 +117,7 @@ void timeUpdate(void *pvParameters)
 
 void updateTime()
 {
-  while (!connected)
-    vTaskDelay(50);
-  xTaskCreatePinnedToCore(timeUpdate, "timeUpdate", 4 * 1024, (void *)1, 2, NULL, 1);
+  xTaskCreatePinnedToCore(timeUpdate, "timeUpdate", 8 * 1024, (void *)1, 1, NULL, 0);
 }
 
 boolean getTimeFromBLE()

@@ -1,6 +1,18 @@
 
 // manages drawables as a queue
-#define MAX_DRAWABLES 16
+#define MAX_DRAWABLES 32
+
+#define SWIPE_RIGHT 2
+#define SWIPE_UP 1
+#define SWIPE_LEFT 4
+#define SWIPE_DOWN 3
+
+#define SWIPE_DISTANCE_THRESHOLD 60
+
+point swipe_start;
+point swipe_end;
+int last_touch_state = 1;
+
 int current_drawables = 0;
 Drawable *drawableItems[MAX_DRAWABLES];
 
@@ -39,15 +51,46 @@ void checkTouch()
     point p = readTouch();
 
     if (p.x != -1 && p.y != -1)
-    {
         printDebug("Touch Input - x:" + String(p.x) + " y:" + String(p.y));
 
-        for (int a = current_drawables - 1; a > 0; a--)
+    for (int a = current_drawables - 1; a > 0; a--)
+    {
+        if (drawableItems[a]->isTouched(p.x, p.y))
+            break;
+    }
+
+    if (last_touch_state && !digitalRead(TOUCH_IRQ))
+        swipe_start = p;
+    else if (digitalRead(TOUCH_IRQ) && !last_touch_state)
+    {
+        // now we interpret the swipe
+
+        int swipe_dir = -1;
+        point swipe;
+        swipe.x = (swipe_end.x - swipe_start.x);
+        swipe.y = (swipe_end.y - swipe_start.y);
+
+        int length = (int)sqrt(
+            pow(swipe.x, 2) + pow(swipe.y, 2));
+
+        if (length > SWIPE_DISTANCE_THRESHOLD)
         {
-            if (drawableItems[a]->isTouched(p.x, p.y))
-                break;
+            // determine direction
+            double theta = atan2(swipe.y, swipe.x) + PI;
+            swipe_dir = round(2 * theta / PI);
+            printDebug("Swipe detected in direction " + String(swipe_dir) + " from theta of " + String(theta, 2) + " start (" + String(swipe_start.x) + "," + String(swipe_start.y) + ") End (" + String(swipe_end.x) + "," + String(swipe_end.y) + ")");
+
+            //now do something with the swipe detection!
         }
     }
+    else
+    {
+        //keep saving the swipe. when the screen is no longer touched we want the last value
+        //that's what we'll use to calculate the swipe direction.
+        swipe_end = p;
+    }
+
+    last_touch_state = digitalRead(TOUCH_IRQ);
 }
 
 /* Checks a touch event and triggers any required actions,

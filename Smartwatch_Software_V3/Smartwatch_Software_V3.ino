@@ -26,6 +26,11 @@ esp_sleep_wakeup_cause_t wakeup_reason;
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
 
+void onConnectEvent()
+{
+  updateTime();
+}
+
 void setup()
 {
 #ifdef DEBUG
@@ -49,7 +54,7 @@ void setup()
   // create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
   setHomePage();
-  updateTime();
+  // updateTime();
 }
 
 void getNotifications()
@@ -64,8 +69,7 @@ void getNotifications()
 
 boolean wakeupCheck()
 {
-  return ((millis() - lastTouchTime) < 3000)
-  || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD);
+  return ((millis() - lastTouchTime) < 3000) || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD);
 }
 
 void deviceSleep()
@@ -90,6 +94,7 @@ void deviceSleep()
 
 void onWakeup()
 {
+  getRTCTime();
   setHomePage();
 
   // wake up display
@@ -104,9 +109,6 @@ void onWakeup()
 
   printDebug("Starting Advertisement");
   startBLEAdvertising();
-
-  getRTCTime();
-    updateTime();
 }
 
 void loop()

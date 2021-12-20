@@ -36,6 +36,7 @@ void addData(String data) {
 class cb : public BLEServerCallbacks    {
     void onConnect(BLEServer* pServer) {
       connected = true;
+      onConnectEvent();
       printDebug("BLE Device Connected");
     }
     void onDisconnect(BLEServer* pServer) {

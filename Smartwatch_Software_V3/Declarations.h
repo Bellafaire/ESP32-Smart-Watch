@@ -28,6 +28,7 @@
 #include <soc/rtc.h>
 #include <sys/time.h>
 #include <driver/adc.h>
+#include <math.h>
 
 #include <BLEDevice.h>
 #include <BLEUtils.h>

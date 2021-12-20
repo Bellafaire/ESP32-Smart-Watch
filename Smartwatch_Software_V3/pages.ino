@@ -9,6 +9,6 @@ void setHomePage()
     registerDrawable(&b);
     registerDrawable(&np);
     registerDrawable(&timedisp);
-    registerDrawable(&d);
-    d.setTouchable(true);
+    // registerDrawable(&d);
+    // d.setTouchable(true);
 }
