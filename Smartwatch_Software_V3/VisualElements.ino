@@ -20,6 +20,77 @@ private:
 };
 
 /****************************************************
+ *                    Scrollbox
+ ****************************************************/
+class Scrollbox : public Drawable
+{
+public:
+    Scrollbox(int x, int y, int width, int height, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr, "Scrollbox")
+    {
+        setTouchable(true);
+    }
+
+    void setString(String str)
+    {
+        _str = str;
+    }
+
+    void onTouch(int x, int y)
+    {
+        // printDebug("onTouch called in " + toString());
+        _touched = (x >= _x) && (y >= _y) && (x <= _x + _width) && (y <= _y + _height) && _touchable;
+        if (_touched)
+        {
+            if (y > (_y + _height / 2))
+                _scroll += 2;
+            else
+                _scroll -= 2;
+            // printDebug("Scroll: " + String(_scroll));
+        }
+    }
+
+    void draw()
+    {
+        int characters_per_line = ((_width - 2 * _padding) / _character_spacing);
+        int xpos = _x + _padding;
+        int ypos = _y;
+
+        int length = _str.length();
+        int character_position = (characters_per_line) * (_scroll / _line_spacing);
+
+        if (character_position < 0)
+            character_position = 0;
+
+        while (character_position < length && ypos < _y + _height)
+        {
+
+            _buffer_ptr->setCursor(xpos, ypos);
+            _buffer_ptr->print(_str[character_position]);
+            xpos += _character_spacing;
+            if ((xpos >= (_x + _width) - _padding) || _str[character_position] == '\n')
+            {
+                xpos = _x + _padding;
+                ypos += _line_spacing;
+            }
+            character_position++;
+        }
+    }
+
+    void resetScroll()
+    {
+        _scroll = 0;
+    }
+
+private:
+    String _str = "";
+    const int _padding = 6; // this could be a define but it's better here.
+    const int _character_spacing = 6;
+    const int _line_spacing = 8;
+    int _scroll = 0;
+};
+
+/****************************************************
  *                      Time
  ****************************************************/
 class Time : public Drawable
@@ -139,6 +210,7 @@ public:
         : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "Notification Page")
     {
         data = notificationData;
+        setTouchable(true);
     }
 
     void draw()
@@ -174,28 +246,28 @@ public:
             {
                 String title = parseField(line, ';', NOTIFICATION_APP_NAME);
                 String description = parseField(line, ';', NOTIFICATION_DESCRIPTION);
-                printDebug(title);
-                printDebug(description);
+                String extra = parseField(line, ';', NOTIFICATION_EXTRA_TEXT);
 
-                int c = 0;
-                while (c * 6 + 2 < SCREEN_WIDTH - 6 && c < title.length())
-                {
-                    _buffer_ptr->setCursor(_x + app_name_width + c * 6 + 2, _y);
-                    _buffer_ptr->setTextColor(INTERFACE_COLOR);
+                _buffer_ptr->setTextColor(INTERFACE_COLOR);
+                _buffer_ptr->setCursor(_x + app_name_width, _y);
+                _buffer_ptr->print(title.substring(0, ((_width) - (_x + app_name_width)) / 6));
 
-                    _buffer_ptr->print(title[c]);
-                    c++;
-                }
-
-                //TODO print notification description
+                scroll.setString("Subtitle:\n" + extra + "\nDescription:\n" + description);
+                scroll.draw();
             }
 
             _buffer_ptr->drawFastVLine(app_name_width, 0, SCREEN_HEIGHT, INTERFACE_COLOR);
         }
     }
 
+    void onTouch(int x, int y)
+    {
+        scroll.onTouch(x, y);
+    }
+
     void nextItem()
     {
+        scroll.resetScroll();
         if (currentSelection < notification_line_count)
             currentSelection++;
         printDebug("Next notification item " + String(currentSelection));
@@ -203,6 +275,7 @@ public:
 
     void previousItem()
     {
+        scroll.resetScroll();
         if (currentSelection > 0)
             currentSelection--;
         printDebug("Previous notification item " + String(currentSelection));
@@ -211,6 +284,7 @@ public:
 private:
     String *data;
     const int app_name_width = 36;
+    Scrollbox scroll = Scrollbox(app_name_width, 10, SCREEN_WIDTH - app_name_width, SCREEN_HEIGHT - 10, _buffer_ptr);
     int currentSelection = 0;
     int notification_line_count = 0;
 };

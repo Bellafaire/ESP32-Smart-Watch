@@ -58,10 +58,10 @@ boolean Drawable::isTouched(int x, int y)
 {
     _touched = (x >= _x) && (y >= _y) && (x <= _x + _width) && (y <= _y + _height) && _touchable;
     if (_touched)
-        onTouch();
+        onTouch(x, y);
     return _touched;
 }
-void Drawable::onTouch()
+void Drawable::onTouch(int x, int y)
 {
     printDebug("Touch detected on " + toString());
     if (_callback != nullptr)
