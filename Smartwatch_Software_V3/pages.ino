@@ -3,7 +3,7 @@ Background b = Background(background, frameBuffer);
 Time timedisp = Time(13, 5, frameBuffer);
 NotificationPrinter np = NotificationPrinter(0, 30, 100, 60, &notificationData, frameBuffer);
 NotificationPage notification_page = NotificationPage(&notificationData, frameBuffer);
-
+BatteryIcon bat = BatteryIcon(SCREEN_WIDTH - 14, 3, frameBuffer);
 void setHomePage()
 {
     printDebug("Switched to home page");
@@ -13,6 +13,8 @@ void setHomePage()
     np.setDims(0, 30, 100, 60);
     registerDrawable(&np);
     registerDrawable(&timedisp);
+    registerDrawable(&bat);
+    bat.updateBatteryPercentage();
     // registerDrawable(&d);
     // d.setTouchable(true);
     setSwipeAction(SWIPE_LEFT, setNotificationsPage);

@@ -91,6 +91,59 @@ private:
 };
 
 /****************************************************
+ *                     Battery
+ ****************************************************/
+class BatteryIcon : public Drawable
+{
+public:
+    BatteryIcon(int x, int y, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, 10, 6, buffer_ptr, "BatteryIcon")
+    {
+        batteryPercentage = getBatteryPercentage();
+    }
+
+    void draw()
+    {
+        // debug code!!!
+        // batteryPercentage--;
+        // if (batteryPercentage < 0)
+        //     batteryPercentage = 100;
+
+        _buffer_ptr->fillRect(_x + 1, _y, _width - 1, _height, RGB_TO_BGR565(100, 100, 100));
+        _buffer_ptr->fillRect(_x, _y + 2, _width, _height - 4, RGB_TO_BGR565(100, 100, 100));
+
+        int batsliver = batteryPercentage * (_width - 3) / 100;
+        if (batsliver < 1)
+            batsliver = 1; // always want at least a little on screen
+
+        if (isCharging() && batteryPercentage < 100)
+            batsliver = batsliver - ((animation_count / 25) % 2);
+
+        uint16_t color;
+
+        if (batteryPercentage < 20)
+            color = RGB_TO_BGR565(255, 0, 0); // red
+        else if (batteryPercentage < 40)
+            color = RGB_TO_BGR565(252, 186, 3); // yellow
+        else
+            color = RGB_TO_BGR565(0, 255, 0); // green
+
+        _buffer_ptr->fillRect(_x + (_width - batsliver - 1), _y + 1, batsliver, _height - 2, color);
+        animation_count++;
+    }
+
+    void updateBatteryPercentage()
+    {
+        batteryPercentage = getBatteryPercentage();
+        printDebug("Battery Percentage " + String(batteryPercentage));
+    }
+
+private:
+    int batteryPercentage = 0;
+    int animation_count = 0;
+};
+
+/****************************************************
  *                      Time
  ****************************************************/
 class Time : public Drawable
