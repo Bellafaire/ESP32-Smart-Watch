@@ -91,6 +91,30 @@ private:
 };
 
 /****************************************************
+ *               connection status
+ ****************************************************/
+class ConnStatus : public Drawable
+{
+public:
+    ConnStatus(int x, int y, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, 10, 4, buffer_ptr, "BatteryIcon")
+    {
+    }
+
+    void draw()
+    {
+
+        if (connected)
+            _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 255, 0));
+        else
+            _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(255, 0, 0));
+        _buffer_ptr->drawRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 0, 0));
+    }
+
+private:
+};
+
+/****************************************************
  *                     Battery
  ****************************************************/
 class BatteryIcon : public Drawable
