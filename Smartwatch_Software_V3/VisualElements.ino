@@ -1,11 +1,84 @@
 /****************************************************
  *                   Background
  ****************************************************/
-class Background : public Drawable
+class BoxesBackground : public Drawable
 {
 public:
-    Background(const uint16_t *img, GFXcanvas16 *buffer_ptr)
-        : Drawable(0, 0, 160, 128, buffer_ptr, "Background")
+    BoxesBackground(GFXcanvas16 *buffer_ptr)
+        : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "Background")
+    {
+        row_height = _height / rows;
+        for (int a = 0; a < columns; a++)
+            for (int b = 0; b < rows; b++)
+                widths[a][b] = _width / columns;
+    }
+
+    void draw()
+    {
+
+        // get random index in widths
+        if (widthModification == 0)
+        {
+            // int index = random(0, rows * columns);
+            // int add = random(-1, 2); // random is min to max-1
+            // widths[index % columns][index / columns] += add;
+
+            // pick a random index
+            current_row = random(0, rows);
+            current_column = random(0, columns);
+            widthModification = random(0, 15); // random is min to max-1
+
+            if (widths[current_column][current_row] > _width / columns)
+                widthModification *= -1;
+        }
+
+        widths[current_column][current_row] += widthModification > 0 ? 1 : -1;
+        if (current_column < columns - 1)
+            widths[current_column + 1][current_row] += widthModification > 0 ? -1 : 1;
+        else
+            widths[current_column - 1][current_row] += widthModification > 0 ? -1 : 1;
+        widthModification += (widthModification > 0) ? -1 : 1;
+
+        // _buffer_ptr->drawRGBBitmap(0, 0, _img, _width, _height);
+        for (int b = 0; b < rows; b++)
+        {
+            int current_pos = 0;
+            for (int a = 0; a < columns; a++)
+            {
+
+                _buffer_ptr->fillRect(_x + current_pos, _y + b * row_height, widths[a][b], row_height, colors[(b * columns + a) % 6]);
+                current_pos += widths[a][b];
+                if (current_pos < _width)
+                    _buffer_ptr->fillRect(_x + current_pos, _y + b * row_height, _width - current_pos, row_height, colors[(b * columns + a) % 6]);
+                // Serial.printf("Drawing rectangle at x:%d y:%d with width:%d and height:%d\n", _x + current_pos, _y + b * row_height, widths[a][b], row_height);
+            }
+        }
+    }
+
+private:
+    const int arr_size = (sizeof(colors) / sizeof((colors)[0]));
+    const static int rows = 8;
+    const static int columns = 4;
+    int row_height;
+    uint16_t colors[6] = {
+        RGB_TO_BGR565(78, 0, 50),
+        RGB_TO_BGR565(78, 0, 70),
+        RGB_TO_BGR565(56, 0, 50),
+        RGB_TO_BGR565(80, 0, 100),
+        RGB_TO_BGR565(65, 0, 45),
+        RGB_TO_BGR565(50, 0, 60)};
+    int widths[columns][rows];
+
+    int current_row = 0;
+    int current_column = 0;
+    int widthModification = 0;
+};
+
+class ImageBackground : public Drawable
+{
+public:
+    ImageBackground(const uint16_t *img, GFXcanvas16 *buffer_ptr)
+        : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "Background")
     {
         _img = img;
     }

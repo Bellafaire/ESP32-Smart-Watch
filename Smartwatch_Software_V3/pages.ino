@@ -1,5 +1,5 @@
 Drawable d = Drawable(10, 50, 32, 32, frameBuffer);
-Background b = Background(background, frameBuffer);
+BoxesBackground b = BoxesBackground(frameBuffer);
 Time timedisp = Time(13, 5, frameBuffer);
 NotificationPrinter np = NotificationPrinter(0, 30, 100, 60, &notificationData, frameBuffer);
 NotificationPage notification_page = NotificationPage(&notificationData, frameBuffer);
