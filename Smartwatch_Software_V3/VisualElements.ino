@@ -438,3 +438,90 @@ private:
     int currentSelection = 0;
     int notification_line_count = 0;
 };
+
+/****************************************************
+ *                    Button
+ ****************************************************/
+
+class Button : public Drawable
+{
+public:
+    Button(int x, int y, int width, int height, String text, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr, "Button:" + text)
+    {
+        setTouchable(true);
+        _text = text;
+    }
+
+    Button(int x, int y, int width, int height, const uint16_t *image, int imageWidth, int imageHeight, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr, "ImageButton")
+    {
+        setTouchable(true);
+        _imageWidth = imageWidth;
+        _imageHeight = imageHeight;
+        _img = image;
+    }
+
+    void setBackgroundColor(uint16_t color)
+    {
+        _backgroundColor = color;
+    }
+    void setForegroundColor(uint16_t color)
+    {
+        _foregroundColor = color;
+    }
+
+    void setBorder(boolean border)
+    {
+        _border = border;
+    }
+
+    void draw()
+    {
+        // border is optional, may not want this in cases such as image drawing
+        if (_border)
+        {
+            _buffer_ptr->fillRect(_x, _y, _width, _height, _backgroundColor);
+            _buffer_ptr->drawRect(_x, _y, _width, _height, _foregroundColor);
+        }
+
+        if (!_text.equals(""))
+        {
+            // calculate width of the text itself.
+            int text_width = _text.length() * 6;
+
+            // get center of box
+            int center_x = _x + _width / 2;
+            int center_y = _y + _height / 2;
+
+            // start cursor at
+            _buffer_ptr->setCursor(
+                center_x - text_width / 2,
+                center_y - 3);
+
+            _buffer_ptr->setTextColor(_foregroundColor);
+            _buffer_ptr->print(_text);
+        }
+        else if (_img != nullptr)
+        {
+            int start_x = _x + (_width / 2) - _imageWidth / 2;
+            int start_y = _y + (_height / 2) - _imageHeight / 2;
+
+            // now loop through each pixel, consider black to be transparent.
+            for (int y = 0; y < _imageHeight; y++)
+                for (int x = 0; x < _imageWidth; x++)
+                    if (_img[x + y *_imageWidth] != 0x0000)
+                        _buffer_ptr->drawPixel(x + start_x, y + start_y, _img[x + y *_imageWidth]);
+        }
+    }
+
+private:
+    // support either images or text
+    String _text = "";
+    boolean _border = true;
+    int _imageWidth = -1;
+    int _imageHeight = -1;
+    const uint16_t *_img;
+    uint16_t _backgroundColor = BACKGROUND_COLOR;
+    uint16_t _foregroundColor = INTERFACE_COLOR;
+};
