@@ -453,6 +453,11 @@ public:
         _text = text;
     }
 
+    Button()
+        : Drawable(-1, -1, 0, 0, nullptr, "uninitalized Button")
+    {
+    }
+
     Button(int x, int y, int width, int height, const uint16_t *image, int imageWidth, int imageHeight, GFXcanvas16 *buffer_ptr)
         : Drawable(x, y, width, height, buffer_ptr, "ImageButton")
     {
@@ -474,6 +479,11 @@ public:
     void setBorder(boolean border)
     {
         _border = border;
+    }
+
+    String getText()
+    {
+        return _text;
     }
 
     void draw()
@@ -510,8 +520,8 @@ public:
             // now loop through each pixel, consider black to be transparent.
             for (int y = 0; y < _imageHeight; y++)
                 for (int x = 0; x < _imageWidth; x++)
-                    if (_img[x + y *_imageWidth] != 0x0000)
-                        _buffer_ptr->drawPixel(x + start_x, y + start_y, _img[x + y *_imageWidth]);
+                    if (_img[x + y * _imageWidth] != 0x0000)
+                        _buffer_ptr->drawPixel(x + start_x, y + start_y, _img[x + y * _imageWidth]);
         }
     }
 
@@ -524,4 +534,158 @@ private:
     const uint16_t *_img;
     uint16_t _backgroundColor = BACKGROUND_COLOR;
     uint16_t _foregroundColor = INTERFACE_COLOR;
+};
+
+/****************************************************
+ *                    Calculator
+ ****************************************************/
+class Calculator : public Drawable
+{
+public:
+    Calculator(GFXcanvas16 *buffer_ptr)
+        : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "Calculator")
+    {
+
+        for (int a = 0; a < CALCULATOR_COLUMNS * CALCULATOR_ROWS; a++)
+        {
+            calculatorButtons[a] = Button(
+                xButtonSpacing * (a % CALCULATOR_COLUMNS) + PADDING / 2,
+                yButtonSpacing * ((a) / CALCULATOR_COLUMNS) + PADDING / 2 + yButtonSpacing,
+                xButtonSpacing - PADDING,
+                yButtonSpacing - PADDING,
+                calculatorButtonLabels[a],
+                _buffer_ptr);
+        }
+        setTouchable(true);
+    }
+
+    void draw()
+    {
+
+        // draw the
+        _buffer_ptr->fillRect(_x + PADDING / 2, _y + PADDING / 2, _width - PADDING, yButtonSpacing - PADDING, BACKGROUND_COLOR);
+        _buffer_ptr->drawRect(_x + PADDING / 2, _y + PADDING / 2, _width - PADDING, yButtonSpacing - PADDING, INTERFACE_COLOR);
+        _buffer_ptr->setCursor(_x + _width - PADDING / 2 - 6 * (dispStr.length() + 1), _y + (yButtonSpacing - 6) / 2);
+        _buffer_ptr->print(dispStr);
+
+        for (int a = 0; a < CALCULATOR_COLUMNS * CALCULATOR_ROWS; a++)
+            calculatorButtons[a].draw();
+    }
+
+    void addToText()
+    {
+        printDebug("addToText()");
+    }
+
+    void onTouch(int x, int y)
+    {
+        if (lastTouch + TOUCH_COOLDOWN < millis())
+        {
+            for (int a = 0; a < TOTAL_BUTTONS; a++)
+            {
+                boolean touched = calculatorButtons[a].isTouched(x, y);
+                if (touched)
+                {
+                    // dispStr += calculatorButtons[a].getText();
+                    char character = calculatorButtons[a].getText()[0]; // get the character
+                    switch (character)
+                    {
+                    case '=':
+                        printDebug("Calculating");
+                        performCalculation();
+                        break;
+                    case 'C':
+                        dispStr = "";
+                        firstValue = "";
+                        secondValue = "";
+                        op = "";
+                        break;
+                    default:
+                        addCharacter(character);
+                    }
+                }
+            }
+            lastTouch = millis();
+        }
+    }
+
+    void addCharacter(char c)
+    {
+        if (c == '+' || c == '-' || c == '*' || c == '/')
+            op = String(c);
+        else if (op.length() > 0)
+            secondValue += c;
+        else
+            firstValue += c;
+
+        dispStr = firstValue + " " + op + " " + secondValue;
+    }
+
+    void performCalculation()
+    {
+        double first = firstValue.toDouble();
+        double second = secondValue.toDouble();
+        double result = 0;
+        boolean error = false;
+        switch (op[0])
+        {
+        case '+':
+            result = first + second;
+            break;
+        case '-':
+            result = first - second;
+            break;
+        case '*':
+            result = first * second;
+            break;
+        case '/':
+            if (second != 0)
+            {
+                result = first / second;
+            }
+            else
+            {
+                error = true;
+            }
+            break;
+        default:
+            error = true;
+            break;
+        }
+
+        if (error)
+        {
+            firstValue = "NaN";
+        }
+        else
+        {
+            firstValue = String(result, 4);
+        }
+        secondValue = "";
+        op = "";
+        dispStr = firstValue + " " + op + " " + secondValue;
+    }
+
+private:
+    static const int CALCULATOR_COLUMNS = 5;
+    static const int CALCULATOR_ROWS = 4;
+    static const int TOTAL_BUTTONS = CALCULATOR_COLUMNS * CALCULATOR_ROWS;
+    static const int PADDING = 4;
+    static const int TOUCH_COOLDOWN = 500;
+
+    unsigned long lastTouch = 0;
+    int xButtonSpacing = SCREEN_WIDTH / CALCULATOR_COLUMNS;
+    int yButtonSpacing = SCREEN_HEIGHT / (CALCULATOR_ROWS + 1); // the actual result will be the top row
+
+    String dispStr = "";
+    String firstValue = "";
+    String secondValue = "";
+    String op = "";
+
+    Button calculatorButtons[CALCULATOR_COLUMNS * CALCULATOR_ROWS];
+    String calculatorButtonLabels[CALCULATOR_COLUMNS * CALCULATOR_ROWS] = {
+        "7", "8", "9", "/", "",
+        "4", "5", "6", "*", "",
+        "1", "2", "3", "-", "C",
+        "0", ".", "", "+", "="};
 };

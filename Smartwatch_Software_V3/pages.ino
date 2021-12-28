@@ -5,6 +5,7 @@ NotificationPrinter np = NotificationPrinter(0, 30, 100, 60, &notificationData, 
 NotificationPage notification_page = NotificationPage(&notificationData, frameBuffer);
 BatteryIcon bat = BatteryIcon(SCREEN_WIDTH - 14, 3, frameBuffer);
 ConnStatus con = ConnStatus(SCREEN_WIDTH - 14, 10, frameBuffer);
+Calculator calculator_page = Calculator(frameBuffer);
 void setHomePage()
 {
     printDebug("Switched to home page");
@@ -20,6 +21,7 @@ void setHomePage()
     // registerDrawable(&d);
     // d.setTouchable(true);
     setSwipeAction(SWIPE_LEFT, setNotificationsPage);
+    setSwipeAction(SWIPE_UP, setCalculatorPage);
 }
 
 void nextNotificationPageItem()
@@ -42,4 +44,14 @@ void setNotificationsPage()
     setSwipeAction(SWIPE_RIGHT, setHomePage);
     setSwipeAction(SWIPE_UP, nextNotificationPageItem);
     setSwipeAction(SWIPE_DOWN, previousNotificationPageItem);
+}
+
+void setCalculatorPage()
+{
+    printDebug("Switched to calculator");
+    clearDrawables();
+    clearSwipeActions();
+    registerDrawable(&b); //background
+    registerDrawable(&calculator_page); //actual calculator page
+    setSwipeAction(SWIPE_DOWN, setHomePage);
 }

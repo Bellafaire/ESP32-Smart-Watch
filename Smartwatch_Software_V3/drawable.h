@@ -26,7 +26,7 @@ protected:
     int _width;
     int _height;
     int _ptouchx, _ptouchy;
-    void (*_callback)();
+    void (*_callback)() = nullptr;
     boolean _touchable = false;
     boolean _touched = false; //holds the value resulting from the last isTouched() call. 
     GFXcanvas16 *_buffer_ptr;
