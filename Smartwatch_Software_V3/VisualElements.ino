@@ -406,14 +406,16 @@ public:
                 scroll.draw();
             }
         }
-        
-        if(notification_line_count == 0){
-            _buffer_ptr->setCursor(0,0); 
+
+        if (notification_line_count == 0)
+        {
+            _buffer_ptr->setCursor(0, 0);
             _buffer_ptr->println("No Notifications...");
-        }else{
+        }
+        else
+        {
             _buffer_ptr->drawFastVLine(app_name_width, 0, SCREEN_HEIGHT, INTERFACE_COLOR);
         }
-
     }
 
     void onTouch(int x, int y)
@@ -576,6 +578,9 @@ public:
 
         for (int a = 0; a < CALCULATOR_COLUMNS * CALCULATOR_ROWS; a++)
             calculatorButtons[a].draw();
+
+        //request to keep screen on for the next 250 milliseconds (this way the calculator can be kept going indefinitely)
+        requestWakeLock(250);
     }
 
     void addToText()

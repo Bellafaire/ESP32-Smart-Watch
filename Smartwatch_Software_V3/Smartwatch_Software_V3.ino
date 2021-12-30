@@ -70,9 +70,19 @@ void getNotifications()
   }
 }
 
+unsigned long currentWakeLock = 0;
+// allows things to request the screen to be kept on for a certain number of milliseconds
+// if multiple things are requesting wakelock the longest wakelock will be kept. 
+void requestWakeLock(int milliseconds)
+{
+  unsigned long newWakelock = milliseconds + millis();
+  if (newWakelock > currentWakeLock)
+    currentWakeLock = newWakelock;
+}
+
 boolean wakeupCheck()
 {
-  return ((millis() - lastTouchTime) < 3000) || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD);
+  return ((millis() - lastTouchTime) < 3000) || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) || (millis() < currentWakeLock);
 }
 
 void deviceSleep()
