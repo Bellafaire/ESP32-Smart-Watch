@@ -79,10 +79,11 @@ void watchDog(void *pvParameters)
 void IRAM_ATTR TOUCH_ISR()
 {
   //  printDebug("TouchInterrupt");
-  if (millis() - lastTouchTime < 200)
+  if ((millis() - lastTouchTime < 200))
   {
-    rapidTouchCount++;
-
+    if ((millis() - lastTouchTime > 50))
+      rapidTouchCount++;
+    // printDebug(String(rapidTouchCount)); //this line causes crashes occasionally leave it out unless specifically working on this function (and of course expect some crashes)
     if (rapidTouchCount > 50)
     {
 #ifdef DEBUG
