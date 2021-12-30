@@ -53,7 +53,10 @@ void setup()
 
   // create "watchdog task" to put the device in deepsleep if something goes wrong
   xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
-  setHomePage();
+  if (CLEAR_TOUCH_CALIBRATION)
+    setCalibrationPage();
+  else
+    setHomePage();
   // updateTime();
 }
 
@@ -129,7 +132,6 @@ void loop()
 
     // the program halts until this point so we know that there was a touch
     // if this line is being executed since the ESP32 has been woken up.
-    lastTouchTime = millis();
     onWakeup();
   }
 }

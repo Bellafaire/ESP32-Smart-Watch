@@ -38,7 +38,7 @@
 /*******************************************************************
                               DEBUG
  *******************************************************************/
-//prints debug information to the serial terminal when declared
+// prints debug information to the serial terminal when declared
 #define DEBUG
 
 #ifdef DEBUG
@@ -51,7 +51,7 @@
 /*******************************************************************
                             Signitures
  *******************************************************************/
-//wakeup.ino
+// wakeup.ino
 boolean wakeupCheck();
 
 /*******************************************************************
@@ -62,9 +62,9 @@ boolean wakeupCheck();
 /********************************************************************
                         Notification Layout
  ********************************************************************/
-#define NOTIFICATION_APP_NAME 0 
+#define NOTIFICATION_APP_NAME 0
 #define NOTIFICATION_EXTRA_TEXT 1
-#define NOTIFICATION_EXTRA_INFO 2 
+#define NOTIFICATION_EXTRA_INFO 2
 #define NOTIFICATION_EXTRA_SUB_TEXT 3
 #define NOTIFICATION_EXTRA_TITLE 4
 #define NOTIFICATION_DESCRIPTION 5
@@ -84,42 +84,40 @@ struct calendarEvent
   String title;
   String description;
   String date;
-  int timeStart, timeEnd; //minutes of day
+  int timeStart, timeEnd; // minutes of day
   String time;
   String location;
 };
-
-
 
 /*******************************************************************
                        Hardware Pin Declarations
  *******************************************************************/
 
-//touch screen driver interrupt request
+// touch screen driver interrupt request
 #define TOUCH_IRQ 4
 
-//LCD pins
+// LCD pins
 #define LCD_EN 13
 #define LCD_CS 16
 #define LCD_LED 14
 #define LCD_SCK 18
-#define LCD_DC 21 //LCD_A0
+#define LCD_DC 21 // LCD_A0
 #define LCD_RST 22
 #define LCD_MOSI 23
 
-//power regulation/monitoring pins
+// power regulation/monitoring pins
 //#define BAT_ALRT 34 //not used in v4.1
 #define CHG_STAT 35
 #define REG_PG 36
 #define ACCEL_EN 34
 
-//I2C Pins and Addresses
+// I2C Pins and Addresses
 #define I2C_SCL 32
 #define I2C_SDA 33
 #define BAT_MONITOR_ADDR 0x36
 #define TOUCH_ADDR 0x48
 
-//Accelerometer connections (optional extra)
+// Accelerometer connections (optional extra)
 #define X_ACCEL 26
 #define Y_ACCEL 27
 #define Z_ACCEL 25
@@ -143,7 +141,7 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16(SCREEN_WIDTH, SCREEN_HEIGHT);
 #define WINDOW_CHARACTER_HEIGHT 8
 #define WINDOW_FONT_SIZE 1
 
-//great color picker here: https://www.wamingo.net/rgbbgr/
+// great color picker here: https://www.wamingo.net/rgbbgr/
 #define BACKGROUND_COLOR RGB_TO_BGR565(5, 5, 10)
 #define RING_COLOR RGB_TO_BGR565(5, 5, 10)
 
@@ -157,7 +155,7 @@ int ERROR_COLOR = ST77XX_BLUE;
 /********************************************************************
                           SLEEP and Wake
  ********************************************************************/
-//number of times per second the ESP32 will wake up to check the accelerometer
+// number of times per second the ESP32 will wake up to check the accelerometer
 #define ACCELEROMETER_SLEEP_POLLING_PER_SECOND 4
 
 #define ACCELEROMETER_STAY_AWAKE_THRESHOLD 2000
@@ -165,23 +163,23 @@ int ERROR_COLOR = ST77XX_BLUE;
 #define ACCELEROMETER_MAX_VALUE 4096
 #define ACCELEROMETER_MIN_VALUE 0
 
-//accelerometer value when the watch screen is perpendicular to the ground (screen facing away from body)
+// accelerometer value when the watch screen is perpendicular to the ground (screen facing away from body)
 #define ACCEL_Y_DIP 2250
 #define ACCEL_Z_DIP 1800
 
-//accelerometer value when the watch is facing upwards, level with the ground
+// accelerometer value when the watch is facing upwards, level with the ground
 #define ACCEL_Y_VERT 1800
 #define ACCEL_Z_VERT 2260
 
-//threshold of the above values that will register a dip condition
-//the threshold should be adjusted to suit the desired sensitivity, there's not really a method to it just try out some values.
+// threshold of the above values that will register a dip condition
+// the threshold should be adjusted to suit the desired sensitivity, there's not really a method to it just try out some values.
 #define DIP_THRESHOLD 0.05
 #define DIP_THRESHOLD_VALUE (ACCELEROMETER_MAX_VALUE - ACCELEROMETER_MIN_VALUE) * DIP_THRESHOLD
 
-//macros, for the wakeup function, just to compress the if statements so they're a bit easier to read.
-//true if screen is pointed up
+// macros, for the wakeup function, just to compress the if statements so they're a bit easier to read.
+// true if screen is pointed up
 #define isUp(y, z) (ACCEL_Y_VERT < y + DIP_THRESHOLD_VALUE && ACCEL_Y_VERT > y - DIP_THRESHOLD_VALUE && ACCEL_Z_VERT < z + DIP_THRESHOLD_VALUE && ACCEL_Z_VERT > z - DIP_THRESHOLD_VALUE)
-//true if screen is pointed away from user and perpendicular to the ground
+// true if screen is pointed away from user and perpendicular to the ground
 #define isDown(y, z) (ACCEL_Y_DIP < y + DIP_THRESHOLD_VALUE && ACCEL_Y_DIP > y - DIP_THRESHOLD_VALUE && ACCEL_Z_DIP < z + DIP_THRESHOLD_VALUE && ACCEL_Z_DIP > z - DIP_THRESHOLD_VALUE)
 
 #define TAP_WAKE_TIME 3000
@@ -200,10 +198,24 @@ unsigned long lastSongUpdate = 0;
  ********************************************************************/
 RTC_DATA_ATTR boolean CLEAR_TOUCH_CALIBRATION = false;
 
+#define TOTAL_CALIBRATION_POINTS 4
 
-//defines whether or not touch handling will occur in as a result of the touch handling ISR or 
-//happen in the main thread. 
-// #define USE_TOUCH_HANDLING_TASK 
+// define location of calibration points.
+const int CALIBRATION_POINTS_X[TOTAL_CALIBRATION_POINTS] = {
+    SCREEN_WIDTH / 4,
+    3 * SCREEN_WIDTH / 4,
+    SCREEN_WIDTH / 4,
+    3 * SCREEN_WIDTH / 4};
+
+const int CALIBRATION_POINTS_Y[TOTAL_CALIBRATION_POINTS] = {
+    SCREEN_HEIGHT / 4,
+    SCREEN_HEIGHT / 4,
+    3 * SCREEN_HEIGHT / 4,
+    3 * SCREEN_HEIGHT / 4};
+
+// defines whether or not touch handling will occur in as a result of the touch handling ISR or
+// happen in the main thread.
+//  #define USE_TOUCH_HANDLING_TASK
 
 struct point
 {
@@ -223,7 +235,7 @@ TaskHandle_t xTouch = NULL;
          changed these values would need to be adjusted
  ********************************************************************/
 //#define designcap 1200 //600mAh (0.5mAh resolution / 600mAh) (for 10m sense resistor)
-#define designcap 480 //240mAh (240mAh /0.5mAh resolution ) (for 10m sense resistor)
+#define designcap 480 // 240mAh (240mAh /0.5mAh resolution ) (for 10m sense resistor)
 #define ichgterm 20
 #define vempty 0x9650
 #define modelcfg 0x8400
@@ -239,7 +251,7 @@ RTC_DATA_ATTR struct tm *timeinfo;
 #define FIELD_SEPARATOR ';'
 #define FIELD_SEPARATOR_STRING ";"
 
-#define optionDivider '`' //change this to anything you don't think will be used
+#define optionDivider '`' // change this to anything you don't think will be used
 #define SELECTION_WINDOW_BUTTON_WIDTH 20
 
 /********************************************************************
@@ -247,26 +259,31 @@ RTC_DATA_ATTR struct tm *timeinfo;
  ********************************************************************/
 #define EEPROM_SIZE 512
 
-//EEPROM Data locations and information
-//eeprom allocations for data placement and their corrosponding string for display.
+// EEPROM Data locations and information
+// eeprom allocations for data placement and their corrosponding string for display.
 #define DAYLIGHT_SAVINGS 1
-#define WAKEUP_TYPE 2
-#define SCREEN_BRIGHTNESS 3
-#define X_MAX 4
-#define X_MIN 6
-#define Y_MAX 8
-#define Y_MIN 10
+#define WAKEUP_TYPE DAYLIGHT_SAVINGS + 1
+#define SCREEN_BRIGHTNESS WAKEUP_TYPE + 1
 
-//variables that are pulled from the eeprom on wakeup
+//touch calibration
+#define CALIBRATION_X1 SCREEN_BRIGHTNESS + 1
+#define CALIBRATION_X2 CALIBRATION_X1 + 2
+#define CALIBRATION_X3 CALIBRATION_X2 + 2
+#define CALIBRATION_X4 CALIBRATION_X3 + 2
+
+#define CALIBRATION_Y1 CALIBRATION_X4 + 2
+#define CALIBRATION_Y2 CALIBRATION_Y1 + 2
+#define CALIBRATION_Y3 CALIBRATION_Y2 + 2
+#define CALIBRATION_Y4 CALIBRATION_Y3 + 2
+
+// variables that are pulled from the eeprom on wakeup
 byte SETTING_DAYLIGHT_SAVINGS = 0;
 byte SETTING_WAKEUP_TYPE = 0;
 byte SETTING_SCREEN_BRIGHTNESS = 0;
-uint16_t SETTING_X_MAX = 0;
-uint16_t SETTING_Y_MAX = 0;
-uint16_t SETTING_X_MIN = 0;
-uint16_t SETTING_Y_MIN = 0;
+uint16_t calibrationX[4]; 
+uint16_t calibrationY[4]; 
 
-//wakeup type defines
+// wakeup type defines
 #define WAKEUP_TOUCH_ONLY 0
 #define WAKEUP_ACCELEROMETER 1
 #define WAKEUP_ACCELEROMTER_DISPLAY_TIME 2
@@ -274,7 +291,7 @@ uint16_t SETTING_Y_MIN = 0;
 /********************************************************************
                               BLE
  ********************************************************************/
-//variables and defines used by BLEServer.ino
+// variables and defines used by BLEServer.ino
 static String currentDataField;
 static boolean blockingCommandInProgress = false;
 static String *bleReturnString;
@@ -285,17 +302,17 @@ BLEService *pService;
 BLEServer *pServer;
 TaskHandle_t xBLE = NULL;
 
-//indicates connection state to the android device
+// indicates connection state to the android device
 static boolean connected = false;
 
-//indiciates whether or not a operation is currently in progress
+// indiciates whether or not a operation is currently in progress
 static boolean operationInProgress = false;
 
-//function signitures
-//String sendBLE(String command);
+// function signitures
+// String sendBLE(String command);
 boolean sendBLE(String command, String *returnString, boolean blocking);
-void addData(String data); //adds data to a current string, used within BLEServer.ino
-void initBLE();            //initializes the BLE connection by starting advertising.
+void addData(String data); // adds data to a current string, used within BLEServer.ino
+void initBLE();            // initializes the BLE connection by starting advertising.
 
 /********************************************************************
                         Drawable manager
@@ -312,7 +329,6 @@ void initBLE();            //initializes the BLE connection by starting advertis
 
 // threshold of movement required for a swipe to be detected.
 #define SWIPE_DISTANCE_THRESHOLD 60
-
 
 //"water.jpg" width=160 height=128
 const uint16_t background[] PROGMEM = {0xBDD5, 0xBDD5, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDD6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDF6, 0xBDD6, 0xC5D6, 0xC5D6, 0xC5D6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC5F6, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC5F6, 0xC5F6, 0xC5F6, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC616, 0xC617, 0xC617, 0xC617, 0xC617, 0xC617, 0xC617, 0xC617, 0xC637, 0xC617, 0xC617, 0xC617, 0xC617, 0xC637, 0xC637, 0xC637, 0xC637, 0xC617, 0xC617, 0xC617, 0xC617, 0xC617, 0xCE17, 0xCE17, 0xCE17, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xCE37, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xCE37, 0xCE17, 0xCE17, 0xCE17, 0xCE17, 0xCE17, 0xCE17, 0xCE37, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637, 0xC637,

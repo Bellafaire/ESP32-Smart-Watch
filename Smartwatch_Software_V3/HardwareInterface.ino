@@ -92,7 +92,7 @@ void IRAM_ATTR TOUCH_ISR()
 
       // clear calibration data after rapid touch
       CLEAR_TOUCH_CALIBRATION = true;
-
+      rapidTouchCount = 0;
       // rapid touch is meant to restart, using deep sleep we can essentially go back to
       // the same state we would get from a cold restart
       esp_sleep_enable_timer_wakeup(1);
@@ -106,6 +106,7 @@ void IRAM_ATTR TOUCH_ISR()
 #ifdef USE_TOUCH_HANDLING_TASK
   xTaskCreatePinnedToCore(TouchTask, "TOUCH_TASK", 4 * 1024, (void *)1, 2, NULL, 1);
 #endif
+  lastTouchTime = millis();
 }
 
 // init touch IC
@@ -114,11 +115,12 @@ void initTouch()
 
   // dummy read the touch controller, bits 2 and 3 determine the power down state, 00 enables touch IRQ and puts the device into power down
   struct point p;
-  p.x = map(readRegister(TOUCH_ADDR, 0b11010010) >> 8, X_MIN, X_MAX, 0, SCREEN_WIDTH);
-  p.y = map(readRegister(TOUCH_ADDR, 0b11000010) >> 8, Y_MIN, Y_MAX, SCREEN_HEIGHT, 0);
+  p.x = readRegister(TOUCH_ADDR, 0b11010010);
+  p.y = readRegister(TOUCH_ADDR, 0b11000010);
 
   pinMode(TOUCH_IRQ, INPUT);
 
+  rapidTouchCount = 0;
   attachInterrupt(TOUCH_IRQ, TOUCH_ISR, FALLING);
 }
 
@@ -132,6 +134,7 @@ void activateTouch()
 void deactivateTouch()
 {
   detachInterrupt(TOUCH_IRQ);
+  rapidTouchCount = 0;
 }
 
 // read touch
@@ -148,8 +151,24 @@ struct point readTouch()
     int yval = readRegister(TOUCH_ADDR, 0b11000010) >> 8;
 
     // map touch screen readings to loaded EEPROM calibration data
-    p.x = map(xval, SETTING_X_MIN, SETTING_X_MAX, 0, SCREEN_WIDTH);
-    p.y = map(yval, SETTING_Y_MIN, SETTING_Y_MAX, 0, SCREEN_HEIGHT);
+    // p.x = map(xval, SETTING_X_MIN, SETTING_X_MAX, 0, SCREEN_WIDTH);
+    // p.y = map(yval, SETTING_Y_MIN, SETTING_Y_MAX, 0, SCREEN_HEIGHT);
+
+    // determine quadrant boundries
+    int xtot = 0;
+    int ytot = 0;
+    for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
+    {
+      xtot += calibrationX[a];
+      ytot += calibrationY[a];
+    }
+
+    // these are the markers for the quadrant.
+    int xQuad = xtot / TOTAL_CALIBRATION_POINTS;
+    int yQuad = ytot / TOTAL_CALIBRATION_POINTS;
+
+    p.x = (xval < yQuad) ? map(xval, calibrationX[0], calibrationX[1], CALIBRATION_POINTS_X[0], CALIBRATION_POINTS_X[1]) : map(xval, calibrationX[2], calibrationX[3], CALIBRATION_POINTS_X[2], CALIBRATION_POINTS_X[3]);
+    p.y = (yval < xQuad) ? map(yval, calibrationY[0], calibrationY[2], CALIBRATION_POINTS_Y[0], CALIBRATION_POINTS_Y[2]) : map(yval, calibrationY[1], calibrationY[3], CALIBRATION_POINTS_Y[1], CALIBRATION_POINTS_Y[3]);
 
     // for calibrating touch screen
     printDebug("Raw - x:" + String(xval) + " y:" + String(yval) + " Mapped - x:" + String(p.x) + " y:" + String(p.y));

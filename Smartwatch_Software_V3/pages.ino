@@ -6,6 +6,8 @@ NotificationPage notification_page = NotificationPage(&notificationData, frameBu
 BatteryIcon bat = BatteryIcon(SCREEN_WIDTH - 14, 3, frameBuffer);
 ConnStatus con = ConnStatus(SCREEN_WIDTH - 14, 10, frameBuffer);
 Calculator calculator_page = Calculator(frameBuffer);
+CalibrationScreen calibration_page = CalibrationScreen(frameBuffer);
+
 void setHomePage()
 {
     printDebug("Switched to home page");
@@ -54,4 +56,13 @@ void setCalculatorPage()
     registerDrawable(&b); //background
     registerDrawable(&calculator_page); //actual calculator page
     setSwipeAction(SWIPE_DOWN, setHomePage);
+}
+
+void setCalibrationPage()
+{
+    printDebug("Switched to calibration page");
+    clearDrawables();
+    clearSwipeActions();
+    registerDrawable(&calibration_page);
+    setSwipeAction(SWIPE_UP, setHomePage);
 }

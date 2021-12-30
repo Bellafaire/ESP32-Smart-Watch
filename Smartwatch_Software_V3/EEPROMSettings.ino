@@ -21,43 +21,50 @@
     provided these settings aren't modified too often there shouldn't be any issues with the
     hardware side of things. The locations for various settings are defined in the declarations.h
     file */
-void setDataField(byte data, int pos) {
+void setDataField(byte data, int pos)
+{
   EEPROM.write(pos, data);
   EEPROM.commit();
   printDebug("Set datafield " + String(pos) + " to " + data);
 }
 
-byte readDataField(int pos) {
+byte readDataField(int pos)
+{
   byte data = (byte)EEPROM.read(pos);
   printDebug("Read datafield: " + String(pos) + " found value " + String(data));
   return data;
 }
 
-void clearEEPROM() {
-  for (int a = 0; a < EEPROM_SIZE; a++) {
+void clearEEPROM()
+{
+  for (int a = 0; a < EEPROM_SIZE; a++)
+  {
     EEPROM.write(a, 0);
   }
   EEPROM.commit();
   printDebug("EEPROM Cleared");
 }
 
-void loadEEPROMSettings() {
+void loadEEPROMSettings()
+{
   SETTING_DAYLIGHT_SAVINGS = readDataField(DAYLIGHT_SAVINGS);
   SETTING_WAKEUP_TYPE = readDataField(WAKEUP_TYPE);
   SETTING_SCREEN_BRIGHTNESS = map(readDataField(SCREEN_BRIGHTNESS), 0, 100, 0, 255);
-  
-  //read touch calibration data 
-  SETTING_X_MAX = (readDataField(X_MAX) << 8) | readDataField(X_MAX +1);
-  SETTING_X_MIN = (readDataField(X_MIN) << 8) | readDataField(X_MIN +1);
-  SETTING_Y_MAX = (readDataField(Y_MAX) << 8) | readDataField(Y_MAX +1);
-  SETTING_Y_MIN = (readDataField(Y_MIN) << 8) | readDataField(Y_MIN +1);
-  
-  printDebug("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) 
-  + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) 
-  + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS)
-  + "\n XMAX: " + String(SETTING_X_MAX)
-  + "\n XMIN: " + String(SETTING_X_MIN)
-  + "\n YMAX: " + String(SETTING_Y_MAX)
-  + "\n YMIN: " + String(SETTING_Y_MIN)    
-  );
+
+  // read touch calibration data
+  //  SETTING_X_MAX = (readDataField(X_MAX) << 8) | readDataField(X_MAX +1);
+  //  SETTING_X_MIN = (readDataField(X_MIN) << 8) | readDataField(X_MIN +1);
+  //  SETTING_Y_MAX = (readDataField(Y_MAX) << 8) | readDataField(Y_MAX +1);
+  //  SETTING_Y_MIN = (readDataField(Y_MIN) << 8) | readDataField(Y_MIN +1);
+  for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
+    calibrationX[a] = (readDataField(CALIBRATION_X1 + a * 2) << 8) | readDataField(CALIBRATION_X1 + a * 2 + 1);
+  for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
+    calibrationY[a] = (readDataField(CALIBRATION_Y1 + a * 2) << 8) | readDataField(CALIBRATION_Y1 + a * 2 + 1);
+
+#ifdef DEBUG
+  Serial.println("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS));
+  Serial.println("Touch Calibration:");
+  for (int a = 0; a < 4; a++)
+    Serial.printf("   (%d, %d)\n", calibrationX[a], calibrationY[a]);
+#endif
 }

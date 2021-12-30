@@ -405,9 +405,15 @@ public:
                 scroll.setString("Subtitle:\n" + extra + "\nDescription:\n" + description);
                 scroll.draw();
             }
-
+        }
+        
+        if(notification_line_count == 0){
+            _buffer_ptr->setCursor(0,0); 
+            _buffer_ptr->println("No Notifications...");
+        }else{
             _buffer_ptr->drawFastVLine(app_name_width, 0, SCREEN_HEIGHT, INTERFACE_COLOR);
         }
+
     }
 
     void onTouch(int x, int y)
@@ -688,4 +694,84 @@ private:
         "4", "5", "6", "*", "",
         "1", "2", "3", "-", "C",
         "0", ".", "", "+", "="};
+};
+
+/****************************************************
+ *              CALIBRATION SCREEN
+ ****************************************************/
+class CalibrationScreen : public Drawable
+{
+public:
+    CalibrationScreen(GFXcanvas16 *buffer_ptr)
+        : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "CalibrationScreen")
+    {
+        lastTouch = millis();
+    }
+
+    void draw()
+    {
+        _buffer_ptr->fillScreen(BACKGROUND_COLOR);
+        _buffer_ptr->setCursor(0, 10);
+        _buffer_ptr->setTextColor(INTERFACE_COLOR);
+        _buffer_ptr->print("Touch Calibration");
+        if (state < 4)
+        {
+            _buffer_ptr->drawCircle(CALIBRATION_POINTS_X[state], CALIBRATION_POINTS_Y[state], 5, RGB_TO_BGR565(255, 0, 0));
+            _buffer_ptr->drawCircle(CALIBRATION_POINTS_X[state], CALIBRATION_POINTS_Y[state], 1, RGB_TO_BGR565(255, 0, 0));
+        }
+        else
+        {
+            _buffer_ptr->setCursor(0, 20);
+            _buffer_ptr->setTextColor(INTERFACE_COLOR);
+            _buffer_ptr->print("Swipe up to confirm calibration and exit");
+            struct point p = readTouch();
+            _buffer_ptr->fillCircle(p.x, p.y, 5, RGB_TO_BGR565(255, 0, 0));
+        }
+        readTouchState();
+    }
+
+    // this operates differently from the onTouch method since it needs to bypass some of the checks that
+    // prevent invalid data
+    void readTouchState()
+    {
+        if ((lastTouch + TOUCH_COOLDOWN) < millis())
+        {
+            printDebug("touchstate");
+            // we're just going to ignore the parameter x y and get the raw values ourselves
+            struct point p = readTouchRaw();
+            if (state < 4)
+                if (!digitalRead(TOUCH_IRQ))
+                {
+                    printDebug("Raw Reading from touchscreen " + String(p.x) + "," + String(p.y));
+                    calx[state] = p.x;
+                    caly[state] = p.y;
+
+                    state++;
+                }
+
+            if (state == TOTAL_CALIBRATION_POINTS)
+            {
+                // load calibration data into the EEPROM
+                for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
+                {
+                    setDataField((byte)(calx[a] >> 8), CALIBRATION_X1 + a * 2);
+                    setDataField((byte)(calx[a] & 0xFF), CALIBRATION_X1 + a * 2 + 1);
+                    setDataField((byte)(caly[a] >> 8), CALIBRATION_Y1 + a * 2);
+                    setDataField((byte)(caly[a] & 0xFF), CALIBRATION_Y1 + a * 2 + 1);
+                }
+
+                loadEEPROMSettings();
+                CLEAR_TOUCH_CALIBRATION = false;
+                state++;
+            }
+            lastTouch = millis();
+        }
+    }
+
+private:
+    uint16_t calx[4];
+    uint16_t caly[4];
+    static const int TOUCH_COOLDOWN = 1000;
+    unsigned long lastTouch = 0;
+    int state = 0;
 };
