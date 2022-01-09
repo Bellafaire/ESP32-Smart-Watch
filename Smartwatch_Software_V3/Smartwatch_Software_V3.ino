@@ -23,6 +23,7 @@
 
 int batteryPercentage = 100;
 esp_sleep_wakeup_cause_t wakeup_reason;
+int wakeup_count = 0; 
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
 
@@ -52,7 +53,7 @@ void setup()
   loadEEPROMSettings();
 
   // create "watchdog task" to put the device in deepsleep if something goes wrong
-  xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
+  // xTaskCreatePinnedToCore(watchDog, "watchdog", 1024, NULL, 3, NULL, 0);
   if (CLEAR_TOUCH_CALIBRATION)
     setCalibrationPage();
   else
@@ -72,7 +73,7 @@ void getNotifications()
 
 unsigned long currentWakeLock = 0;
 // allows things to request the screen to be kept on for a certain number of milliseconds
-// if multiple things are requesting wakelock the longest wakelock will be kept. 
+// if multiple things are requesting wakelock the longest wakelock will be kept.
 void requestWakeLock(int milliseconds)
 {
   unsigned long newWakelock = milliseconds + millis();
@@ -91,6 +92,8 @@ void deviceSleep()
   digitalWrite(LCD_LED, LOW);
   // re-enable touch wakeup
 
+  deinitBLE();
+
   printDebug("Going to sleep");
 
   Serial.flush();
@@ -107,6 +110,8 @@ void deviceSleep()
 
 void onWakeup()
 {
+  wakeup_count++; 
+
   getRTCTime();
   setHomePage();
 
@@ -120,8 +125,11 @@ void onWakeup()
 
   activateTouch();
 
+  
+  initBLE();
   printDebug("Starting Advertisement");
-  startBLEAdvertising();
+  printDebug("This is wakeup: " + String(wakeup_count));
+  // startBLEAdvertising();
 }
 
 void loop()

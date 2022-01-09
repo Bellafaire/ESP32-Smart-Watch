@@ -82,6 +82,17 @@ void initBLE() {
   startBLEAdvertising();
 }
 
+//BLE tends to malfunction between light sleep cycles. It's better to shut it down completely 
+//and restart it at the beginning of each startup.
+//this basically will crash on boot 31. since we're not freeing the memory. but currently the 
+//call to esp_bt_controller_mem_release() that happens when deinit(true) is called locks the 
+//system up so pick your poison. 
+void deinitBLE() {
+  BLEDevice::deinit(false); 
+  connected = false;
+  printDebug("Shutting down BLE"); 
+}
+
 void startBLEAdvertising() {
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();

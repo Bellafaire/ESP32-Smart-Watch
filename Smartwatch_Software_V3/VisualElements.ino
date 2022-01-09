@@ -206,8 +206,8 @@ public:
         // if (batteryPercentage < 0)
         //     batteryPercentage = 100;
 
-        _buffer_ptr->fillRect(_x + 1, _y, _width - 1, _height, RGB_TO_BGR565(100, 100, 100));
-        _buffer_ptr->fillRect(_x, _y + 2, _width, _height - 4, RGB_TO_BGR565(100, 100, 100));
+        _buffer_ptr->fillRect(_x + 1, _y, _width - 1, _height, RGB_TO_BGR565(50, 45, 50));
+        _buffer_ptr->fillRect(_x, _y + 2, _width, _height - 4, RGB_TO_BGR565(50, 45, 50));
 
         int batsliver = batteryPercentage * (_width - 3) / 100;
         if (batsliver < 1)
