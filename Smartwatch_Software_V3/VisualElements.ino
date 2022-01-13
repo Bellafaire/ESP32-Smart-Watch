@@ -178,7 +178,10 @@ public:
     {
 
         if (connected)
-            _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 255, 0));
+            if (!notificationsUpdated || !timeUpdated)
+                _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 0, 255));
+            else
+                _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 255, 0));
         else
             _buffer_ptr->fillRect(_x, _y, _width, _height, RGB_TO_BGR565(255, 0, 0));
         _buffer_ptr->drawRect(_x, _y, _width, _height, RGB_TO_BGR565(0, 0, 0));
@@ -579,7 +582,7 @@ public:
         for (int a = 0; a < CALCULATOR_COLUMNS * CALCULATOR_ROWS; a++)
             calculatorButtons[a].draw();
 
-        //request to keep screen on for the next 250 milliseconds (this way the calculator can be kept going indefinitely)
+        // request to keep screen on for the next 250 milliseconds (this way the calculator can be kept going indefinitely)
         requestWakeLock(250);
     }
 
