@@ -23,7 +23,7 @@
 
 int batteryPercentage = 100;
 esp_sleep_wakeup_cause_t wakeup_reason;
-int wakeup_count = 0; 
+int wakeup_count = 0;
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
 
@@ -104,13 +104,21 @@ void deviceSleep()
   deactivateTouch();
 
   connected = false;
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
-  esp_light_sleep_start();
+  if (wakeup_count > 10)
+  {
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
+    esp_deep_sleep_start();
+  }
+  else
+  {
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
+    esp_light_sleep_start();
+  }
 }
 
 void onWakeup()
 {
-  wakeup_count++; 
+  wakeup_count++;
 
   getRTCTime();
   setHomePage();
@@ -125,7 +133,6 @@ void onWakeup()
 
   activateTouch();
 
-  
   initBLE();
   printDebug("Starting Advertisement");
   printDebug("This is wakeup: " + String(wakeup_count));
