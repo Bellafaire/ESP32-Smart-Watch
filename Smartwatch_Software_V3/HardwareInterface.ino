@@ -25,7 +25,7 @@
 /********************************************************************
                                 LCD
  ********************************************************************/
-void initLCD()
+void initLCD(boolean backlight_on)
 {
   pinMode(LCD_EN, OUTPUT);
   digitalWrite(LCD_EN, HIGH);
@@ -33,7 +33,7 @@ void initLCD()
   tft.setRotation(3);
   tft.fillScreen(BACKGROUND_COLOR);
   pinMode(LCD_LED, OUTPUT);
-  digitalWrite(LCD_LED, HIGH);
+  digitalWrite(LCD_LED, backlight_on);
 
   // ledcSetup(LCD_BACKLIGHT_PWM_CHAN, 300, 8);
   // ledcAttachPin(LCD_LED, LCD_BACKLIGHT_PWM_CHAN);

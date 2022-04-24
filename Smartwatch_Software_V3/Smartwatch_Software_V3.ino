@@ -26,6 +26,7 @@ esp_sleep_wakeup_cause_t wakeup_reason;
 int wakeup_count = 0;
 boolean timeUpdated = false;
 boolean notificationsUpdated = false;
+RTC_DATA_ATTR boolean deep_sleep_reset = false;
 
 void onConnectEvent()
 {
@@ -41,7 +42,7 @@ void setup()
   EEPROM.begin(EEPROM_SIZE);
   Wire.begin(I2C_SDA, I2C_SCL, 400000);
   pinMode(CHG_STAT, INPUT);
-  initLCD();
+  initLCD(false);
   initBatMonitor();
   initTouch();
 
@@ -83,11 +84,12 @@ void requestWakeLock(int milliseconds)
 
 boolean wakeupCheck()
 {
-  return ((millis() - lastTouchTime) < 3000) || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) || (millis() < currentWakeLock);
+  return ((millis() - lastTouchTime) < 3000) || (readZAccel() > ACCELEROMETER_STAY_AWAKE_THRESHOLD) || (millis() < currentWakeLock) && !deep_sleep_reset;
 }
 
 void deviceSleep()
 {
+  deep_sleep_reset = false;
   batteryPercentage = getBatteryPercentage();
   digitalWrite(LCD_LED, LOW);
   // re-enable touch wakeup
@@ -104,9 +106,11 @@ void deviceSleep()
   deactivateTouch();
 
   connected = false;
-  if (wakeup_count > 10)
+  if (wakeup_count > 4)
   {
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_4, 0); // 1 = High, 0 = Low
+    esp_sleep_enable_timer_wakeup(10);
+    deep_sleep_reset = true;
     esp_deep_sleep_start();
   }
   else
@@ -135,13 +139,14 @@ void onWakeup()
 
   initBLE();
   printDebug("Starting Advertisement");
+
   printDebug("This is wakeup: " + String(wakeup_count));
   // startBLEAdvertising();
 }
 
 void loop()
 {
-  if (wakeupCheck())
+  while (wakeupCheck())
   {
     drawFrame();
 
@@ -151,12 +156,10 @@ void loop()
         getNotifications();
     }
   }
-  else
-  {
-    deviceSleep();
 
-    // the program halts until this point so we know that there was a touch
-    // if this line is being executed since the ESP32 has been woken up.
-    onWakeup();
-  }
+  deviceSleep();
+
+  // the program halts until this point so we know that there was a touch
+  // if this line is being executed since the ESP32 has been woken up.
+  onWakeup();
 }
