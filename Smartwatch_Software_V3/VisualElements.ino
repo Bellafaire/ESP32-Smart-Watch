@@ -614,6 +614,13 @@ public:
                         secondValue = "";
                         op = "";
                         break;
+                    case '<':
+                        if (op.length() > 0)
+                            secondValue = secondValue.substring(0, secondValue.length() - 1);
+                        else
+                            firstValue = firstValue.substring(0, firstValue.length() - 1);
+                        dispStr = firstValue + " " + op + " " + secondValue;
+                        break;
                     default:
                         addCharacter(character);
                     }
@@ -685,7 +692,7 @@ private:
     static const int CALCULATOR_ROWS = 4;
     static const int TOTAL_BUTTONS = CALCULATOR_COLUMNS * CALCULATOR_ROWS;
     static const int PADDING = 4;
-    static const int TOUCH_COOLDOWN = 500;
+    static const int TOUCH_COOLDOWN = 100;
 
     unsigned long lastTouch = 0;
     int xButtonSpacing = SCREEN_WIDTH / CALCULATOR_COLUMNS;
@@ -698,7 +705,7 @@ private:
 
     Button calculatorButtons[CALCULATOR_COLUMNS * CALCULATOR_ROWS];
     String calculatorButtonLabels[CALCULATOR_COLUMNS * CALCULATOR_ROWS] = {
-        "7", "8", "9", "/", "",
+        "7", "8", "9", "/", "<",
         "4", "5", "6", "*", "",
         "1", "2", "3", "-", "C",
         "0", ".", "", "+", "="};
