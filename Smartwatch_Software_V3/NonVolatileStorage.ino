@@ -17,22 +17,31 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 ******************************************************************************/
-/* Certain settings are best stored in EEPROM since we'll want to retain them regardless
+/* Certain settings are best stored in Flash since we'll want to retain them regardless
     provided these settings aren't modified too often there shouldn't be any issues with the
     hardware side of things. The locations for various settings are defined in the declarations.h
     file */
-void setDataField(byte data, int pos)
+#include <Preferences.h>
+
+Preferences pref;
+
+void setDataField(int16_t data, String key)
 {
-  EEPROM.write(pos, data);
-  EEPROM.commit();
-  printDebug("Set datafield " + String(pos) + " to " + data);
+  const char *key_char = key.c_str();
+
+  pref.begin("smartwatch", false);
+  pref.putShort(key_char, data);
+  pref.end();
 }
 
-byte readDataField(int pos)
+int16_t readDataField(String key)
 {
-  byte data = (byte)EEPROM.read(pos);
-  printDebug("Read datafield: " + String(pos) + " found value " + String(data));
-  return data;
+  int16_t value;
+  const char *key_char = key.c_str();
+  pref.begin("smartwatch", false);
+  value = pref.getShort(key_char);
+  pref.end();
+  return value;
 }
 
 void clearEEPROM()
@@ -47,19 +56,21 @@ void clearEEPROM()
 
 void loadEEPROMSettings()
 {
-  SETTING_DAYLIGHT_SAVINGS = readDataField(DAYLIGHT_SAVINGS);
-  SETTING_WAKEUP_TYPE = readDataField(WAKEUP_TYPE);
-  SETTING_SCREEN_BRIGHTNESS = map(readDataField(SCREEN_BRIGHTNESS), 0, 100, 0, 255);
 
-  // read touch calibration data
-  //  SETTING_X_MAX = (readDataField(X_MAX) << 8) | readDataField(X_MAX +1);
-  //  SETTING_X_MIN = (readDataField(X_MIN) << 8) | readDataField(X_MIN +1);
-  //  SETTING_Y_MAX = (readDataField(Y_MAX) << 8) | readDataField(Y_MAX +1);
-  //  SETTING_Y_MIN = (readDataField(Y_MIN) << 8) | readDataField(Y_MIN +1);
+  pref.begin("smartwatch", false);
+
+  SETTING_DAYLIGHT_SAVINGS = pref.getShort("daylight_sav", 0);
+  SETTING_WAKEUP_TYPE = pref.getShort("wake_type", 0);
+  SETTING_SCREEN_BRIGHTNESS = map(pref.getShort("brightness", 0), 0, 100, 0, 255);
+
+  // load touch calibration data from memory
   for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
-    calibrationX[a] = (readDataField(CALIBRATION_X1 + a * 2) << 8) | readDataField(CALIBRATION_X1 + a * 2 + 1);
-  for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
-    calibrationY[a] = (readDataField(CALIBRATION_Y1 + a * 2) << 8) | readDataField(CALIBRATION_Y1 + a * 2 + 1);
+  {
+    calibrationX[a] = pref.getShort(("calx" + String(a)).c_str(), -1);
+    calibrationY[a] = pref.getShort(("caly" + String(a)).c_str(), -1);
+  }
+
+  pref.end();
 
 #ifdef DEBUG
   Serial.println("EEPROM Settings: \n Daylights Savings: " + String(SETTING_DAYLIGHT_SAVINGS) + "\n Accelerometer Wakeup: " + String(SETTING_WAKEUP_TYPE) + "\n Screen brightness: " + String(SETTING_SCREEN_BRIGHTNESS));

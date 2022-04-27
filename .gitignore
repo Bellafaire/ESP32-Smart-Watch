@@ -1,5 +1,5 @@
 
-SmartWatch_Software/.vscode/
+*.vscode/
 
 SmartWatch_Software/VScode Workspace.code-workspace
 
@@ -9,4 +9,3 @@ SmartWatch_Software/VScode Workspace.code-workspace
 
 *.tmp
 
-Smartwatch_Software_V3/.vscode/

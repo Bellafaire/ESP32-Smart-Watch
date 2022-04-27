@@ -769,10 +769,8 @@ public:
                 // load calibration data into the EEPROM
                 for (int a = 0; a < TOTAL_CALIBRATION_POINTS; a++)
                 {
-                    setDataField((byte)(calx[a] >> 8), CALIBRATION_X1 + a * 2);
-                    setDataField((byte)(calx[a] & 0xFF), CALIBRATION_X1 + a * 2 + 1);
-                    setDataField((byte)(caly[a] >> 8), CALIBRATION_Y1 + a * 2);
-                    setDataField((byte)(caly[a] & 0xFF), CALIBRATION_Y1 + a * 2 + 1);
+                    setDataField(calx[a], ("calx" + String(a)).c_str());
+                    setDataField(caly[a], ("caly" + String(a)).c_str());
                 }
 
                 loadEEPROMSettings();
