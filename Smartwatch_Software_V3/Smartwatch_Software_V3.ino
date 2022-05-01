@@ -39,6 +39,27 @@ void setup()
   Serial.begin(115200);
   Serial.println("ESP32 Smartwatch");
 #endif
+
+  if (!SPIFFS.begin(true))
+  {
+    Serial.println("SPIFFS Mount Failed");
+  }
+
+  //for testing formatting is necessary
+  // bool formatted = false;
+  // formatted = SPIFFS.format();
+
+  // if (formatted)
+  // {
+  //   Serial.println("\n\nSuccess formatting");
+  // }
+  // else
+  // {
+  //   Serial.println("\n\nError formatting");
+  // }
+
+  listDir(SPIFFS, "/", 0);
+
   EEPROM.begin(EEPROM_SIZE);
   Wire.begin(I2C_SDA, I2C_SCL, 400000);
   pinMode(CHG_STAT, INPUT);

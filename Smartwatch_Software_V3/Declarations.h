@@ -35,6 +35,11 @@
 #include <BLEServer.h>
 #include <BLE2902.h>
 
+//appicon depends
+#include "base64.hpp"
+#include "FS.h"
+#include "SPIFFS.h"
+
 /*******************************************************************
                               DEBUG
  *******************************************************************/

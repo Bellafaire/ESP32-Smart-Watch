@@ -18,6 +18,8 @@
   SOFTWARE.
 ******************************************************************************/
 
+unsigned long last_ble_data_rec = 0; 
+
 
 void addData(String data) {
   printDebug("Received:" + data);
@@ -49,6 +51,7 @@ class ccb : public BLECharacteristicCallbacks  {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rxValue = pCharacteristic->getValue();
       addData(String( pCharacteristic->getValue().c_str()));
+        last_ble_data_rec = millis();
     }
     void onRead(BLECharacteristic* pCharacteristic) {
       //      Serial.println("Characteristic Read");
@@ -118,8 +121,8 @@ boolean sendBLE(String command, String* returnString, boolean blocking) {
 
       currentDataField = "";
 
-      unsigned long startTime = millis();
-      while (operationInProgress && (startTime + 2000 > millis()))
+      last_ble_data_rec = millis();
+      while (operationInProgress && (last_ble_data_rec + 2000 > millis()))
         delay(25);
 
       operationInProgress = false;

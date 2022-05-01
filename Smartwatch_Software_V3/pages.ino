@@ -7,6 +7,9 @@ BatteryIcon bat = BatteryIcon(SCREEN_WIDTH - 14, 3, frameBuffer);
 ConnStatus con = ConnStatus(SCREEN_WIDTH - 14, 10, frameBuffer);
 Calculator calculator_page = Calculator(frameBuffer);
 CalibrationScreen calibration_page = CalibrationScreen(frameBuffer);
+// AppIconItem app_icon = AppIconItem(10,30, "snapchat", frameBuffer);
+// AppIconItem app_icon2 = AppIconItem(10 + 36,30, "gmail", frameBuffer);
+// AppIconItem app_icon3 = AppIconItem(10 + 36*2,30, "tasks", frameBuffer);
 
 void setHomePage()
 {
@@ -22,6 +25,11 @@ void setHomePage()
     registerDrawable(&con);
     // registerDrawable(&d);
     // d.setTouchable(true);
+
+    // registerDrawable(&app_icon);
+    // registerDrawable(&app_icon2);
+    // registerDrawable(&app_icon3);
+
     setSwipeAction(SWIPE_LEFT, setNotificationsPage);
     setSwipeAction(SWIPE_UP, setCalculatorPage);
 }

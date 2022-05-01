@@ -788,3 +788,27 @@ private:
     unsigned long lastTouch = 0;
     int state = 0;
 };
+
+class AppIconItem : public Drawable
+{
+public:
+    AppIconItem(int x, int y, String appname, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, 32, 32, buffer_ptr)
+    {
+        _appname = appname;
+    }
+
+    void draw()
+    {
+        if (iconLoaded)
+            _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
+        else
+            iconLoaded = loadIconFromFile(_appname, _icon);
+    }
+
+private:
+    boolean iconLoaded = false;
+    String _appname;
+    uint8_t count = 0;
+    uint16_t _icon[32 * 32];
+};
