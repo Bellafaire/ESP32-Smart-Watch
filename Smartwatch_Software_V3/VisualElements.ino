@@ -805,7 +805,7 @@ public:
     {
         // if we want to init this without drawing anything, we can give it a blank app name.
         if (!_appname.equals(""))
-            if (iconLoaded)
+            if (iconLoaded && _icon != nullptr)
                 _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
             else
                 iconLoaded = loadIconFromFile(_appname, _icon);
@@ -844,7 +844,7 @@ public:
 
     void draw()
     {
-        if (!_appname.equals(""))
+        if (!_appname.equals("") && _buffer_ptr != nullptr)
         {
             appicon.draw();
             _buffer_ptr->fillCircle(_x + 32, _y + 32, 5, RGB_TO_BGR565(255, 0, 0));
@@ -896,3 +896,80 @@ private:
     String content = "";
 };
 
+/****************************************************
+ *               Notification Grid
+ ****************************************************/
+
+class NotificationGrid : public Drawable
+{
+public:
+    NotificationGrid(int x, int y, int width, int height, String *notificationData, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr)
+    {
+        _data = notificationData;
+
+        int x_spacing = width / gridsize_x;
+        int y_spacing = height / gridsize_y;
+
+        for (int b = 0; b < gridsize_y; b++)
+            for (int a = 0; a < gridsize_x; a++)
+                app_notifications[gridsize_x * b + a] = ApplicationNotification(x + a * x_spacing, y + b * y_spacing, "", notificationData, buffer_ptr);
+    }
+
+    void draw()
+    {
+        for (int a = 0; a < gridsize_x * gridsize_y; a++)
+            app_notifications[a].draw();
+        if (last_update + update_rate < millis())
+            updateGrid();
+    }
+
+    // handles creating new icons if they don't already exist, and populating the grid.
+    void updateGrid()
+    {
+        int lines = getLineCount(*_data);
+
+        // for each line
+        for (int a = 0; a < lines; a++)
+        {
+            String line = parseField(*_data, '\n', a);
+            String name = parseField(line, ',', 0);
+            name.toLowerCase();
+
+            boolean app_is_on_grid = false;
+
+            // check whether app exists on the grid
+            for (int b = 0; b < (gridsize_x * gridsize_y); b++)
+            {
+                if (app_notifications[b].getAppName().equals(name))
+                    app_is_on_grid = true;
+            }
+
+            // if not on grid then add to grid
+            if (!app_is_on_grid)
+                addAppToGrid(name);
+        }
+        last_update = millis();
+    }
+
+    boolean addAppToGrid(String appname)
+    {
+        for (int a = 0; a < gridsize_x * gridsize_y; a++)
+            if (app_notifications[a].getAppName().equals(""))
+            {
+                app_notifications[a].setAppName(appname);
+                return true;
+            }
+        return false;
+    }
+
+private:
+    const static int update_rate = 1000;
+    const static int gridsize_x = 4;
+    const static int gridsize_y = 2;
+
+    unsigned long last_update = 0;
+    String _appname = "";
+    String *_data;
+    ApplicationNotification app_notifications[gridsize_x * gridsize_y];
+};

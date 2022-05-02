@@ -1,17 +1,13 @@
 Drawable d = Drawable(10, 50, 32, 32, frameBuffer);
 BoxesBackground b = BoxesBackground(frameBuffer);
 Time timedisp = Time(13, 5, frameBuffer);
-NotificationPrinter np = NotificationPrinter(0, 30, 100, 60, &notificationData, frameBuffer);
+// NotificationPrinter np = NotificationPrinter(0, 30, 100, 60, &notificationData, frameBuffer);
 NotificationPage notification_page = NotificationPage(&notificationData, frameBuffer);
 BatteryIcon bat = BatteryIcon(SCREEN_WIDTH - 14, 3, frameBuffer);
 ConnStatus con = ConnStatus(SCREEN_WIDTH - 14, 10, frameBuffer);
 Calculator calculator_page = Calculator(frameBuffer);
 CalibrationScreen calibration_page = CalibrationScreen(frameBuffer);
-// AppIconItem app_icon = AppIconItem(10,30, "snapchat", frameBuffer);
-// AppIconItem app_icon2 = AppIconItem(10 + 36,30, "gmail", frameBuffer);
-// AppIconItem app_icon3 = AppIconItem(10 + 36*2,30, "tasks", frameBuffer);
-ApplicationNotification app_not = ApplicationNotification(10, 30, "notification maker", &notificationData, frameBuffer);
-// NotificationGrid notification_grid = NotificationGrid(0, 30, 160, 60, &notificationData, frameBuffer);
+NotificationGrid notification_grid = NotificationGrid(0, 30, 160, SCREEN_HEIGHT - 30, &notificationData, frameBuffer);
 
 void setHomePage()
 {
@@ -19,8 +15,8 @@ void setHomePage()
     clearDrawables();
     clearSwipeActions();
     registerDrawable(&b);
-    np.setDims(0, 30, 100, 60);
-    registerDrawable(&np);
+    // np.setDims(0, 30, 100, 60);
+    // registerDrawable(&np);
     registerDrawable(&timedisp);
     registerDrawable(&bat);
     bat.updateBatteryPercentage();
@@ -31,7 +27,7 @@ void setHomePage()
     // registerDrawable(&app_icon);
     // registerDrawable(&app_icon2);
     // registerDrawable(&app_icon3);
-    registerDrawable(&app_not);
+    registerDrawable(&notification_grid);
 
     setSwipeAction(SWIPE_LEFT, setNotificationsPage);
     setSwipeAction(SWIPE_UP, setCalculatorPage);
