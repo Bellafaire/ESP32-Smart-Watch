@@ -51,7 +51,8 @@ class ccb : public BLECharacteristicCallbacks  {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rxValue = pCharacteristic->getValue();
       addData(String( pCharacteristic->getValue().c_str()));
-        last_ble_data_rec = millis();
+      last_ble_data_rec = millis();
+      requestWakeLock(250); //while receiving data keep device awake. 
     }
     void onRead(BLECharacteristic* pCharacteristic) {
       //      Serial.println("Characteristic Read");

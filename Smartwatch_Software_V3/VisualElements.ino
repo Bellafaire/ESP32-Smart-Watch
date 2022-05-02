@@ -789,6 +789,9 @@ private:
     int state = 0;
 };
 
+/****************************************************
+ *              Application Icons
+ ****************************************************/
 class AppIconItem : public Drawable
 {
 public:
@@ -800,15 +803,96 @@ public:
 
     void draw()
     {
-        if (iconLoaded)
-            _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
-        else
-            iconLoaded = loadIconFromFile(_appname, _icon);
+        // if we want to init this without drawing anything, we can give it a blank app name.
+        if (!_appname.equals(""))
+            if (iconLoaded)
+                _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
+            else
+                iconLoaded = loadIconFromFile(_appname, _icon);
+    }
+
+    void setAppName(String appname)
+    {
+        _appname = appname;
+        iconLoaded = false;
     }
 
 private:
     boolean iconLoaded = false;
     String _appname;
-    uint8_t count = 0;
     uint16_t _icon[32 * 32];
 };
+
+/****************************************************
+ *           Application Notification
+ ****************************************************/
+class ApplicationNotification : public Drawable
+{
+public:
+    ApplicationNotification(int x, int y, String appname, String *notificationData, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, 32, 32, buffer_ptr)
+    {
+        _appname = appname;
+        _data = notificationData;
+        appicon = AppIconItem(x, y, _appname, _buffer_ptr);
+    }
+
+    ApplicationNotification()
+        : Drawable(-1, -1, 0, 0, nullptr, "uninitalized ApplicationNotification")
+    {
+    }
+
+    void draw()
+    {
+        if (!_appname.equals(""))
+        {
+            appicon.draw();
+            _buffer_ptr->fillCircle(_x + 32, _y + 32, 5, RGB_TO_BGR565(255, 0, 0));
+            _buffer_ptr->setCursor(_x + 30, _y + 29);
+            _buffer_ptr->print(String(notificationCount));
+
+            if (last_update + update_rate < millis())
+                updateNotificationData();
+        }
+    }
+
+    void setAppName(String new_name)
+    {
+        appicon.setAppName(new_name);
+        _appname = new_name;
+    }
+
+    String getAppName()
+    {
+        return _appname;
+    }
+
+    void updateNotificationData()
+    {
+        int lines = getLineCount(*_data);
+
+        notificationCount = 0;
+
+        // printDebug("Updating notification count for app " + _appname);
+
+        for (int a = 0; a < lines; a++)
+        {
+            String line = parseField(*_data, '\n', a);
+            String name = parseField(line, ',', 0);
+            name.toLowerCase();
+            if (name.equals(_appname))
+                notificationCount++;
+        }
+        last_update = millis();
+    }
+
+private:
+    const static int update_rate = 1000;
+    unsigned long last_update = 0;
+    String _appname = "";
+    String *_data = nullptr;
+    AppIconItem appicon = AppIconItem(0, 0, "", _buffer_ptr);
+    int notificationCount = 0;
+    String content = "";
+};
+

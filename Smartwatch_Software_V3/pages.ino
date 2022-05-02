@@ -10,6 +10,8 @@ CalibrationScreen calibration_page = CalibrationScreen(frameBuffer);
 // AppIconItem app_icon = AppIconItem(10,30, "snapchat", frameBuffer);
 // AppIconItem app_icon2 = AppIconItem(10 + 36,30, "gmail", frameBuffer);
 // AppIconItem app_icon3 = AppIconItem(10 + 36*2,30, "tasks", frameBuffer);
+ApplicationNotification app_not = ApplicationNotification(10, 30, "notification maker", &notificationData, frameBuffer);
+// NotificationGrid notification_grid = NotificationGrid(0, 30, 160, 60, &notificationData, frameBuffer);
 
 void setHomePage()
 {
@@ -29,6 +31,7 @@ void setHomePage()
     // registerDrawable(&app_icon);
     // registerDrawable(&app_icon2);
     // registerDrawable(&app_icon3);
+    registerDrawable(&app_not);
 
     setSwipeAction(SWIPE_LEFT, setNotificationsPage);
     setSwipeAction(SWIPE_UP, setCalculatorPage);
@@ -61,8 +64,8 @@ void setCalculatorPage()
     printDebug("Switched to calculator");
     clearDrawables();
     clearSwipeActions();
-    registerDrawable(&b); //background
-    registerDrawable(&calculator_page); //actual calculator page
+    registerDrawable(&b);               // background
+    registerDrawable(&calculator_page); // actual calculator page
     setSwipeAction(SWIPE_DOWN, setHomePage);
 }
 
