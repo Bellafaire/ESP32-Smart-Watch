@@ -869,9 +869,15 @@ public:
 
     void updateNotificationData()
     {
-        int lines = getLineCount(*_data);
+        notificationCount = getNotificationCount(); // update the notification count
+        last_update = millis();
+    }
 
-        notificationCount = 0;
+    // returns the number of notifications for this app
+    int getNotificationCount()
+    {
+        int lines = getLineCount(*_data);
+        int count = 0;
 
         // printDebug("Updating notification count for app " + _appname);
 
@@ -881,9 +887,9 @@ public:
             String name = parseField(line, ',', 0);
             name.toLowerCase();
             if (name.equals(_appname))
-                notificationCount++;
+                count++;
         }
-        last_update = millis();
+        return count;
     }
 
 private:
@@ -938,17 +944,24 @@ public:
 
             boolean app_is_on_grid = false;
 
-            // check whether app exists on the grid
+            // check whether app exists on the grid,
             for (int b = 0; b < (gridsize_x * gridsize_y); b++)
             {
                 if (app_notifications[b].getAppName().equals(name))
                     app_is_on_grid = true;
             }
-
             // if not on grid then add to grid
             if (!app_is_on_grid)
                 addAppToGrid(name);
         }
+
+        // check for apps with count of 0, remove them from the grid
+        for (int b = 0; b < (gridsize_x * gridsize_y); b++)
+        {
+            if (app_notifications[b].getNotificationCount() == 0)
+                app_notifications[b].setAppName(""); // blank app name to remove from grid
+        }
+        shiftApps();
         last_update = millis();
     }
 
@@ -961,6 +974,20 @@ public:
                 return true;
             }
         return false;
+    }
+
+    void shiftApps()
+    {
+        // let the apps shift to the left and fill empty spots.
+        for (int a = 1; a < gridsize_x * gridsize_y; a++)
+
+            //if there is an empty spot to the left of the app icon
+            if (!app_notifications[a].getAppName().equals("") && app_notifications[a - 1].getAppName().equals(""))
+            {
+                //move move the icon to the left and clear it's current spot. 
+                app_notifications[a - 1].setAppName(app_notifications[a].getAppName());
+                app_notifications[a].setAppName(""); 
+            }
     }
 
 private:
