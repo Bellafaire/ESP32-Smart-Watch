@@ -80,7 +80,9 @@ void checkTouch()
         int length = (int)sqrt(
             pow(swipe.x, 2) + pow(swipe.y, 2));
 
-        if (length > SWIPE_DISTANCE_THRESHOLD)
+        boolean valid_swipe = (swipe_end.x != -1) && (swipe_end.y != -1);
+
+        if ((length > SWIPE_DISTANCE_THRESHOLD) && valid_swipe)
         {
             // determine direction
             double theta = atan2(swipe.y, swipe.x) + PI;

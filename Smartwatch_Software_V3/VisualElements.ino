@@ -926,11 +926,11 @@ private:
  * A floating window for displaying notification data
  * over the app notification icon grid.
  ****************************************************/
-class NotificationFloater : public Drawable
+class TextFloaterWindow : public Drawable
 {
 public:
-    NotificationFloater(int x, int y, int width, int height, GFXcanvas16 *buffer_ptr)
-        : Drawable(x, y, width, height, buffer_ptr)
+    TextFloaterWindow(int x, int y, int width, int height, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr, "TextFloaterWindow")
     {
         expansion_rate = height / 8; // expand in 8 frames.
         scroll = Scrollbox(x, y + SCROLLBOX_VERTICAL_PADDING, width, height, buffer_ptr);
@@ -965,9 +965,19 @@ public:
         activated = true;
     }
 
+    void setString(String content)
+    {
+        scroll.setString(content);
+    }
+
     void deactivate()
     {
         activated = false;
+    }
+
+    boolean isActive()
+    {
+        return activated;
     }
 
 private:
@@ -978,14 +988,170 @@ private:
     Scrollbox scroll = Scrollbox(-1, -1, 0, 0, _buffer_ptr);
 };
 
+/***************************************************
+ *                Spotify Overlay
+ * Allows the user to control spotify playback and displays 
+ * current song.
+ * ************************************************/
+
+class SpotifyOverlay : public Drawable
+{
+public:
+    SpotifyOverlay(String *song_string_ptr, GFXcanvas16 *buffer_ptr)
+        : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "SpotifyOverlay")
+    {
+
+        //data is provided by a song string that is somewhere else in the code. 
+        //this makes it easier to perform async updating of the string 
+        current_song_string_ptr = song_string_ptr;
+
+        //reusing the floater window because it's really nice.
+        floater = TextFloaterWindow(
+            FLOATER_X,
+            FLOATER_Y,
+            FLOATER_WIDTH,
+            FLOATER_HEIGHT,
+            buffer_ptr);
+
+        //button spacing and padding, 4 buttons.
+        BUTTON_PADDING = (_width - BUTTON_WIDTH * 4) / 5;
+        BUTTON_ACTIVE_Y_POS = SCREEN_HEIGHT - (BUTTON_WIDTH + BUTTON_PADDING);
+
+        //create buttons, the icons are declared in Declarations.h 
+        last_button = Button(BUTTON_PADDING,
+                             BUTTON_ACTIVE_Y_POS,
+                             BUTTON_WIDTH,
+                             BUTTON_WIDTH,
+                             (uint16_t *)&LAST_MEDIA_ICON_16X16,
+                             16,
+                             16,
+                             _buffer_ptr);
+
+        play_button = Button(1 * BUTTON_WIDTH + 2 * BUTTON_PADDING,
+                             BUTTON_ACTIVE_Y_POS,
+                             BUTTON_WIDTH,
+                             BUTTON_WIDTH,
+                             (uint16_t *)&PLAY_MEDIA_ICON_16X16,
+                             16,
+                             16,
+                             _buffer_ptr);
+
+        pause_button = Button(2 * BUTTON_WIDTH + 3 * BUTTON_PADDING,
+                              BUTTON_ACTIVE_Y_POS,
+                              BUTTON_WIDTH,
+                              BUTTON_WIDTH,
+                              (uint16_t *)&PAUSE_MEDIA_ICON_16X16,
+                              16,
+                              16,
+                              _buffer_ptr);
+
+        next_button = Button(3 * BUTTON_WIDTH + 4 * BUTTON_PADDING,
+                             BUTTON_ACTIVE_Y_POS,
+                             BUTTON_WIDTH,
+                             BUTTON_WIDTH,
+                             (uint16_t *)&NEXT_MEDIA_ICON_16X16,
+                             16,
+                             16,
+                             _buffer_ptr);
+    }
+
+    void draw()
+    {
+        //floater will display nothing when inactive, so always draw
+        floater.draw();
+
+        //buttons on the other hand should only be drawn when active. 
+        if (isActive())
+        {
+            last_button.draw();
+            play_button.draw();
+            pause_button.draw();
+            next_button.draw();
+
+            //additionally only update the song when this window is active to avoid 
+            //excessive polling of the phone.
+            if (last_update + update_rate < millis())
+            {
+                updateCurrentSong();
+                last_update = millis();
+            }
+
+            //songs are formatted as "<song name>-<artist>" we have the space so replace the dash with a new line
+            //(in the near future change the way songs are transmitted from the phone.)
+            (*current_song_string_ptr).replace("-", "\n");
+            floater.setString(*current_song_string_ptr);
+        }
+    }
+
+    void onTouch(int x, int y)
+    {
+        //if the overlay is active pass the touch event to the buttons and perform their
+        //respective actions, if no button is pressed assume that it was an intentional exit 
+
+        if (isActive())
+        {
+            if (last_button.isTouched(x, y))
+                lastSong();
+            else if (next_button.isTouched(x, y))
+                nextSong();
+            else if (play_button.isTouched(x, y))
+                playMusic();
+            else if (pause_button.isTouched(x, y))
+                pauseMusic();
+            else
+                deactivate();
+        }
+    }
+
+    boolean isActive()
+    {
+        return active;
+    }
+
+    void activate()
+    {
+        active = true;
+        floater.activate("Reading song....");
+    }
+
+    void deactivate()
+    {
+        floater.deactivate();
+        active = false;
+    }
+
+private:
+    // Button(int x, int y, int width, int height, const uint16_t *image, int imageWidth, int imageHeight, GFXcanvas16 *buffer_ptr)
+    Button play_button, pause_button, next_button, last_button;
+    boolean active = false;
+    String *current_song_string_ptr;
+    static const int update_rate = 800;
+    unsigned long last_update = 0;
+
+    int BUTTON_WIDTH = 32;
+    int BUTTON_ACTIVE_Y_POS, BUTTON_PADDING;
+
+    const static int FLOATER_WIDTH = (int)(SCREEN_WIDTH * 0.9);
+    const static int FLOATER_HEIGHT = (int)(SCREEN_HEIGHT * 0.4);
+    const static int FLOATER_X = (SCREEN_WIDTH - FLOATER_WIDTH) / 2;
+    const static int FLOATER_Y = 10;
+
+    TextFloaterWindow floater = TextFloaterWindow(0, 0, 0, 0, _buffer_ptr);
+};
+
 /****************************************************
  *               Notification Grid
+ *
+ *     Displays the notification icons and manages
+ * their touch actions along with displaying notification previews.
+ * Also handles the spotify player overlay which is openable by
+ * tapping on the spotify app icon
  ****************************************************/
 class NotificationGrid : public Drawable
 {
 public:
     NotificationGrid(int x, int y, int width, int height, String *notificationData, GFXcanvas16 *buffer_ptr)
-        : Drawable(x, y, width, height, buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr, "NotificationGrid")
     {
         _data = notificationData;
 
@@ -996,7 +1162,11 @@ public:
             for (int a = 0; a < gridsize_x; a++)
                 app_notifications[gridsize_x * b + a] = ApplicationNotification(x + a * x_spacing, y + b * y_spacing, "", notificationData, buffer_ptr);
 
-        floater = NotificationFloater(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, buffer_ptr);
+        // floater for displaying notification data
+        floater = TextFloaterWindow(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, buffer_ptr);
+
+        // spotify overlay for displaying spotify information and controls
+        spotifyOverlay = SpotifyOverlay(&currentSong, buffer_ptr);
         setTouchable(true);
     }
 
@@ -1004,26 +1174,69 @@ public:
     {
         for (int a = 0; a < gridsize_x * gridsize_y; a++)
             app_notifications[a].draw();
+
+        // check for whether any apps were added to the grid
         if (last_update + update_rate < millis())
             updateGrid();
 
+        // both the floater and spotify overlay will draw nothing when
+        // they are not active.
         floater.draw();
+        spotifyOverlay.draw();
     }
 
     void onTouch(int x, int y)
     {
-        int touched_index = -1;
-        // check the touch of each notification grid item, if it's touched then we want to expand it to see the notification.
-        for (int a = 0; a < (gridsize_x * gridsize_y); a++)
-            if (!app_notifications[a].getAppName().equals(""))
-                if (app_notifications[a].isTouched(x, y))
-                {
-                    printDebug("Notificaton icon " + app_notifications[a].getAppName() + " is touched");
-                    touched_index = a;
-                    floater.activate(app_notifications[a].getNotificationContent());
-                }
-        if (touched_index == -1)
-            floater.deactivate();
+
+        // when the spotify overlay is active it takes over the touch control of the notification grid.
+        // this is a special case since spotify is the only app for which we have special actions that can be performed.
+        if (spotifyOverlay.isActive())
+        {
+            // touch handling for spotify overlay
+            spotifyOverlay.onTouch(x, y);
+        }
+
+        //if the floater is active, tapping anywhere other than the floater should result in the floater 
+        //collapsing and returning control to the notification grid.
+        else if (floater.isActive())
+        {
+            if (!floater.isTouched(x, y))
+                floater.deactivate();
+        }
+        // normal touch handling for the notification grid.
+        else
+        {
+            // normal grid operation.
+            int touched_index = -1;
+            // check the touch of each notification grid item, if it's touched then we want to expand it to see the notification.
+            for (int a = 0; a < (gridsize_x * gridsize_y); a++)
+                if (!app_notifications[a].getAppName().equals(""))
+                    if (app_notifications[a].isTouched(x, y))
+                    {
+                        // if the notification tapped happens to be spotify then we're going to yield control
+                        // over to the spotify overlay.
+                        if (app_notifications[a].getAppName().equals("spotify"))
+                        {
+                            printDebug("Spotify Selected, opening media player.");
+                            spotifyOverlay.activate();
+                        }
+                        // otherwise, if it's just a standard application, perform the normal tap action and display information
+                        // in the floater for the user.
+                        else
+                        {
+                            printDebug("Notificaton icon " + app_notifications[a].getAppName() + " is touched");
+                            floater.activate(app_notifications[a].getNotificationContent());
+                        }
+                        // if a part of the grid actually was touched then we want to save that index for later
+                        touched_index = a;
+                    }
+
+            // if the touch was never determined to be on an app icon then do nothing and deactivate the floater.
+            if (touched_index == -1)
+            {
+                floater.deactivate();
+            }
+        }
     }
 
     // handles creating new icons if they don't already exist, and populating the grid.
@@ -1057,6 +1270,8 @@ public:
             if (app_notifications[b].getNotificationCount() == 0)
                 app_notifications[b].setAppName(""); // blank app name to remove from grid
         }
+
+        //if there are any empty spots, move icons to the left to fill those gaps. 
         shiftApps();
         last_update = millis();
     }
@@ -1101,5 +1316,6 @@ private:
     const static int FLOATER_X = (SCREEN_WIDTH - FLOATER_WIDTH) / 2;
     const static int FLOATER_Y = (SCREEN_HEIGHT - FLOATER_HEIGHT) / 2;
 
-    NotificationFloater floater = NotificationFloater(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, _buffer_ptr);
+    SpotifyOverlay spotifyOverlay = SpotifyOverlay(&currentSong, _buffer_ptr);
+    TextFloaterWindow floater = TextFloaterWindow(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, _buffer_ptr);
 };
