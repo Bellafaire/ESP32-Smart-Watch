@@ -60,14 +60,16 @@ void checkTouch()
     if (p.x != -1 && p.y != -1)
         printDebug("Touch Input - x:" + String(p.x) + " y:" + String(p.y));
 
-    for (int a = current_drawables - 1; a > 0; a--)
-    {
-        if (drawableItems[a]->isTouched(p.x, p.y))
-            break;
-    }
-
     if (last_touch_state && !digitalRead(TOUCH_IRQ))
+    {
+        for (int a = current_drawables - 1; a > 0; a--)
+        {
+            if (drawableItems[a]->isTouched(p.x, p.y))
+                break;
+        }
+
         swipe_start = p;
+    }
     else if (digitalRead(TOUCH_IRQ) && !last_touch_state)
     {
         // now we interpret the swipe
