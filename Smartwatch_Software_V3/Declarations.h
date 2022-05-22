@@ -147,8 +147,7 @@ GFXcanvas16 *frameBuffer = new GFXcanvas16(SCREEN_WIDTH, SCREEN_HEIGHT);
 #define WINDOW_FONT_SIZE 1
 
 // great color picker here: https://www.wamingo.net/rgbbgr/
-#define BACKGROUND_COLOR RGB_TO_BGR565(5, 5, 10)
-#define RING_COLOR RGB_TO_BGR565(5, 5, 10)
+#define BACKGROUND_COLOR RGB_TO_BGR565(45, 9, 34)
 
 #define TEXT_COLOR ST77XX_WHITE
 #define INTERFACE_COLOR ST77XX_WHITE

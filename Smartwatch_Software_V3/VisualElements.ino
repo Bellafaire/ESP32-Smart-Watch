@@ -157,9 +157,9 @@ public:
 
 private:
     String _str = "";
-    const int _padding = 6; // this could be a define but it's better here.
-    const int _character_spacing = 6;
-    const int _line_spacing = 8;
+    static const int _padding = 6; // this could be a define but it's better here.
+    static const int _character_spacing = 6;
+    static const int _line_spacing = 8;
     int _scroll = 0;
 };
 
@@ -835,6 +835,7 @@ public:
         _appname = appname;
         _data = notificationData;
         appicon = AppIconItem(x, y, _appname, _buffer_ptr);
+        setTouchable(true);
     }
 
     ApplicationNotification()
@@ -873,6 +874,24 @@ public:
         last_update = millis();
     }
 
+    String getNotificationContent()
+    {
+        int lines = getLineCount(*_data);
+        String ret = "";
+
+        for (int a = 0; a < lines; a++)
+        {
+            String line = parseField(*_data, '\n', a);
+            String app_and_des = parseField(line, ';', 0);
+            String name = parseField(app_and_des, ',', 0);
+            String subtitle = parseField(app_and_des, ',', 1);
+            name.toLowerCase();
+            if (name.equals(_appname))
+                ret += subtitle + "\n";
+        }
+        return ret;
+    }
+
     // returns the number of notifications for this app
     int getNotificationCount()
     {
@@ -903,9 +922,65 @@ private:
 };
 
 /****************************************************
+ *             Notification Floater
+ * A floating window for displaying notification data
+ * over the app notification icon grid.
+ ****************************************************/
+class NotificationFloater : public Drawable
+{
+public:
+    NotificationFloater(int x, int y, int width, int height, GFXcanvas16 *buffer_ptr)
+        : Drawable(x, y, width, height, buffer_ptr)
+    {
+        expansion_rate = height / 8; // expand in 8 frames.
+        scroll = Scrollbox(x, y + SCROLLBOX_VERTICAL_PADDING, width, height, buffer_ptr);
+        scroll.setString("test text\n with some extra lines \n that can only bee seen \n when expanded");
+        setTouchable(true);
+    }
+
+    void draw()
+    {
+        if (activated)
+        {
+            if (current_height < _height)
+                current_height += expansion_rate;
+        }
+        else
+        {
+            if (current_height > 0)
+                current_height -= expansion_rate;
+        }
+        if (current_height != 0)
+        {
+            _buffer_ptr->fillRect(_x, _y + (_height - current_height) / 2, _width, current_height, BACKGROUND_COLOR);
+            _buffer_ptr->drawRect(_x, _y + (_height - current_height) / 2, _width, current_height, INTERFACE_COLOR);
+            scroll.setDims(_x, _y + (_height - current_height) / 2 + SCROLLBOX_VERTICAL_PADDING, _width, current_height - SCROLLBOX_VERTICAL_PADDING * 2);
+            scroll.draw();
+        }
+    }
+
+    void activate(String content)
+    {
+        scroll.setString(content);
+        activated = true;
+    }
+
+    void deactivate()
+    {
+        activated = false;
+    }
+
+private:
+    boolean activated = false;
+    static const int SCROLLBOX_VERTICAL_PADDING = 2;
+    int current_height = 0;
+    int expansion_rate;
+    Scrollbox scroll = Scrollbox(-1, -1, 0, 0, _buffer_ptr);
+};
+
+/****************************************************
  *               Notification Grid
  ****************************************************/
-
 class NotificationGrid : public Drawable
 {
 public:
@@ -920,6 +995,9 @@ public:
         for (int b = 0; b < gridsize_y; b++)
             for (int a = 0; a < gridsize_x; a++)
                 app_notifications[gridsize_x * b + a] = ApplicationNotification(x + a * x_spacing, y + b * y_spacing, "", notificationData, buffer_ptr);
+
+        floater = NotificationFloater(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, buffer_ptr);
+        setTouchable(true);
     }
 
     void draw()
@@ -928,6 +1006,24 @@ public:
             app_notifications[a].draw();
         if (last_update + update_rate < millis())
             updateGrid();
+
+        floater.draw();
+    }
+
+    void onTouch(int x, int y)
+    {
+        int touched_index = -1;
+        // check the touch of each notification grid item, if it's touched then we want to expand it to see the notification.
+        for (int a = 0; a < (gridsize_x * gridsize_y); a++)
+            if (!app_notifications[a].getAppName().equals(""))
+                if (app_notifications[a].isTouched(x, y))
+                {
+                    printDebug("Notificaton icon " + app_notifications[a].getAppName() + " is touched");
+                    touched_index = a;
+                    floater.activate(app_notifications[a].getNotificationContent());
+                }
+        if (touched_index == -1)
+            floater.deactivate();
     }
 
     // handles creating new icons if they don't already exist, and populating the grid.
@@ -981,12 +1077,12 @@ public:
         // let the apps shift to the left and fill empty spots.
         for (int a = 1; a < gridsize_x * gridsize_y; a++)
 
-            //if there is an empty spot to the left of the app icon
+            // if there is an empty spot to the left of the app icon
             if (!app_notifications[a].getAppName().equals("") && app_notifications[a - 1].getAppName().equals(""))
             {
-                //move move the icon to the left and clear it's current spot. 
+                // move move the icon to the left and clear it's current spot.
                 app_notifications[a - 1].setAppName(app_notifications[a].getAppName());
-                app_notifications[a].setAppName(""); 
+                app_notifications[a].setAppName("");
             }
     }
 
@@ -999,4 +1095,11 @@ private:
     String _appname = "";
     String *_data;
     ApplicationNotification app_notifications[gridsize_x * gridsize_y];
+
+    const static int FLOATER_WIDTH = (int)(SCREEN_WIDTH * 0.9);
+    const static int FLOATER_HEIGHT = (int)(SCREEN_HEIGHT * 0.7);
+    const static int FLOATER_X = (SCREEN_WIDTH - FLOATER_WIDTH) / 2;
+    const static int FLOATER_Y = (SCREEN_HEIGHT - FLOATER_HEIGHT) / 2;
+
+    NotificationFloater floater = NotificationFloater(FLOATER_X, FLOATER_Y, FLOATER_WIDTH, FLOATER_HEIGHT, _buffer_ptr);
 };
