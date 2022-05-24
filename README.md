@@ -31,6 +31,8 @@ The current hardware version for the watch is V5 which provides a more slim desi
 
 ## Video Updates about the project
 
+[Video Update #5](https://www.youtube.com/watch?v=LVs-HgjjFUM)
+
 [Video Update #4](https://www.youtube.com/watch?v=E8-lO0pQunM)
 
 [Video Update #3](https://www.youtube.com/watch?v=vvuce4NQqrk)
