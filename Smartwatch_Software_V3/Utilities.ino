@@ -32,7 +32,7 @@ int getLineCount(String data)
 }
 
 uint8_t iconchar[2 * 100 * 100];
-uint8_t icon_decode_buffer[2 * 32 * 32];
+uint8_t icon_decode_buffer[2 * 32 * 32 + 2];
 String iconBuffer = "";
 
 // current request locks the getIconBLE function to only attempting to request one icon at a time, it can happen that the
@@ -60,6 +60,16 @@ boolean writeIconToFile(String appname, String data)
     return false;
 }
 
+int16_t calculateImageChecksum(uint8_t *arr){
+    int16_t checksum = 0;
+    for(int a = 0; a < 32*32; a++)
+        checksum += (arr[a * 2 +1] << 8) | arr[a * 2 ];
+    
+    printDebug("checksum of app icon is " + String(checksum));
+    printDebug("read checksum of icon is " + String((arr[2048] << 8) | arr[2049]));
+    return checksum;
+}
+
 boolean loadIconFromFile(String appname, uint16_t *des)
 {
     String path = "/" + appname + ".txt";
@@ -77,12 +87,12 @@ boolean loadIconFromFile(String appname, uint16_t *des)
         }
         f.close();
 
-        if (position > 2000)
+        if (position == 2736)
         {
             printDebug(" -- Read data from file \"" + path + "\"");
             decode_base64(iconchar, position, icon_decode_buffer);
             for (int a = 0; a < 32 * 32; a++)
-                des[a] = (icon_decode_buffer[a * 2] << 8) | icon_decode_buffer[a * 2 + 1];
+                des[a] = (icon_decode_buffer[a * 2 +1] << 8) | icon_decode_buffer[a * 2];
 
             printDebug(" -- Loaded Icon");
             return true;
@@ -111,7 +121,7 @@ boolean getIconBLE(String appname, uint16_t *des)
             tft.fillRect(0, SCREEN_HEIGHT - 25, SCREEN_WIDTH, 25, 0x0000);
             tft.println("Downloading Icon: " + appname);
             boolean success = sendBLE("/icon:" + appname, &iconBuffer, true);
-            if (success && iconBuffer.length() > 1000)
+            if (success && iconBuffer.length() > 2700)
             {
                 printDebug(" -- Saving app icon to file");
                 writeIconToFile(appname, iconBuffer);
@@ -119,7 +129,7 @@ boolean getIconBLE(String appname, uint16_t *des)
                 iconBuffer.toCharArray((char *)iconchar, iconBuffer.length() * 2);
                 decode_base64(iconchar, iconBuffer.length() * 2, icon_decode_buffer);
                 for (int a = 0; a < 32 * 32; a++)
-                    des[a] = (icon_decode_buffer[a * 2] << 8) | icon_decode_buffer[a * 2 + 1];
+                    des[a] = (icon_decode_buffer[a * 2 +1] << 8) | icon_decode_buffer[a * 2 ];
                 currentRequest = "";
                 return true;
             }
