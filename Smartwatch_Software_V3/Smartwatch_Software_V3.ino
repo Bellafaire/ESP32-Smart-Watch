@@ -72,6 +72,9 @@ void setup()
   printDebug("Starting Advertisement");
   startBLEAdvertising();
 
+  //manually setting daylight savings until we get a settings menu on V3
+  //  setDataField(0, "daylight_sav");
+
   loadEEPROMSettings();
 
   // create "watchdog task" to put the device in deepsleep if something goes wrong

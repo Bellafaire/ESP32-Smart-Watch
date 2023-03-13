@@ -61,12 +61,12 @@ private:
     const static int columns = 4;
     int row_height;
     uint16_t colors[6] = {
-        RGB_TO_BGR565(78, 0, 50),
-        RGB_TO_BGR565(78, 0, 70),
-        RGB_TO_BGR565(56, 0, 50),
-        RGB_TO_BGR565(80, 0, 100),
-        RGB_TO_BGR565(65, 0, 45),
-        RGB_TO_BGR565(50, 0, 60)};
+        RGB_TO_BGR565(40, 10, 10),
+        RGB_TO_BGR565(50, 40, 60),
+        RGB_TO_BGR565(56, 40, 40),
+        RGB_TO_BGR565(50, 50, 50),
+        RGB_TO_BGR565(45, 30, 40),
+        RGB_TO_BGR565(35, 35, 35)};
     int widths[columns][rows];
 
     int current_row = 0;
