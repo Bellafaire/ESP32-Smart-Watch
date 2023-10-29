@@ -26,6 +26,14 @@ The current V3 firmware supports:
 
 The case is 3D printed and designed in FreeCAD, the design files are available in this repo. 
 
+### Dependencies 
+If you're working with the V3 Firmware, then you will need the following dependencies, you can get these through the Arduino IDE library manager: 
+- Adafruit GFX Version 1.11.9 By Adafruit
+- Adafruit ST7735 and ST7789 Library Version 1.10.3 By Adafruit
+- base64 Version 1.30 by Densaugeo 
+
+Other versions of the above dependencies **will most likely work** but have not been tested on this hardware. 
+
 ## Hardware Versions
 The current hardware version for the watch is V5 which provides a more slim design while maintaining all the features of V4. 
 
