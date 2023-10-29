@@ -805,8 +805,18 @@ public:
     {
         // if we want to init this without drawing anything, we can give it a blank app name.
         if (!_appname.equals(""))
-            if (iconLoaded && _icon != nullptr){
-                _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
+            if (iconLoaded && _icon != nullptr)
+            {
+                for (int x = 0; x < 32; x++)
+                {
+                    for (int y = 0; y < 32; y++)
+                    {
+                        uint16_t color = ((uint16_t *)_icon)[x + y * 32];
+                        if (color > 0)
+                            _buffer_ptr->drawPixel(x + _x, y + _y, color );
+                    }
+                }
+                // _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
             }
             else
                 iconLoaded = loadIconFromFile(_appname, _icon);
@@ -991,7 +1001,7 @@ private:
 
 /***************************************************
  *                Spotify Overlay
- * Allows the user to control spotify playback and displays 
+ * Allows the user to control spotify playback and displays
  * current song.
  * ************************************************/
 
@@ -1002,11 +1012,11 @@ public:
         : Drawable(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, buffer_ptr, "SpotifyOverlay")
     {
 
-        //data is provided by a song string that is somewhere else in the code. 
-        //this makes it easier to perform async updating of the string 
+        // data is provided by a song string that is somewhere else in the code.
+        // this makes it easier to perform async updating of the string
         current_song_string_ptr = song_string_ptr;
 
-        //reusing the floater window because it's really nice.
+        // reusing the floater window because it's really nice.
         floater = TextFloaterWindow(
             FLOATER_X,
             FLOATER_Y,
@@ -1014,11 +1024,11 @@ public:
             FLOATER_HEIGHT,
             buffer_ptr);
 
-        //button spacing and padding, 4 buttons.
+        // button spacing and padding, 4 buttons.
         BUTTON_PADDING = (_width - BUTTON_WIDTH * 4) / 5;
         BUTTON_ACTIVE_Y_POS = SCREEN_HEIGHT - (BUTTON_WIDTH + BUTTON_PADDING);
 
-        //create buttons, the icons are declared in Declarations.h 
+        // create buttons, the icons are declared in Declarations.h
         last_button = Button(BUTTON_PADDING,
                              BUTTON_ACTIVE_Y_POS,
                              BUTTON_WIDTH,
@@ -1058,10 +1068,10 @@ public:
 
     void draw()
     {
-        //floater will display nothing when inactive, so always draw
+        // floater will display nothing when inactive, so always draw
         floater.draw();
 
-        //buttons on the other hand should only be drawn when active. 
+        // buttons on the other hand should only be drawn when active.
         if (isActive())
         {
             last_button.draw();
@@ -1069,15 +1079,15 @@ public:
             pause_button.draw();
             next_button.draw();
 
-            //additionally only update the song when this window is active to avoid 
-            //excessive polling of the phone.
+            // additionally only update the song when this window is active to avoid
+            // excessive polling of the phone.
             if (last_update + update_rate < millis())
             {
                 updateCurrentSong();
                 last_update = millis();
             }
 
-            //songs are formatted as "<song name>-<artist>" we have the space so replace the dash with a new line
+            // songs are formatted as "<song name>-<artist>" we have the space so replace the dash with a new line
             //(in the near future change the way songs are transmitted from the phone.)
             (*current_song_string_ptr).replace("-", "\n");
             floater.setString(*current_song_string_ptr);
@@ -1086,8 +1096,8 @@ public:
 
     void onTouch(int x, int y)
     {
-        //if the overlay is active pass the touch event to the buttons and perform their
-        //respective actions, if no button is pressed assume that it was an intentional exit 
+        // if the overlay is active pass the touch event to the buttons and perform their
+        // respective actions, if no button is pressed assume that it was an intentional exit
 
         if (isActive())
         {
@@ -1197,8 +1207,8 @@ public:
             spotifyOverlay.onTouch(x, y);
         }
 
-        //if the floater is active, tapping anywhere other than the floater should result in the floater 
-        //collapsing and returning control to the notification grid.
+        // if the floater is active, tapping anywhere other than the floater should result in the floater
+        // collapsing and returning control to the notification grid.
         else if (floater.isActive())
         {
             if (!floater.isTouched(x, y))
@@ -1272,7 +1282,7 @@ public:
                 app_notifications[b].setAppName(""); // blank app name to remove from grid
         }
 
-        //if there are any empty spots, move icons to the left to fill those gaps. 
+        // if there are any empty spots, move icons to the left to fill those gaps.
         shiftApps();
         last_update = millis();
     }

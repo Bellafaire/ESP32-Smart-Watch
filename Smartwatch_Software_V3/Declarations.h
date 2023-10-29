@@ -34,6 +34,7 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLE2902.h>
+#include <esp_gatt_common_api.h>
 
 // appicon depends
 #include "base64.hpp"

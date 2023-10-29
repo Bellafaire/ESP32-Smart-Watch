@@ -63,6 +63,10 @@ class ccb : public BLECharacteristicCallbacks  {
 
 void initBLE() {
   BLEDevice::init("ESP32 Smartwatch");
+
+  //configure ESP32 to have a maximum MTU size of 256.
+  //if this is not set Android will default to 517 which the ESP32 cannot handle. 
+  esp_err_t err = esp_ble_gatt_set_local_mtu(256);
   pServer = BLEDevice::createServer();
   pService = pServer->createService(SERVICE_UUID);
 
