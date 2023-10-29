@@ -87,7 +87,9 @@ boolean loadIconFromFile(String appname, uint16_t *des)
         }
         f.close();
 
-        if (position == 2736)
+
+        printDebug("Image from file \"" + path + "\" has length " + String(position)); 
+        if (position == 2720)
         {
             printDebug(" -- Read data from file \"" + path + "\"");
             decode_base64(iconchar, position, icon_decode_buffer);
@@ -99,7 +101,7 @@ boolean loadIconFromFile(String appname, uint16_t *des)
         }
         else
         {
-            printDebug(" -- Found file was too small, requesting from device");
+            printDebug(" -- Found file was incorrect size (got " + String(position) + " expected 2720), requesting from device");
             return getIconBLE(appname, des);
         }
     }

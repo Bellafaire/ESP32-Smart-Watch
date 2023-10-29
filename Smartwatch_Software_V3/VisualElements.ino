@@ -805,8 +805,9 @@ public:
     {
         // if we want to init this without drawing anything, we can give it a blank app name.
         if (!_appname.equals(""))
-            if (iconLoaded && _icon != nullptr)
+            if (iconLoaded && _icon != nullptr){
                 _buffer_ptr->drawRGBBitmap(_x, _y, (uint16_t *)_icon, 32, 32);
+            }
             else
                 iconLoaded = loadIconFromFile(_appname, _icon);
     }
